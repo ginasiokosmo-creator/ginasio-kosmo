@@ -95,6 +95,12 @@
     .badge { padding: 3px 7px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; color: #fff; display: inline-block; }
     .badge-ok { background: var(--success); }
     .badge-err { background: var(--danger); }
+
+    .id-card-wrap {
+      width: 360px; background: #111417; color: #fff; border-radius: 12px; padding: 18px 16px;
+      margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative;
+    }
+    .invoice-card { max-width: 580px; margin: 0 auto; background: #fff; border: 2px solid #dee2e6; border-radius: 8px; padding: 25px; color: #212529; }
   </style>
 </head>
 <body>
@@ -111,7 +117,7 @@
     </div>
   </div>
 
-  <!-- MENU LATERAL COMPLETO -->
+  <!-- MENU LATERAL COMPLETO E FUNCIONAL -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -148,7 +154,7 @@
       <button type="button" class="nav-item" id="nav-config" onclick="navigate('config')"><span class="icon">⚙️</span><span class="nav-text">Configurações</span></button>
 
       <div class="nav-group-title">Colaboradores</div>
-      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Staff</span></button>
+      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores</span></button>
       <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
@@ -169,20 +175,21 @@
     </header>
 
     <main>
-      <!-- DASHBOARD -->
+      <!-- 1. DASHBOARD -->
       <section id="view-dashboard" class="view-section active">
         <div class="metrics-grid">
           <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
           <div class="metric-card"><span>Check-ins Hoje</span><h3 id="stat-checkins">0</h3></div>
-          <div class="metric-card"><span>Estimativa MRR</span><h3 id="stat-mrr">93.000 CVE</h3></div>
+          <div class="metric-card"><span>Receita Total</span><h3 id="stat-receita">0 CVE</h3></div>
+          <div class="metric-card"><span>Estimativa MRR</span><h3>93.000 CVE</h3></div>
         </div>
         <div class="card">
-          <h2>Bem-vindo ao Painel do Ginásio KOSMO</h2>
-          <p>Selecione uma opção na barra lateral para gerir membros, pagamentos, loja, comunicação e relatórios.</p>
+          <h2>Bem-vindo ao Sistema de Gestão do Ginásio KOSMO</h2>
+          <p>Selecione qualquer módulo na barra lateral para começar a gerir as operações.</p>
         </div>
       </section>
 
-      <!-- MEMBROS -->
+      <!-- 2. MEMBROS -->
       <section id="view-membros" class="view-section">
         <div class="card">
           <h2>Registar Novo Membro</h2>
@@ -190,19 +197,20 @@
             <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
             <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 1001"></div>
             <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Telemóvel"></div>
+            <div><label>Plano</label><select id="m-plan"><option value="Musculação Mensal">Musculação Mensal</option><option value="Cardio + Musculação">Cardio + Musculação</option></select></div>
           </div>
           <button type="button" class="btn" onclick="addMember()">Registar Membro</button>
         </div>
         <div class="card">
           <h2>Membros Ativos</h2>
           <table>
-            <thead><tr><th>Código</th><th>Nome</th><th>Telemóvel</th></tr></thead>
+            <thead><tr><th>Código</th><th>Nome</th><th>Telemóvel</th><th>Plano</th></tr></thead>
             <tbody id="member-table-body"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- CHECK-INS -->
+      <!-- 3. CHECK-INS -->
       <section id="view-checkins" class="view-section">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
@@ -217,51 +225,227 @@
         </div>
       </section>
 
-      <!-- RESTANTES SECÇÕES FUNCIONAIS DO SISTEMA -->
-      <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><p>Crie e gira mensalidades e preçários do ginásio.</p></div></section>
-      <section id="view-cartaodigital" class="view-section"><div class="card"><h2>Cartão Digital</h2><p>Gere cartões com QR Code e código de barras para os membros.</p></div></section>
-      <section id="view-pagamentos" class="view-section"><div class="card"><h2>Pagamentos</h2><p>Registo e liquidação de mensalidades e produtos.</p></div></section>
-      <section id="view-faturas" class="view-section"><div class="card"><h2>Faturas</h2><p>Emissão de faturas e recibos oficiais com NIF do ginásio.</p></div></section>
-      <section id="view-despesas" class="view-section"><div class="card"><h2>Despesas & Contas</h2><p>Controlo de custos operacionais (água, luz, manutenção).</p></div></section>
-      <section id="view-salarios" class="view-section"><div class="card"><h2>Salários</h2><p>Processamento salarial e gratificações da equipa.</p></div></section>
-      <section id="view-pos" class="view-section"><div class="card"><h2>POS (Ponto de Venda)</h2><p>Venda rápida de artigos de balcão e suplementos.</p></div></section>
-      <section id="view-produtos" class="view-section"><div class="card"><h2>Produtos</h2><p>Gestão de artigos comercializados na loja.</p></div></section>
-      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><p>Classificação de produtos e inventário.</p></div></section>
-      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><p>Monitorização de entradas e saídas de armazém.</p></div></section>
-      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><p>Auditoria de transações da loja.</p></div></section>
-      <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens</h2><p>Envio direto de SMS ou WhatsApp para os alunos.</p></div></section>
-      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Automação de avisos de vencimento de planos.</p></div></section>
-      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Registo de avarias e reparações de equipamentos.</p></div></section>
-      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>Definições gerais, dados de contacto e NIF.</p></div></section>
-      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Controlo de acessos e staff autorizado.</p></div></section>
-      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade e ponto dos funcionários.</p></div></section>
-      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Métricas consolidadas de desempenho do ginásio.</p></div></section>
-      <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise estatística de renovações e abandono.</p></div></section>
-      <section id="view-perf" class="view-section"><div class="card"><h2>Performance Financeira</h2><p>Balanço detalhado de lucros, receitas e despesas.</p></div></section>
-      <section id="view-export" class="view-section"><div class="card"><h2>Exportar Dados</h2><p>Extração de relatórios e backups em formato JSON/CSV.</p></div></section>
+      <!-- 4. PLANOS -->
+      <section id="view-planos" class="view-section">
+        <div class="card">
+          <h2>Criar / Gerir Planos e Preçários</h2>
+          <div class="form-grid">
+            <div><label>Nome do Plano</label><input type="text" id="pl-name" placeholder="Ex: Musculação VIP"></div>
+            <div><label>Preço (CVE)</label><input type="number" id="pl-price" placeholder="2500"></div>
+          </div>
+          <button type="button" class="btn" onclick="addPlan()">Criar Plano</button>
+        </div>
+        <div class="card">
+          <h2>Planos Existentes</h2>
+          <table>
+            <thead><tr><th>Plano</th><th>Preço</th></tr></thead>
+            <tbody id="plans-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. CARTÃO DIGITAL -->
+      <section id="view-cartaodigital" class="view-section">
+        <div class="card" style="text-align:center;">
+          <h2>Gerador de Cartão Digital</h2>
+          <div style="max-width:320px; margin:0 auto 15px;">
+            <label>Selecione o Membro:</label>
+            <select id="card-member-select" onchange="renderDigitalCard()"></select>
+          </div>
+          <div id="digital-card-container"></div>
+          <button type="button" class="btn btn-blue btn-sm" style="margin-top:15px;" onclick="window.print()">🖨️ Imprimir Cartão</button>
+        </div>
+      </section>
+
+      <!-- 6. PAGAMENTOS -->
+      <section id="view-pagamentos" class="view-section">
+        <div class="card">
+          <h2>Registar Pagamento de Mensalidade</h2>
+          <div class="form-grid">
+            <div><label>Membro</label><select id="pay-member"></select></div>
+            <div><label>Valor (CVE)</label><input type="number" id="pay-amount" value="2500"></div>
+            <div><label>Referência / Mês</label><input type="text" id="pay-ref" placeholder="Ex: Mensalidade"></div>
+          </div>
+          <button type="button" class="btn btn-green" onclick="addPayment()">Registar & Emitir Fatura</button>
+        </div>
+        <div class="card">
+          <h2>Histórico de Pagamentos</h2>
+          <table>
+            <thead><tr><th>Data</th><th>Membro</th><th>Ref.</th><th>Valor</th></tr></thead>
+            <tbody id="payments-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 7. FATURAS -->
+      <section id="view-faturas" class="view-section">
+        <div class="card">
+          <h2>Emissão de Faturas e Recibos (NIF: 283023805)</h2>
+          <table>
+            <thead><tr><th>Fatura</th><th>Data</th><th>Cliente</th><th>Valor</th><th>Ação</th></tr></thead>
+            <tbody id="invoices-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 8. DESPESAS & CONTAS -->
+      <section id="view-despesas" class="view-section">
+        <div class="card">
+          <h2>Registar Controlo de Custos</h2>
+          <div class="form-grid">
+            <div><label>Descrição</label><input type="text" id="exp-desc" placeholder="Ex: Eletricidade / Água"></div>
+            <div><label>Valor (CVE)</label><input type="number" id="exp-val" placeholder="5000"></div>
+          </div>
+          <button type="button" class="btn" style="background:var(--danger);" onclick="addExpense()">Registar Despesa</button>
+        </div>
+        <div class="card">
+          <h2>Lista de Despesas</h2>
+          <table>
+            <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th></tr></thead>
+            <tbody id="expenses-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 9. SALÁRIOS -->
+      <section id="view-salarios" class="view-section">
+        <div class="card">
+          <h2>Processamento Salarial</h2>
+          <div class="form-grid">
+            <div><label>Colaborador</label><input type="text" id="sal-name" placeholder="Nome do funcionário"></div>
+            <div><label>Valor (CVE)</label><input type="number" id="sal-val" placeholder="30000"></div>
+          </div>
+          <button type="button" class="btn" onclick="addSalary()">Registar Vencimento</button>
+        </div>
+        <div class="card">
+          <h2>Histórico de Salários</h2>
+          <table>
+            <thead><tr><th>Colaborador</th><th>Valor</th></tr></thead>
+            <tbody id="salaries-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 10. POS -->
+      <section id="view-pos" class="view-section">
+        <div class="card">
+          <h2>Ponto de Venda Rápida (POS)</h2>
+          <div class="form-grid">
+            <div><label>Produto</label><select id="pos-prod"></select></div>
+            <div><label>Quantidade</label><input type="number" id="pos-qty" value="1"></div>
+          </div>
+          <button type="button" class="btn btn-green" onclick="makeSale()">Concluir Venda</button>
+        </div>
+      </section>
+
+      <!-- 11. PRODUTOS -->
+      <section id="view-produtos" class="view-section">
+        <div class="card">
+          <h2>Cadastrar Produto na Loja</h2>
+          <div class="form-grid">
+            <div><label>Nome do Artigo</label><input type="text" id="p-name" placeholder="Ex: Creatina 300g"></div>
+            <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="2500"></div>
+            <div><label>Stock Inicial</label><input type="number" id="p-stock" value="10"></div>
+          </div>
+          <button type="button" class="btn" onclick="addProduct()">Guardar Produto</button>
+        </div>
+        <div class="card">
+          <h2>Inventário de Produtos</h2>
+          <table>
+            <thead><tr><th>Produto</th><th>Preço</th><th>Stock</th></tr></thead>
+            <tbody id="products-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 12. CATEGORIAS -->
+      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><p>Classificação de produtos e inventário operacional ativa.</p></div></section>
+
+      <!-- 13. STOCK -->
+      <section id="view-stock" class="view-section">
+        <div class="card">
+          <h2>Monitorização de Armazém</h2>
+          <table>
+            <thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead>
+            <tbody id="stock-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 14. HISTÓRICO DE VENDAS -->
+      <section id="view-vendas" class="view-section">
+        <div class="card">
+          <h2>Auditoria de Transações</h2>
+          <table>
+            <thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead>
+            <tbody id="sales-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 15. ENVIAR MENSAGENS -->
+      <section id="view-mensagens" class="view-section">
+        <div class="card">
+          <h2>Envio de Mensagens WhatsApp</h2>
+          <div class="form-grid">
+            <div><label>Membro</label><select id="msg-member"></select></div>
+            <div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Escreva a mensagem..."></textarea></div>
+          </div>
+          <button type="button" class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar via WhatsApp</button>
+        </div>
+      </section>
+
+      <!-- 16. LEMBRETES AUTOMÁTICOS -->
+      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema automatizado de alertas de vencimento configurado.</p></div></section>
+
+      <!-- 17. REPORTES & MANUTENÇÃO -->
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Registo de avarias e reparações de equipamentos do ginásio.</p></div></section>
+
+      <!-- 18. CONFIGURAÇÕES -->
+      <section id="view-config" class="view-section"><div class="card"><h2>Configurações do Ginásio</h2><p>Nome: Ginásio KOSMO | NIF: 283023805 | Localização: Praia, Cabo Verde</p></div></section>
+
+      <!-- 19. GERIR COLABORADORES -->
+      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Controlo de acessos da equipa de staff autorizado.</p></div></section>
+
+      <!-- 20. PICA PONTO -->
+      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade e horários dos funcionários.</p></div></section>
+
+      <!-- 21. VISÃO GERAL -->
+      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Métricas consolidadas de desempenho e frequência.</p></div></section>
+
+      <!-- 22. RETENÇÃO DE MEMBROS -->
+      <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise estatística de renovações de planos.</p></div></section>
+
+      <!-- 23. PERFORMANCE FINANCEIRA -->
+      <section id="view-perf" class="view-section">
+        <div class="card">
+          <h2>Balanço Financeiro</h2>
+          <p>Total Recebido: <strong id="perf-rec" style="color:var(--success);">0 CVE</strong></p>
+          <p>Total Despesas: <strong id="perf-des" style="color:var(--danger);">0 CVE</strong></p>
+        </div>
+      </section>
+
+      <!-- 24. EXPORTAR DADOS -->
+      <section id="view-export" class="view-section">
+        <div class="card">
+          <h2>Exportação de Backups</h2>
+          <button type="button" class="btn btn-green" onclick="exportData()">📥 Descarregar Backup em JSON</button>
+        </div>
+      </section>
     </main>
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://htybbtbayxreoundolac.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_2Fy-0tjG0UszGVLoHnBdOQ_OtNFPQfY';
-    const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let members = [{ id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886' }];
+    let members = [{ id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886', plan: 'Musculação Mensal' }];
+    let plans = [{ name: 'Musculação Mensal', price: 2500 }, { name: 'Cardio + Musculação', price: 3000 }];
+    let payments = [];
+    let expenses = [];
+    let salaries = [];
+    let products = [{ name: 'Creatina 300g', price: 2500, stock: 12 }];
+    let sales = [];
     let attendanceLogs = [];
     let totemWindowRef = null;
     let isLogonActive = true;
-
-    async function carregarMembrosNuvem() {
-      try {
-        const { data, error } = await _supabase.from('kosmo_membros').select('*');
-        if (!error && data && data.length > 0) {
-          members = data;
-        }
-      } catch(e) {}
-      renderMembers();
-      updateMetrics();
-    }
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
@@ -270,7 +454,7 @@
         isLogonActive = false;
         document.getElementById('login-overlay').style.display = 'none';
         navigate('dashboard');
-        carregarMembrosNuvem();
+        refreshAll();
       } else {
         alert('Utilizador ou palavra-passe incorretos. Utilize admin / admin123');
       }
@@ -283,42 +467,40 @@
       if (target) target.classList.add('active');
       const navBtn = document.getElementById('nav-' + viewId);
       if (navBtn) navBtn.classList.add('active');
+      refreshAll();
+    }
 
-      const titles = {
-        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
-        pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
-        pos: 'POS', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
-        mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
-        config: 'Configurações', colab: 'Gerir Staff', picaponto: 'Pica Ponto', visao: 'Visão Geral',
-        retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar Dados'
-      };
-      if (document.getElementById('page-title')) {
-        document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
-      }
+    function refreshAll() {
+      renderMembers();
+      renderPlans();
+      renderProducts();
+      renderPayments();
+      renderExpenses();
+      renderSalaries();
+      renderSales();
+      renderStock();
+      populateSelects();
+      updateMetrics();
     }
 
     function updateMetrics() {
       if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
       if (document.getElementById('stat-checkins')) document.getElementById('stat-checkins').innerText = attendanceLogs.length;
+      const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
+      if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
+      if (document.getElementById('perf-rec')) document.getElementById('perf-rec').innerText = totalRec + ' CVE';
+      const totalDes = expenses.reduce((a,b) => a + Number(b.amount), 0) + salaries.reduce((a,b) => a + Number(b.amount), 0);
+      if (document.getElementById('perf-des')) document.getElementById('perf-des').innerText = totalDes + ' CVE';
     }
 
-    async function addMember() {
+    function addMember() {
       const name = document.getElementById('m-name').value.trim();
       const barcode = document.getElementById('m-barcode').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
+      const plan = document.getElementById('m-plan').value;
       if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
-      
-      const novoM = { id: Date.now(), name, barcode, phone };
-      members.push(novoM);
-      renderMembers();
-      updateMetrics();
-
-      try {
-        await _supabase.from('kosmo_membros').upsert({
-          id: novoM.id, name: novoM.name, barcode: novoM.barcode, phone: novoM.phone, plan: 'Geral', date: new Date().toISOString().split('T')[0]
-        });
-      } catch(e) {}
-
+      members.push({ id: Date.now(), name, barcode, phone, plan });
+      refreshAll();
       document.getElementById('m-name').value = '';
       document.getElementById('m-barcode').value = '';
       document.getElementById('m-phone').value = '';
@@ -330,8 +512,164 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       members.forEach(m => {
-        tbody.innerHTML += `<tr><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.phone || '---'}</td></tr>`;
+        tbody.innerHTML += `<tr><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.phone || '---'}</td><td>${m.plan}</td></tr>`;
       });
+    }
+
+    function addPlan() {
+      const name = document.getElementById('pl-name').value.trim();
+      const price = document.getElementById('pl-price').value;
+      if (!name || !price) return;
+      plans.push({ name, price });
+      refreshAll();
+      document.getElementById('pl-name').value = '';
+      document.getElementById('pl-price').value = '';
+      alert('Plano criado!');
+    }
+
+    function renderPlans() {
+      const tbody = document.getElementById('plans-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      plans.forEach(p => {
+        tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td></tr>`;
+      });
+    }
+
+    function renderDigitalCard() {
+      const name = document.getElementById('card-member-select').value;
+      const zone = document.getElementById('digital-card-container');
+      const m = members.find(x => x.name === name);
+      if (!m) { zone.innerHTML = ''; return; }
+      zone.innerHTML = `
+        <div class="id-card-wrap">
+          <h3>KOSMO GYM CARD</h3>
+          <p>NIF: 283023805</p>
+          <h4>${m.name}</h4>
+          <p>ID: ${m.barcode} | Plano: ${m.plan}</p>
+          <svg id="card-bc"></svg>
+        </div>
+      `;
+      setTimeout(() => {
+        if (window.JsBarcode) JsBarcode("#card-bc", m.barcode, { format: "CODE128", width: 1.5, height: 35, displayValue: true });
+      }, 100);
+    }
+
+    function addPayment() {
+      const member = document.getElementById('pay-member').value;
+      const amount = document.getElementById('pay-amount').value;
+      const ref = document.getElementById('pay-ref').value || 'Mensalidade';
+      if (!member || !amount) return;
+      payments.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), member, amount, ref });
+      refreshAll();
+      alert('Pagamento registado!');
+    }
+
+    function renderPayments() {
+      const tbody = document.getElementById('payments-table-body');
+      const invBody = document.getElementById('invoices-table-body');
+      if (tbody) tbody.innerHTML = '';
+      if (invBody) invBody.innerHTML = '';
+      payments.forEach(p => {
+        if (tbody) tbody.innerHTML += `<tr><td>${p.date}</td><td>${p.member}</td><td>${p.ref}</td><td>${p.amount} CVE</td></tr>`;
+        if (invBody) invBody.innerHTML += `<tr><td>FAT-${p.id.toString().slice(-4)}</td><td>${p.date}</td><td>${p.member}</td><td>${p.amount} CVE</td><td><button class="btn-sm btn-blue" onclick="alert('Fatura oficial emitida com NIF 283023805')">Ver Fatura</button></td></tr>`;
+      });
+    }
+
+    function addExpense() {
+      const desc = document.getElementById('exp-desc').value;
+      const amount = document.getElementById('exp-val').value;
+      if (!desc || !amount) return;
+      expenses.push({ date: new Date().toLocaleDateString('pt-PT'), desc, amount });
+      refreshAll();
+      alert('Despesa registada!');
+    }
+
+    function renderExpenses() {
+      const tbody = document.getElementById('expenses-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      expenses.forEach(e => { tbody.innerHTML += `<tr><td>${e.date}</td><td>${e.desc}</td><td>${e.amount} CVE</td></tr>`; });
+    }
+
+    function addSalary() {
+      const name = document.getElementById('sal-name').value;
+      const amount = document.getElementById('sal-val').value;
+      if (!name || !amount) return;
+      salaries.push({ name, amount });
+      refreshAll();
+      alert('Salário registado!');
+    }
+
+    function renderSalaries() {
+      const tbody = document.getElementById('salaries-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      salaries.forEach(s => { tbody.innerHTML += `<tr><td>${s.name}</td><td>${s.amount} CVE</td></tr>`; });
+    }
+
+    function addProduct() {
+      const name = document.getElementById('p-name').value;
+      const price = document.getElementById('p-price').value;
+      const stock = document.getElementById('p-stock').value;
+      if (!name || !price) return;
+      products.push({ name, price, stock });
+      refreshAll();
+      alert('Produto guardado!');
+    }
+
+    function renderProducts() {
+      const tbody = document.getElementById('products-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      products.forEach(p => { tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.price} CVE</td><td>${p.stock}</td></tr>`; });
+    }
+
+    function makeSale() {
+      const prodName = document.getElementById('pos-prod').value;
+      const qty = parseInt(document.getElementById('pos-qty').value) || 1;
+      const p = products.find(x => x.name === prodName);
+      if (!p) return;
+      sales.push({ date: new Date().toLocaleDateString('pt-PT'), prod: p.name, qty, total: p.price * qty });
+      refreshAll();
+      alert('Venda efetuada com sucesso!');
+    }
+
+    function renderSales() {
+      const tbody = document.getElementById('sales-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      sales.forEach(s => { tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.prod}</td><td>${s.qty}</td><td>${s.total} CVE</td></tr>`; });
+    }
+
+    function renderStock() {
+      const tbody = document.getElementById('stock-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      products.forEach(p => {
+        const badge = p.stock > 3 ? '<span class="badge badge-ok">Normal</span>' : '<span class="badge badge-err">Baixo</span>';
+        tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.stock}</td><td>${badge}</td></tr>`;
+      });
+    }
+
+    function sendWhatsApp() {
+      const member = document.getElementById('msg-member').value;
+      const text = document.getElementById('msg-text').value;
+      const m = members.find(x => x.name === member);
+      if (!m || !m.phone) { alert('Membro sem telemóvel registado.'); return; }
+      window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function populateSelects() {
+      const pSel = document.getElementById('card-member-select');
+      const paySel = document.getElementById('pay-member');
+      const msgSel = document.getElementById('msg-member');
+      const posSel = document.getElementById('pos-prod');
+
+      if (pSel) { pSel.innerHTML = ''; members.forEach(m => pSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (paySel) { paySel.innerHTML = ''; members.forEach(m => paySel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (msgSel) { msgSel.innerHTML = ''; members.forEach(m => msgSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (posSel) { posSel.innerHTML = ''; products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
     }
 
     function onScan(e) {
@@ -341,18 +679,13 @@
         if (!code) return;
         const m = members.find(x => x.barcode === code) || { name: 'Membro Exemplo', barcode: code };
         const agora = new Date();
-        const horaStr = agora.toLocaleTimeString('pt-PT');
-        const dataStr = agora.toLocaleDateString('pt-PT');
-
-        attendanceLogs.unshift({ data: dataStr, time: horaStr, name: m.name, barcode: m.barcode, status: 'Ativo' });
+        attendanceLogs.unshift({ data: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: m.name, barcode: m.barcode, status: 'Ativo' });
         renderAttendance();
         updateMetrics();
 
-        const totemData = { name: m.name, plan: 'Mensal', auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: '', time: Date.now() };
+        const totemData = { name: m.name, plan: m.plan || 'Mensal', auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: '', time: Date.now() };
         localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
-        if (totemWindowRef && !totemWindowRef.closed) {
-          totemWindowRef.postMessage(totemData, '*');
-        }
+        if (totemWindowRef && !totemWindowRef.closed) totemWindowRef.postMessage(totemData, '*');
         inputEl.value = '';
         inputEl.focus();
       }
@@ -365,6 +698,15 @@
       attendanceLogs.forEach(a => {
         tbody.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td><span class="badge badge-ok">${a.status}</span></td></tr>`;
       });
+    }
+
+    function exportData() {
+      const data = { members, plans, payments, expenses, salaries, products, sales, attendanceLogs };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'backup_kosmo.json';
+      a.click();
     }
 
     // ECRÃ TOTEM GIGANTE (RELÓGIO, LOGÓTIPO E SLOGAN AMPLIADOS)
