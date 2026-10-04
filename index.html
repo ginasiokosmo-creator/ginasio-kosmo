@@ -93,14 +93,14 @@
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN DIRETO E FUNCIONAL -->
+  <!-- ECRÃ DE LOGIN SEGURO COM VALIDAÇÃO DE STAFF -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
-      <h3 style="margin-bottom: 12px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
-      <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">Insira as credenciais de acesso</p>
-      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" value="admin"></div>
-      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" value="admin123"></div>
+      <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
+      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Predefinido: utilizador <strong>admin</strong> | passe <strong>admin123</strong></p>
+      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" placeholder="Insira o seu utilizador"></div>
+      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" placeholder="Insira a palavra-passe"></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
     </div>
   </div>
@@ -115,16 +115,21 @@
     <div class="menu-scroll">
       <button type="button" class="nav-item active" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-in / Totem</span></button>
       <button type="button" class="nav-item" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros Ativos</span></button>
+      <button type="button" class="nav-item" id="nav-staff" onclick="navigate('staff')"><span class="icon">👥</span><span class="nav-text">Gerir Staff</span></button>
+    </div>
+    <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+      <button type="button" onclick="location.reload()" class="btn btn-sm" style="background:#e03131; width:100%;">Terminar Sessão</button>
     </div>
   </aside>
 
   <div class="main-wrapper">
     <header>
       <div class="top-title" id="page-title">Check-in de Membros</div>
-      <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥️ Abrir Ecrã Totem Gigante</button>
+      <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥️️ Abrir Ecrã Totem Gigante</button>
     </header>
 
     <main>
+      <!-- 1. CHECK-INS -->
       <section id="view-checkins" class="view-section active">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
@@ -142,12 +147,33 @@
         </div>
       </section>
 
+      <!-- 2. MEMBROS -->
       <section id="view-membros" class="view-section">
         <div class="card">
           <h2>Membros Ativos</h2>
           <table>
             <thead><tr><th>Código</th><th>Nome</th><th>Plano</th></tr></thead>
             <tbody id="member-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. GERIR STAFF -->
+      <section id="view-staff" class="view-section">
+        <div class="card">
+          <h2>Registar Novo Colaborador de Staff</h2>
+          <div class="form-grid">
+            <div><label>Nome Completo</label><input type="text" id="st-name" placeholder="Nome do funcionário"></div>
+            <div><label>Utilizador de Login</label><input type="text" id="st-user" placeholder="utilizador"></div>
+            <div><label>Palavra-passe</label><input type="text" id="st-pass" placeholder="palavra-passe"></div>
+          </div>
+          <button type="button" class="btn" onclick="addStaff()">Adicionar Colaborador</button>
+        </div>
+        <div class="card">
+          <h2>Colaboradores Registados</h2>
+          <table>
+            <thead><tr><th>Nome</th><th>Utilizador</th><th>Ações</th></tr></thead>
+            <tbody id="staff-table-body"></tbody>
           </table>
         </div>
       </section>
@@ -158,17 +184,25 @@
     let members = [
       { id: 1, name: 'Silvio Cabral', barcode: '1001', plan: 'Musculação Simples', date: '2026-01-01', foto: '' }
     ];
+    let staffs = JSON.parse(localStorage.getItem('kosmo_safe_st')) || [
+      { id: 1, name: 'Administrador', user: 'admin', pass: 'admin123' }
+    ];
     let attendanceLogs = [];
     let totemWindowRef = null;
+    let currentUser = null;
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
       const p = document.getElementById('log-pass').value.trim();
-      if (u === 'admin' && p === 'admin123') {
+
+      const found = staffs.find(s => s.user.toLowerCase() === u.toLowerCase() && s.pass === p);
+      if (found) {
+        currentUser = found;
         document.getElementById('login-overlay').style.display = 'none';
         navigate('checkins');
+        renderStaffs();
       } else {
-        alert('Utilizador ou palavra-passe incorretos. Use admin / admin123');
+        alert('Utilizador ou palavra-passe incorretos. Utilize admin / admin123');
       }
     }
 
@@ -179,6 +213,46 @@
       if (target) target.classList.add('active');
       const navBtn = document.getElementById('nav-' + viewId);
       if (navBtn) navBtn.classList.add('active');
+      
+      if (viewId === 'staff') renderStaffs();
+    }
+
+    function addStaff() {
+      const name = document.getElementById('st-name').value.trim();
+      const user = document.getElementById('st-user').value.trim();
+      const pass = document.getElementById('st-pass').value.trim();
+      if (!name || !user || !pass) { alert('Preencha todos os campos.'); return; }
+      
+      staffs.push({ id: Date.now(), name, user, pass });
+      localStorage.setItem('kosmo_safe_st', JSON.stringify(staffs));
+      renderStaffs();
+      
+      document.getElementById('st-name').value = '';
+      document.getElementById('st-user').value = '';
+      document.getElementById('st-pass').value = '';
+      alert('Colaborador registado com sucesso!');
+    }
+
+    function renderStaffs() {
+      const tbody = document.getElementById('staff-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      staffs.forEach(s => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${s.name}</strong></td>
+            <td><code>${s.user}</code></td>
+            <td>${s.id !== 1 ? `<button class="btn-sm" style="background:#e03131;" onclick="deleteStaff(${s.id})">Eliminar</button>` : 'Principal'}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteStaff(id) {
+      if (id === 1) { alert('Não pode remover o administrador principal.'); return; }
+      staffs = staffs.filter(x => x.id !== id);
+      localStorage.setItem('kosmo_safe_st', JSON.stringify(staffs));
+      renderStaffs();
     }
 
     function onScan(e) {
@@ -213,7 +287,7 @@
       });
     }
 
-    // ECRÃ TOTEM COM RELÓGIO, LOGÓTIPO E SLOGAN GIGANTES (VISÍVEL A 3-4 METROS)
+    // ECRÃ TOTEM COM RELÓGIO, LOGÓTIPO E SLOGAN GIGANTES
     function openTotemWindow() {
       totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
       totemWindowRef.document.write(`
