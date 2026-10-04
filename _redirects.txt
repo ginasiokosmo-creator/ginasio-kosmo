@@ -1,0 +1,5 @@
+/pagamento    /index.html   200
+/inscricao    /index.html   200
+/meucartao    /index.html   200
+/totemdisplay /index.html   200
+/*            /index.html   200
