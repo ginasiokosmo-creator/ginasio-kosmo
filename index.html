@@ -164,7 +164,7 @@
       <h3 style="color:#1864ab; margin-bottom:4px;">Ginásio KOSMO</h3>
       <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Cartão Digital Oficial de Membro</p>
       <div id="public-card-render-zone"></div>
-      <button type="button" class="btn btn-green btn-sm" style="margin-top:15px;" onclick="window.print()">🖨️ Imprimir Cartão</button>
+      <button type="button" class="btn btn-green btn-sm" style="margin-top:15px;" onclick="window.print()">🖨️️ Imprimir Cartão</button>
       <button type="button" class="btn btn-sm" style="background:#495057; margin-top:8px;" onclick="location.href='index.html'">Voltar ao Início</button>
     </div>
   </div>
@@ -1746,44 +1746,37 @@
           <meta charset="UTF-8">
           <title>Ginásio KOSMO - Ecrã Totem Gigante</title>
           <style>
-            body { background: #0b0e11; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; text-align: center; overflow: hidden; }
-            .badge { padding: 25px 80px; border-radius: 16px; font-size: 3.5rem; font-weight: 900; color: #fff; display: inline-block; margin-top: 30px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+            body { background: #0b0e11; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; text-align: center; overflow: hidden; }
+            .badge { padding: 25px 80px; border-radius: 16px; font-size: 3.5rem; font-weight: 900; color: #fff; display: inline-block; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
           </style>
         </head>
         <body>
-          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #222; padding-bottom:20px;">
-            <div style="font-size:1.6rem; color:#aaa; font-weight:800; letter-spacing:1px;">TERMINAL DE CHECK-IN KOSMO</div>
-            <div id="totem-relogio" style="font-size:3.5rem; font-family:monospace; color:#ffd43b; font-weight:bold;">00:00:00</div>
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #222; padding-bottom:15px;">
+            <div style="font-size:1.8rem; color:#aaa; font-weight:800; letter-spacing:1px;">TERMINAL DE CHECK-IN KOSMO</div>
+            <div id="totem-relogio" style="font-size: 6.5rem; font-family: monospace; color: #ffd43b; font-weight: 900; letter-spacing: 2px;">00:00:00</div>
           </div>
           
           <div id="totem-corpo" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-            <img src="logo.jpg.jpg" style="width:260px; height:160px; object-fit:contain; border-radius:16px; background:#fff; padding:12px; margin-bottom:25px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);" onerror="this.src='logo.jpg';">
-            <h1 style="color:#ffd43b; font-size:4.2rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-            <p style="font-size:1.8rem; color:#ccc; font-style:italic; max-width:900px; font-weight:500;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+            <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+            <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+            <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
           </div>
 
-          <div style="color:#777; font-size:1.1rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
+          <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
 
           <script>
             let resetTimer = null;
             let wakeLock = null;
 
-            // Pedir bloqueio de hibernação (Wake Lock API) para manter o ecrã vivo
             async function ativarWakeLock() {
               if ('wakeLock' in navigator) {
                 try {
                   wakeLock = await navigator.wakeLock.request('screen');
-                  wakeLock.addEventListener('release', () => {
-                    console.log('Wake Lock libertado');
-                  });
-                } catch (err) {
-                  console.error('Erro no Wake Lock:', err);
-                }
+                } catch (err) {}
               }
             }
             ativarWakeLock();
 
-            // Reativar o Wake Lock se a página voltar a ficar visível
             document.addEventListener('visibilitychange', async () => {
               if (wakeLock !== null && document.visibilityState === 'visible') {
                 await ativarWakeLock();
@@ -1792,9 +1785,9 @@
 
             function voltarEcraInicial() {
               document.getElementById('totem-corpo').innerHTML = \`
-                <img src="logo.jpg.jpg" style="width:260px; height:160px; object-fit:contain; border-radius:16px; background:#fff; padding:12px; margin-bottom:25px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);" onerror="this.src='logo.jpg';">
-                <h1 style="color:#ffd43b; font-size:4.2rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-                <p style="font-size:1.8rem; color:#ccc; font-style:italic; max-width:900px; font-weight:500;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
               \`;
             }
 
@@ -1807,7 +1800,7 @@
               
               document.getElementById('totem-corpo').innerHTML = \`
                 \${fotoHtml}
-                <h1 style="color:\${bgCol}; font-size:5rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
+                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
                 <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
                 <p style="font-size:1.5rem; color:#ddd; font-weight:500;">Início: \${d.startDate||'---'} | Vencimento: \${d.dueDate||'---'}</p>
                 <div class="badge" style="background:\${bgCol};">\${txtStatus}</div>
