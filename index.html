@@ -99,7 +99,7 @@
     .badge-ok { background: var(--success); }
     .badge-err { background: var(--danger); }
 
-    /* CARTÃO DIGITAL IDÊNTICO À SUA FOTO */
+    /* CARTÃO DIGITAL IDÊNTICO À FOTO */
     .id-card-wrap {
       width: 480px; background: #111417; color: #fff; border-radius: 12px; padding: 22px 20px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative; overflow: hidden;
@@ -165,7 +165,7 @@
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
       <button type="button" class="nav-item" id="nav-retencao" onclick="navigate('retencao')"><span class="icon">📉</span><span class="nav-text">Retenção de Membros</span></button>
       <button type="button" class="nav-item" id="nav-perf" onclick="navigate('perf')"><span class="icon">💹</span><span class="nav-text">Performance Financeira</span></button>
-      <button type="button" class="nav-item" id="nav-export" onclick="navigate('export')"><span class="icon">💾</span><span class="nav-text">Exportar Dados</span></button>
+      <button type="button" class="nav-item" id="nav-export" onclick="navigate('export')"><span class="icon">💾</span><span class="nav-text">Exportar / Importar Dados</span></button>
     </div>
     <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
       <button type="button" onclick="location.reload()" class="btn btn-sm" style="background:#e03131; width:100%;">Terminar Sessão</button>
@@ -421,15 +421,11 @@
         </div>
       </section>
 
-      <!-- 16. LEMBRETES -->
+      <!-- 16 a 20. OPERAÇÕES & STAFF -->
       <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema ativo.</p></div></section>
-      <!-- 17. REPORTES -->
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
-      <!-- 18. CONFIGURAÇÕES -->
       <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
-      <!-- 19. COLABORADORES -->
       <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Admin principal ativo.</p></div></section>
-      <!-- 20. PICA PONTO -->
       <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Assiduidade de staff.</p></div></section>
 
       <!-- 21. RELATÓRIO: VISÃO GERAL -->
@@ -477,11 +473,17 @@
         </div>
       </section>
 
-      <!-- 24. EXPORTAR DADOS -->
+      <!-- 24. EXPORTAR / IMPORTAR DADOS -->
       <section id="view-export" class="view-section">
-        <div class="card">
-          <h2>Exportar Dados</h2>
+        <div class="card" style="margin-bottom: 20px;">
+          <h2>Exportar Cópia de Segurança</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Transfira um ficheiro JSON com todos os dados do ginásio.</p>
           <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup Completo (.JSON)</button>
+        </div>
+        <div class="card">
+          <h2>Carregar Backup do Computador</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Selecione um ficheiro de backup (.json) para restaurar os dados.</p>
+          <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
         </div>
       </section>
     </main>
@@ -531,7 +533,7 @@
         pos: 'POS', produtos: 'Produtos', categorias: 'Categorias de Produtos', stock: 'Stock', vendas: 'Histórico de Vendas',
         mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
         config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
-        retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar Dados'
+        retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
       };
       if (document.getElementById('page-title')) {
         document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
@@ -649,7 +651,7 @@
       plans.forEach(p => { tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td><td>${p.days} dias</td></tr>`; });
     }
 
-    // CARTÃO DIGITAL COM FOTO REAL E CÓDIGO DE BARRAS AMPLIADO PARA FÁCIL LEITURA
+    // CARTÃO DIGITAL COM FOTO REAL E CÓDIGO DE BARRAS AMPLIADO
     function renderDigitalCard() {
       const name = document.getElementById('card-member-select').value;
       const zone = document.getElementById('digital-card-container');
@@ -860,6 +862,31 @@
       a.href = URL.createObjectURL(blob);
       a.download = 'backup_kosmo.json';
       a.click();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.members) members = data.members;
+          if (data.plans) plans = data.plans;
+          if (data.payments) payments = data.payments;
+          if (data.expenses) expenses = data.expenses;
+          if (data.salaries) salaries = data.salaries;
+          if (data.products) products = data.products;
+          if (data.categories) categories = data.categories;
+          if (data.sales) sales = data.sales;
+          if (data.attendanceLogs) attendanceLogs = data.attendanceLogs;
+          refreshAll();
+          alert('Backup carregado e restaurado com sucesso!');
+        } catch(err) {
+          alert('Erro ao ler o ficheiro de backup. Certifique-se de que é um JSON válido.');
+        }
+      };
+      reader.readAsText(file);
     }
 
     // ECRÃ TOTEM GIGANTE
