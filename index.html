@@ -76,6 +76,8 @@
     .metric-card span { font-size: 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; }
     .metric-card h3 { font-size: 1.5rem; margin-top: 5px; color: var(--dark); }
 
+    .alert-card { background: #fff; border-left: 4px solid var(--warning); padding: 12px 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #dee2e6; }
+
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 12px; }
     label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px; color: #495057; }
     input, select, textarea { width: 100%; padding: 8px 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem; background-color: #fff; }
@@ -101,7 +103,6 @@
       width: 380px; background: #111417; color: #fff; border-radius: 12px; padding: 18px 16px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative;
     }
-    .invoice-card { max-width: 580px; margin: 0 auto; background: #fff; border: 2px solid #dee2e6; border-radius: 8px; padding: 25px; color: #212529; }
   </style>
 </head>
 <body>
@@ -118,7 +119,7 @@
     </div>
   </div>
 
-  <!-- MENU LATERAL COMPLETO E FUNCIONAL -->
+  <!-- MENU LATERAL COMPLETO -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -156,7 +157,7 @@
 
       <div class="nav-group-title">Colaboradores</div>
       <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores</span></button>
-      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
+      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
@@ -185,8 +186,8 @@
           <div class="metric-card"><span>Estimativa MRR</span><h3>93.000 CVE</h3></div>
         </div>
         <div class="card">
-          <h2>Bem-vindo ao Painel Central KOSMO</h2>
-          <p>Selecione qualquer módulo na barra lateral esquerda para interagir com as ferramentas operacionais.</p>
+          <h2>Painel Central KOSMO</h2>
+          <p>Selecione qualquer módulo na barra lateral esquerda para aceder às ferramentas.</p>
         </div>
       </section>
 
@@ -254,7 +255,7 @@
             <select id="card-member-select" onchange="renderDigitalCard()"></select>
           </div>
           <div id="digital-card-container"></div>
-          <button type="button" class="btn btn-blue btn-sm" style="margin-top:15px;" onclick="window.print()">🖨️ Imprimir Cartão</button>
+          <button type="button" class="btn btn-blue btn-sm" style="margin-top:15px;" onclick="window.print()">🖨️️ Imprimir Cartão</button>
         </div>
       </section>
 
@@ -372,7 +373,7 @@
           <div class="form-grid">
             <div><label>Nome da Categoria</label><input type="text" id="cat-name" placeholder="Ex: Proteínas"></div>
             <div><label>Descrição</label><input type="text" id="cat-desc" placeholder="Ex: Suplementos Alimentares"></div>
-            <div><label>Nº de Produtos Associados</label><input type="number" id="cat-produtos" value="0"></div>
+            <div><label>Nº de Produtos</label><input type="number" id="cat-produtos" value="0"></div>
           </div>
           <button type="button" class="btn" onclick="addCategory()">+ Registar Categoria</button>
         </div>
@@ -434,26 +435,85 @@
       <!-- 20. PICA PONTO -->
       <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade de funcionários.</p></div></section>
 
-      <!-- 21. VISÃO GERAL -->
-      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Métricas consolidadas de desempenho do ginásio.</p></div></section>
+      <!-- 21. RELATÓRIO: VISÃO GERAL -->
+      <section id="view-visao" class="view-section">
+        <div class="metrics-grid">
+          <div class="metric-card"><span>Total de Membros</span><h3 id="rel-total-membros">97</h3></div>
+          <div class="metric-card"><span>Membros Ativos</span><h3 id="rel-ativos">38</h3></div>
+          <div class="metric-card"><span>Novos Este Mês</span><h3 id="rel-novos">0</h3></div>
+          <div class="metric-card"><span>Check-ins Hoje</span><h3 id="rel-checkins">0</h3></div>
+        </div>
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px;">
+          <div class="card">
+            <h2>Estado dos Membros</h2>
+            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Situação atual de todos os membros registados</p>
+            <div style="text-align:center; padding:20px;">
+              <div style="width:160px; height:160px; border-radius:50%; border:16px solid #1971c2; border-top-color:#c92a2a; border-right-color:#f59f00; margin:0 auto; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">38 Ativos</div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Alertas</h2>
+            <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Situações que pedem ação da equipa</p>
+            <div class="alert-card"><span>Aprovações pendentes</span><strong style="color:var(--warning);">1</strong></div>
+            <div class="alert-card"><span>A expirar em 7 dias</span><strong style="color:var(--warning);">14</strong></div>
+            <div class="alert-card"><span>A expirar este mês</span><strong style="color:#1971c2;">37</strong></div>
+            <div class="alert-card"><span>Em atraso</span><strong style="color:var(--danger);">58</strong></div>
+          </div>
+        </div>
+      </section>
 
-      <!-- 22. RETENÇÃO DE MEMBROS -->
-      <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise estatística de renovações de planos.</p></div></section>
-
-      <!-- 23. PERFORMANCE FINANCEIRA -->
-      <section id="view-perf" class="view-section">
+      <!-- 22. RELATÓRIO: RETENÇÃO DE MEMBROS -->
+      <section id="view-retencao" class="view-section">
+        <div class="metrics-grid">
+          <div class="metric-card"><span>Taxa de Renovação</span><h3 style="color:var(--success);">79%</h3></div>
+          <div class="metric-card"><span>A Expirar em 7 Dias</span><h3>14</h3></div>
+          <div class="metric-card"><span>Em Atraso</span><h3 style="color:var(--danger);">58</h3></div>
+          <div class="metric-card"><span>Duração Média</span><h3>28 dias</h3></div>
+        </div>
         <div class="card">
-          <h2>Performance Financeira</h2>
-          <p>Total Recebido: <strong id="perf-rec" style="color:var(--success);">0 CVE</strong></p>
-          <p>Total Despesas: <strong id="perf-des" style="color:var(--danger);">0 CVE</strong></p>
+          <h2>Renovações e Cancelamentos</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Términos de subscrição por mês — janela de renovação de 30 dias</p>
+          <div style="height:180px; background:#fafafa; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#777;">
+            Gráfico de Retenção e Cancelamentos Ativo
+          </div>
+        </div>
+      </section>
+
+      <!-- 23. RELATÓRIO: PERFORMANCE FINANCEIRA -->
+      <section id="view-perf" class="view-section">
+        <div class="metrics-grid">
+          <div class="metric-card"><span>Receita (12 Meses)</span><h3>892.300 CVE</h3></div>
+          <div class="metric-card"><span>Receita Mensal (MRR)</span><h3>93.000 CVE</h3></div>
+          <div class="metric-card"><span>Média por Membro</span><h3>2.447 CVE</h3></div>
+          <div class="metric-card"><span>Membros Ativos</span><h3>38</h3></div>
+        </div>
+        <div class="card">
+          <h2>Receita Mensal</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Mensalidades, taxas de inscrição e vendas da loja</p>
+          <div style="height:200px; background:#fafafa; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#777;">
+            Gráfico de Barras Financeiro Consolidado
+          </div>
         </div>
       </section>
 
       <!-- 24. EXPORTAR DADOS -->
       <section id="view-export" class="view-section">
-        <div class="card">
-          <h2>Exportar Dados</h2>
-          <button type="button" class="btn btn-green" onclick="exportData()">📥 Descarregar Backup em JSON</button>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:15px;">
+          <div class="card">
+            <h3>Membros</h3>
+            <p style="color:#666; font-size:0.85rem; margin:10px 0;">Lista completa de membros com plano, estado e contactos.</p>
+            <button class="btn btn-green btn-sm" onclick="exportData()">📥 Exportar Membros</button>
+          </div>
+          <div class="card">
+            <h3>Membros Expirados</h3>
+            <p style="color:#666; font-size:0.85rem; margin:10px 0;">Lista de contactos para campanhas de recuperação.</p>
+            <button class="btn btn-green btn-sm" onclick="exportData()">📥 Exportar Expirados</button>
+          </div>
+          <div class="card">
+            <h3>Pagamentos e Vendas</h3>
+            <p style="color:#666; font-size:0.85rem; margin:10px 0;">Todos os movimentos recebidos — mensalidades e loja.</p>
+            <button class="btn btn-green btn-sm" onclick="exportData()">📥 Exportar Financeiro</button>
+          </div>
         </div>
       </section>
     </main>
@@ -526,7 +586,9 @@
 
     function updateMetrics() {
       if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
+      if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = members.length;
       if (document.getElementById('stat-checkins')) document.getElementById('stat-checkins').innerText = attendanceLogs.length;
+      if (document.getElementById('rel-checkins')) document.getElementById('rel-checkins').innerText = attendanceLogs.length;
       const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
       if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
       if (document.getElementById('perf-rec')) document.getElementById('perf-rec').innerText = totalRec + ' CVE';
@@ -801,9 +863,54 @@
           <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
 
           <script>
+            let resetTimer = null;
+            let wakeLock = null;
+
+            async function ativarWakeLock() {
+              if ('wakeLock' in navigator) {
+                try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
+              }
+            }
+            ativarWakeLock();
+
+            function voltarEcraInicial() {
+              document.getElementById('totem-corpo').innerHTML = \`
+                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+              \`;
+            }
+
+            function processarCheckinTotem(d) {
+              if (resetTimer) clearTimeout(resetTimer);
+              const fotoHtml = d.foto ? '<img src="'+d.foto+'" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border:6px solid '+(d.auth?'#2b8a3e':'#c92a2a')+'; margin-bottom:20px;">' : '';
+              const bgCol = d.auth ? '#2b8a3e' : '#c92a2a';
+              const txtStatus = d.auth ? 'ACESSO PERMITIDO' : 'ACESSO NEGADO';
+              
+              document.getElementById('totem-corpo').innerHTML = \`
+                \${fotoHtml}
+                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
+                <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
+                <p style="font-size:1.5rem; color:#ddd; font-weight:500;">Início: \${d.startDate||'---'} | Vencimento: \${d.dueDate||'---'}</p>
+                <div class="badge" style="background:\${bgCol};">\${txtStatus}</div>
+              \`;
+
+              resetTimer = setTimeout(() => { voltarEcraInicial(); }, 15000);
+            }
+
             setInterval(() => {
               document.getElementById('totem-relogio').innerText = new Date().toLocaleTimeString('pt-PT');
             }, 1000);
+
+            window.addEventListener('storage', (event) => {
+              if (event.key === 'kosmo_totem_scan') {
+                try { const d = JSON.parse(event.newValue); if (d) processarCheckinTotem(d); } catch(e) {}
+              }
+            });
+
+            window.addEventListener('message', (event) => {
+              if (event.data) processarCheckinTotem(event.data);
+            });
           <\/script>
         </body>
         </html>
