@@ -71,8 +71,8 @@
     .card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #dee2e6; }
     h2 { font-size: 1.1rem; margin-bottom: 16px; color: var(--dark); border-left: 4px solid var(--primary); padding-left: 8px; }
 
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px; }
-    .metric-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; border-left: 4px solid var(--primary); }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .metric-card { background: #fff; padding: 18px; border-radius: 8px; border: 1px solid #dee2e6; border-left: 4px solid var(--primary); }
     .metric-card span { font-size: 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; }
     .metric-card h3 { font-size: 1.5rem; margin-top: 5px; color: var(--dark); }
 
@@ -88,6 +88,7 @@
     .btn-green { background: var(--success); }
     .btn-blue { background: #1971c2; }
     .btn-sm { padding: 5px 12px; font-size: 0.82rem; border-radius: 4px; color:#fff; border:none; cursor:pointer; }
+    .btn-action { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 4px; }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
     th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #dee2e6; vertical-align: middle; }
@@ -97,7 +98,7 @@
     .badge-err { background: var(--danger); }
 
     .id-card-wrap {
-      width: 360px; background: #111417; color: #fff; border-radius: 12px; padding: 18px 16px;
+      width: 380px; background: #111417; color: #fff; border-radius: 12px; padding: 18px 16px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative;
     }
     .invoice-card { max-width: 580px; margin: 0 auto; background: #fff; border: 2px solid #dee2e6; border-radius: 8px; padding: 25px; color: #212529; }
@@ -105,7 +106,7 @@
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN DIRETO -->
+  <!-- ECRÃ DE LOGIN SEGURO -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
@@ -175,7 +176,7 @@
     </header>
 
     <main>
-      <!-- 1. DASHBOARD -->
+      <!-- 1. DASHBOARD GERAL -->
       <section id="view-dashboard" class="view-section active">
         <div class="metrics-grid">
           <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
@@ -184,12 +185,12 @@
           <div class="metric-card"><span>Estimativa MRR</span><h3>93.000 CVE</h3></div>
         </div>
         <div class="card">
-          <h2>Bem-vindo ao Sistema de Gestão do Ginásio KOSMO</h2>
-          <p>Selecione qualquer módulo na barra lateral para começar a gerir as operações.</p>
+          <h2>Bem-vindo ao Painel Central KOSMO</h2>
+          <p>Selecione qualquer módulo na barra lateral esquerda para interagir com as ferramentas operacionais.</p>
         </div>
       </section>
 
-      <!-- 2. MEMBROS -->
+      <!-- 2. MEMBROS ATIVOS -->
       <section id="view-membros" class="view-section">
         <div class="card">
           <h2>Registar Novo Membro</h2>
@@ -210,7 +211,7 @@
         </div>
       </section>
 
-      <!-- 3. CHECK-INS -->
+      <!-- 3. CHECK-INS / TOTEM -->
       <section id="view-checkins" class="view-section">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
@@ -228,7 +229,7 @@
       <!-- 4. PLANOS -->
       <section id="view-planos" class="view-section">
         <div class="card">
-          <h2>Criar / Gerir Planos e Preçários</h2>
+          <h2>Gestão de Planos e Preçários</h2>
           <div class="form-grid">
             <div><label>Nome do Plano</label><input type="text" id="pl-name" placeholder="Ex: Musculação VIP"></div>
             <div><label>Preço (CVE)</label><input type="number" id="pl-price" placeholder="2500"></div>
@@ -247,7 +248,7 @@
       <!-- 5. CARTÃO DIGITAL -->
       <section id="view-cartaodigital" class="view-section">
         <div class="card" style="text-align:center;">
-          <h2>Gerador de Cartão Digital</h2>
+          <h2>Emissão de Cartão Digital</h2>
           <div style="max-width:320px; margin:0 auto 15px;">
             <label>Selecione o Membro:</label>
             <select id="card-member-select" onchange="renderDigitalCard()"></select>
@@ -260,13 +261,13 @@
       <!-- 6. PAGAMENTOS -->
       <section id="view-pagamentos" class="view-section">
         <div class="card">
-          <h2>Registar Pagamento de Mensalidade</h2>
+          <h2>Registo de Pagamentos</h2>
           <div class="form-grid">
             <div><label>Membro</label><select id="pay-member"></select></div>
             <div><label>Valor (CVE)</label><input type="number" id="pay-amount" value="2500"></div>
             <div><label>Referência / Mês</label><input type="text" id="pay-ref" placeholder="Ex: Mensalidade"></div>
           </div>
-          <button type="button" class="btn btn-green" onclick="addPayment()">Registar & Emitir Fatura</button>
+          <button type="button" class="btn btn-green" onclick="addPayment()">Registar & Faturar</button>
         </div>
         <div class="card">
           <h2>Histórico de Pagamentos</h2>
@@ -291,7 +292,7 @@
       <!-- 8. DESPESAS & CONTAS -->
       <section id="view-despesas" class="view-section">
         <div class="card">
-          <h2>Registar Controlo de Custos</h2>
+          <h2>Controlo de Custos Operacionais</h2>
           <div class="form-grid">
             <div><label>Descrição</label><input type="text" id="exp-desc" placeholder="Ex: Eletricidade / Água"></div>
             <div><label>Valor (CVE)</label><input type="number" id="exp-val" placeholder="5000"></div>
@@ -341,7 +342,7 @@
       <!-- 11. PRODUTOS -->
       <section id="view-produtos" class="view-section">
         <div class="card">
-          <h2>Cadastrar Produto na Loja</h2>
+          <h2>Gestão de Produtos</h2>
           <div class="form-grid">
             <div><label>Nome do Artigo</label><input type="text" id="p-name" placeholder="Ex: Creatina 300g"></div>
             <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="2500"></div>
@@ -359,7 +360,30 @@
       </section>
 
       <!-- 12. CATEGORIAS -->
-      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><p>Classificação de produtos e inventário operacional ativa.</p></div></section>
+      <section id="view-categorias" class="view-section">
+        <div class="metrics-grid">
+          <div class="metric-card"><span>Total Registadas</span><h3 id="cat-total">0</h3></div>
+          <div class="metric-card"><span>Com Produtos</span><h3 id="cat-com">0</h3></div>
+          <div class="metric-card"><span>Sem Produtos</span><h3 id="cat-sem">0</h3></div>
+          <div class="metric-card"><span>Mais Popular</span><h3 id="cat-pop" style="font-size:1.1rem; margin-top:8px;">---</h3></div>
+        </div>
+        <div class="card">
+          <h2>Registar Nova Categoria</h2>
+          <div class="form-grid">
+            <div><label>Nome da Categoria</label><input type="text" id="cat-name" placeholder="Ex: Proteínas"></div>
+            <div><label>Descrição</label><input type="text" id="cat-desc" placeholder="Ex: Suplementos Alimentares"></div>
+            <div><label>Nº de Produtos Associados</label><input type="number" id="cat-produtos" value="0"></div>
+          </div>
+          <button type="button" class="btn" onclick="addCategory()">+ Registar Categoria</button>
+        </div>
+        <div class="card">
+          <h2>Categorias Existentes</h2>
+          <table>
+            <thead><tr><th>Nome</th><th>Descrição</th><th>Nº Produtos</th><th style="text-align:center;">Ações</th></tr></thead>
+            <tbody id="categories-table-body"></tbody>
+          </table>
+        </div>
+      </section>
 
       <!-- 13. STOCK -->
       <section id="view-stock" class="view-section">
@@ -375,7 +399,7 @@
       <!-- 14. HISTÓRICO DE VENDAS -->
       <section id="view-vendas" class="view-section">
         <div class="card">
-          <h2>Auditoria de Transações</h2>
+          <h2>Auditoria de Transações da Loja</h2>
           <table>
             <thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead>
             <tbody id="sales-table-body"></tbody>
@@ -386,32 +410,32 @@
       <!-- 15. ENVIAR MENSAGENS -->
       <section id="view-mensagens" class="view-section">
         <div class="card">
-          <h2>Envio de Mensagens WhatsApp</h2>
+          <h2>Envio de Mensagens via WhatsApp</h2>
           <div class="form-grid">
             <div><label>Membro</label><select id="msg-member"></select></div>
             <div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Escreva a mensagem..."></textarea></div>
           </div>
-          <button type="button" class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar via WhatsApp</button>
+          <button type="button" class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
         </div>
       </section>
 
       <!-- 16. LEMBRETES AUTOMÁTICOS -->
-      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema automatizado de alertas de vencimento configurado.</p></div></section>
+      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Automação ativa para avisos de vencimento.</p></div></section>
 
       <!-- 17. REPORTES & MANUTENÇÃO -->
-      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Registo de avarias e reparações de equipamentos do ginásio.</p></div></section>
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Controlo de reparações de equipamentos.</p></div></section>
 
       <!-- 18. CONFIGURAÇÕES -->
-      <section id="view-config" class="view-section"><div class="card"><h2>Configurações do Ginásio</h2><p>Nome: Ginásio KOSMO | NIF: 283023805 | Localização: Praia, Cabo Verde</p></div></section>
+      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>Ginásio KOSMO | NIF: 283023805 | Praia, Cabo Verde</p></div></section>
 
       <!-- 19. GERIR COLABORADORES -->
       <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Controlo de acessos da equipa de staff autorizado.</p></div></section>
 
       <!-- 20. PICA PONTO -->
-      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade e horários dos funcionários.</p></div></section>
+      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade de funcionários.</p></div></section>
 
       <!-- 21. VISÃO GERAL -->
-      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Métricas consolidadas de desempenho e frequência.</p></div></section>
+      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Métricas consolidadas de desempenho do ginásio.</p></div></section>
 
       <!-- 22. RETENÇÃO DE MEMBROS -->
       <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise estatística de renovações de planos.</p></div></section>
@@ -419,7 +443,7 @@
       <!-- 23. PERFORMANCE FINANCEIRA -->
       <section id="view-perf" class="view-section">
         <div class="card">
-          <h2>Balanço Financeiro</h2>
+          <h2>Performance Financeira</h2>
           <p>Total Recebido: <strong id="perf-rec" style="color:var(--success);">0 CVE</strong></p>
           <p>Total Despesas: <strong id="perf-des" style="color:var(--danger);">0 CVE</strong></p>
         </div>
@@ -428,7 +452,7 @@
       <!-- 24. EXPORTAR DADOS -->
       <section id="view-export" class="view-section">
         <div class="card">
-          <h2>Exportação de Backups</h2>
+          <h2>Exportar Dados</h2>
           <button type="button" class="btn btn-green" onclick="exportData()">📥 Descarregar Backup em JSON</button>
         </div>
       </section>
@@ -442,6 +466,10 @@
     let expenses = [];
     let salaries = [];
     let products = [{ name: 'Creatina 300g', price: 2500, stock: 12 }];
+    let categories = [
+      { id: 1, name: 'Proteínas Para Ganho de Massa', desc: 'Suplementos Alimentares', produtos: 5 },
+      { id: 2, name: 'Proteínas para Emagrecimento', desc: 'Suplementos Alimentares', produtos: 1 }
+    ];
     let sales = [];
     let attendanceLogs = [];
     let totemWindowRef = null;
@@ -467,6 +495,18 @@
       if (target) target.classList.add('active');
       const navBtn = document.getElementById('nav-' + viewId);
       if (navBtn) navBtn.classList.add('active');
+
+      const titles = {
+        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
+        pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
+        pos: 'POS', produtos: 'Produtos', categorias: 'Categorias de Produtos', stock: 'Stock', vendas: 'Histórico de Vendas',
+        mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
+        config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
+        retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar Dados'
+      };
+      if (document.getElementById('page-title')) {
+        document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
+      }
       refreshAll();
     }
 
@@ -474,6 +514,7 @@
       renderMembers();
       renderPlans();
       renderProducts();
+      renderCategories();
       renderPayments();
       renderExpenses();
       renderSalaries();
@@ -531,9 +572,7 @@
       const tbody = document.getElementById('plans-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
-      plans.forEach(p => {
-        tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td></tr>`;
-      });
+      plans.forEach(p => { tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td></tr>`; });
     }
 
     function renderDigitalCard() {
@@ -543,11 +582,11 @@
       if (!m) { zone.innerHTML = ''; return; }
       zone.innerHTML = `
         <div class="id-card-wrap">
-          <h3>KOSMO GYM CARD</h3>
-          <p>NIF: 283023805</p>
-          <h4>${m.name}</h4>
-          <p>ID: ${m.barcode} | Plano: ${m.plan}</p>
-          <svg id="card-bc"></svg>
+          <h3 style="color:#fff;">KOSMO GYM CARD</h3>
+          <p style="font-size:0.75rem; color:#aaa;">NIF: 283023805</p>
+          <h4 style="font-size:1.1rem; margin:8px 0;">${m.name}</h4>
+          <p style="font-size:0.8rem; color:#aaa;">ID: ${m.barcode} | Plano: ${m.plan}</p>
+          <div style="background:#fff; padding:6px; border-radius:6px; text-align:center; margin-top:8px;"><svg id="card-bc"></svg></div>
         </div>
       `;
       setTimeout(() => {
@@ -625,6 +664,35 @@
       products.forEach(p => { tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.price} CVE</td><td>${p.stock}</td></tr>`; });
     }
 
+    function addCategory() {
+      const name = document.getElementById('cat-name').value.trim();
+      const desc = document.getElementById('cat-desc').value.trim();
+      const produtos = parseInt(document.getElementById('cat-produtos').value) || 0;
+      if (!name) return;
+      categories.push({ id: Date.now(), name, desc, produtos });
+      refreshAll();
+      document.getElementById('cat-name').value = '';
+      document.getElementById('cat-desc').value = '';
+      document.getElementById('cat-produtos').value = '0';
+      alert('Categoria registada!');
+    }
+
+    function renderCategories() {
+      const tbody = document.getElementById('categories-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      let comProd = 0, semProd = 0, popular = { name: '---', produtos: -1 };
+      categories.forEach(c => {
+        if (c.produtos > 0) comProd++; else semProd++;
+        if (c.produtos > popular.produtos) popular = c;
+        tbody.innerHTML += `<tr><td>🏷️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td style="text-align:center;"><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
+      });
+      if (document.getElementById('cat-total')) document.getElementById('cat-total').innerText = categories.length;
+      if (document.getElementById('cat-com')) document.getElementById('cat-com').innerText = comProd;
+      if (document.getElementById('cat-sem')) document.getElementById('cat-sem').innerText = semProd;
+      if (document.getElementById('cat-pop')) document.getElementById('cat-pop').innerText = popular.name + ' (' + popular.produtos + ')';
+    }
+
     function makeSale() {
       const prodName = document.getElementById('pos-prod').value;
       const qty = parseInt(document.getElementById('pos-qty').value) || 1;
@@ -656,20 +724,15 @@
       const member = document.getElementById('msg-member').value;
       const text = document.getElementById('msg-text').value;
       const m = members.find(x => x.name === member);
-      if (!m || !m.phone) { alert('Membro sem telemóvel registado.'); return; }
+      if (!m || !m.phone) { alert('Membro sem telemóvel.'); return; }
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     function populateSelects() {
-      const pSel = document.getElementById('card-member-select');
-      const paySel = document.getElementById('pay-member');
-      const msgSel = document.getElementById('msg-member');
-      const posSel = document.getElementById('pos-prod');
-
-      if (pSel) { pSel.innerHTML = ''; members.forEach(m => pSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (paySel) { paySel.innerHTML = ''; members.forEach(m => paySel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (msgSel) { msgSel.innerHTML = ''; members.forEach(m => msgSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (posSel) { posSel.innerHTML = ''; products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
+      if (document.getElementById('card-member-select')) { document.getElementById('card-member-select').innerHTML = ''; members.forEach(m => document.getElementById('card-member-select').innerHTML += `<option value="${m.name}">${m.name}</option>`); renderDigitalCard(); }
+      if (document.getElementById('pay-member')) { document.getElementById('pay-member').innerHTML = ''; members.forEach(m => document.getElementById('pay-member').innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (document.getElementById('msg-member')) { document.getElementById('msg-member').innerHTML = ''; members.forEach(m => document.getElementById('msg-member').innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (document.getElementById('pos-prod')) { document.getElementById('pos-prod').innerHTML = ''; products.forEach(p => document.getElementById('pos-prod').innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
     }
 
     function onScan(e) {
@@ -701,7 +764,7 @@
     }
 
     function exportData() {
-      const data = { members, plans, payments, expenses, salaries, products, sales, attendanceLogs };
+      const data = { members, plans, payments, expenses, salaries, products, categories, sales, attendanceLogs };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -738,54 +801,9 @@
           <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
 
           <script>
-            let resetTimer = null;
-            let wakeLock = null;
-
-            async function ativarWakeLock() {
-              if ('wakeLock' in navigator) {
-                try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
-              }
-            }
-            ativarWakeLock();
-
-            function voltarEcraInicial() {
-              document.getElementById('totem-corpo').innerHTML = \`
-                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
-                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
-              \`;
-            }
-
-            function processarCheckinTotem(d) {
-              if (resetTimer) clearTimeout(resetTimer);
-              const fotoHtml = d.foto ? '<img src="'+d.foto+'" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border:6px solid '+(d.auth?'#2b8a3e':'#c92a2a')+'; margin-bottom:20px;">' : '';
-              const bgCol = d.auth ? '#2b8a3e' : '#c92a2a';
-              const txtStatus = d.auth ? 'ACESSO PERMITIDO' : 'ACESSO NEGADO';
-              
-              document.getElementById('totem-corpo').innerHTML = \`
-                \${fotoHtml}
-                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
-                <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
-                <p style="font-size:1.5rem; color:#ddd; font-weight:500;">Início: \${d.startDate||'---'} | Vencimento: \${d.dueDate||'---'}</p>
-                <div class="badge" style="background:\${bgCol};">\${txtStatus}</div>
-              \`;
-
-              resetTimer = setTimeout(() => { voltarEcraInicial(); }, 15000);
-            }
-
             setInterval(() => {
               document.getElementById('totem-relogio').innerText = new Date().toLocaleTimeString('pt-PT');
             }, 1000);
-
-            window.addEventListener('storage', (event) => {
-              if (event.key === 'kosmo_totem_scan') {
-                try { const d = JSON.parse(event.newValue); if (d) processarCheckinTotem(d); } catch(e) {}
-              }
-            });
-
-            window.addEventListener('message', (event) => {
-              if (event.data) processarCheckinTotem(event.data);
-            });
           <\/script>
         </body>
         </html>
