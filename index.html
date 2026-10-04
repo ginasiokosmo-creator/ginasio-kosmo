@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total & RBAC)</title>
 
+  <!-- BIBLIOTECAS EXTERNAS ESSENCIAIS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -31,6 +32,7 @@
     html, body { width: 100%; height: 100%; overflow: hidden; background-color: var(--bg); color: var(--dark); }
     body { display: flex; }
 
+    /* ECRÃ DE LOGIN SEGURO */
     #login-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: #111417; z-index: 50000; display: flex; justify-content: center; align-items: center;
@@ -41,6 +43,7 @@
     }
     .login-logo-img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 12px; display: block; margin: 0 auto; }
 
+    /* MENU LATERAL */
     aside {
       width: 260px; min-width: 260px; background: var(--sidebar-bg); color: var(--sidebar-text);
       display: flex; flex-direction: column; height: 100%; border-right: 1px solid #14171a; overflow-x: hidden;
@@ -61,6 +64,7 @@
     .nav-item.active { background: var(--primary); color: #fff; font-weight: 700; }
     .nav-item .icon { font-size: 1.15rem; width: 26px; text-align: center; margin-right: 10px; }
 
+    /* ESTRUTURA GERAL */
     .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
     header { height: 60px; background: #fff; border-bottom: 1px solid #dee2e6; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
     .top-title { font-size: 1.15rem; font-weight: 700; }
@@ -97,32 +101,37 @@
     .badge-ok { background: var(--success); }
     .badge-err { background: var(--danger); }
 
+    /* CARTÃO DIGITAL */
     .id-card-wrap {
       width: 480px; background: #111417; color: #fff; border-radius: 12px; padding: 22px 20px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative; overflow: hidden;
     }
     .id-card-wrap::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--primary); }
+
+    /* PERMISSÕES CHECKBOXES */
+    .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #dee2e6; }
+    .checkbox-grid label { font-weight: normal; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <!-- ========================================== -->
-  <!-- ECRÃ DE LOGIN SEGURO                       -->
-  <!-- ========================================== -->
+  <!-- ========================================================================== -->
+  <!-- ECRÃ DE LOGIN SEGURO (ADMIN E COLABORADORES)                               -->
+  <!-- ========================================================================== -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
       <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
-      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Utilizador: <strong>admin</strong> | Palavra-passe: <strong>admin123</strong></p>
+      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Admin: <strong>admin / admin123</strong><br>Ou utilize as credenciais criadas para o seu colaborador.</p>
       <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" value="admin"></div>
       <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" value="admin123"></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MENU LATERAL DE NAVEGAÇÃO COMPLETO         -->
-  <!-- ========================================== -->
+  <!-- ========================================================================== -->
+  <!-- MENU LATERAL DE NAVEGAÇÃO                                                  -->
+  <!-- ========================================================================== -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -169,13 +178,14 @@
       <button type="button" class="nav-item" id="nav-export" onclick="navigate('export')"><span class="icon">💾</span><span class="nav-text">Exportar / Importar Dados</span></button>
     </div>
     <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+      <span id="logged-user-label" style="display:block; color:#ffd43b; font-size:0.75rem; margin-bottom:6px; text-align:center; font-weight:bold;">Sessão: Admin</span>
       <button type="button" onclick="location.reload()" class="btn btn-sm" style="background:#e03131; width:100%;">Terminar Sessão</button>
     </div>
   </aside>
 
-  <!-- ========================================== -->
-  <!-- CONTEÚDO PRINCIPAL (TODAS AS SECÇÕES)      -->
-  <!-- ========================================== -->
+  <!-- ========================================================================== -->
+  <!-- CONTEÚDO PRINCIPAL                                                         -->
+  <!-- ========================================================================== -->
   <div class="main-wrapper">
     <header>
       <div class="top-title" id="page-title">Dashboard Geral</div>
@@ -430,21 +440,42 @@
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
 
-      <!-- COLABORADORES -->
+      <!-- COLABORADORES & PERMISSÕES GRANULARES -->
       <section id="view-colab" class="view-section">
         <div class="card">
-          <h2>Gerir Colaboradores</h2>
+          <h2>Gerir Colaboradores, Credenciais & Atribuição de Funções</h2>
           <div class="form-grid">
             <div><label>Nome do Funcionário</label><input type="text" id="colab-name" placeholder="Nome do Staff"></div>
             <div><label>Cargo / Função</label><input type="text" id="colab-role" placeholder="Ex: Rececionista / PT"></div>
             <div><label>Telemóvel</label><input type="tel" id="colab-phone" placeholder="Telemóvel"></div>
+            <div><label>Nome de Utilizador (Login)</label><input type="text" id="colab-user" placeholder="utilizador.staff"></div>
+            <div><label>Palavra-passe (Login)</label><input type="password" id="colab-pass" placeholder="Palavra-passe"></div>
           </div>
-          <button type="button" class="btn" onclick="addColab()">Adicionar Colaborador</button>
+          <div style="margin-top: 15px;">
+            <label style="font-weight:bold; color:var(--primary); margin-bottom:5px;">Selecione os Módulos que este Colaborador PODE Aceder:</label>
+            <div class="checkbox-grid" id="colab-perms-group">
+              <label><input type="checkbox" value="membros" checked> Membros</label>
+              <label><input type="checkbox" value="checkins" checked> Check-ins</label>
+              <label><input type="checkbox" value="planos" checked> Planos</label>
+              <label><input type="checkbox" value="cartaodigital" checked> Cartão Digital</label>
+              <label><input type="checkbox" value="pagamentos" checked> Pagamentos</label>
+              <label><input type="checkbox" value="faturas" checked> Faturas</label>
+              <label><input type="checkbox" value="despesas"> Despesas</label>
+              <label><input type="checkbox" value="salarios"> Salários</label>
+              <label><input type="checkbox" value="pos" checked> POS (Vendas)</label>
+              <label><input type="checkbox" value="produtos" checked> Produtos</label>
+              <label><input type="checkbox" value="categorias"> Categorias</label>
+              <label><input type="checkbox" value="stock" checked> Stock</label>
+              <label><input type="checkbox" value="vendas"> Histórico Vendas</label>
+              <label><input type="checkbox" value="picaponto" checked> Pica Ponto</label>
+            </div>
+          </div>
+          <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador & Permissões</button>
         </div>
         <div class="card">
           <h2>Equipa Autorizada</h2>
           <table>
-            <thead><tr><th>Nome</th><th>Cargo</th><th>Telemóvel</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Acessos Permitidos</th><th>Ações</th></tr></thead>
             <tbody id="colab-table-body"></tbody>
           </table>
         </div>
@@ -504,16 +535,16 @@
         </div>
         <div class="card">
           <h2>Carregar Backup do Computador (Qualquer Formato)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Selecione um ficheiro JSON ou texto para restaurar os dados.</p>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Selecione um ficheiro JSON de backup para restaurar todos os dados.</p>
           <input type="file" id="import-file" onchange="importDataAnyFormat(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
         </div>
       </section>
     </main>
   </div>
 
-  <!-- ========================================== -->
-  <!-- SCRIPT DE MOTOR LÓGICO COMPLETO            -->
-  <!-- ========================================== -->
+  <!-- ========================================================================== -->
+  <!-- MOTOR LÓGICO COM CONTROLO DE ACESSO (RBAC) E GESTÃO DE DADOS               -->
+  <!-- ========================================================================== -->
   <script>
     let members = [];
     let plans = [{ name: 'Mensal Trabalhador', price: 2500, days: 30 }];
@@ -524,23 +555,80 @@
     let categories = [{ id: 1, name: 'Proteínas', desc: 'Suplementos', produtos: 5 }];
     let sales = [];
     let attendanceLogs = [];
-    let collaborators = [{ id: 1, name: 'Administrador KOSMO', role: 'Gerente', phone: '9988886' }];
+    let collaborators = [{ 
+      id: 1, 
+      name: 'Administrador KOSMO', 
+      role: 'Gerente', 
+      phone: '9988886', 
+      user: 'admin', 
+      pass: 'admin123', 
+      perms: ['all'] 
+    }];
     let picaPontoLogs = [];
     let totemWindowRef = null;
     let fotoTemp = '';
     let isLogonActive = true;
+    let loggedUser = null;
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
       const p = document.getElementById('log-pass').value.trim();
+      
+      // Validação Admin Master
       if (u === 'admin' && p === 'admin123') {
-        isLogonActive = false;
-        document.getElementById('login-overlay').style.display = 'none';
-        navigate('dashboard');
-        refreshAll();
+        loggedUser = { name: 'Administrador', role: 'Admin', perms: ['all'] };
+        finalizeLogin();
+        return;
+      }
+
+      // Validação de Colaboradores personalizados com senha
+      const colab = collaborators.find(c => c.user === u && c.pass === p);
+      if (colab) {
+        loggedUser = colab;
+        finalizeLogin();
       } else {
         alert('Utilizador ou palavra-passe incorretos.');
       }
+    }
+
+    function finalizeLogin() {
+      isLogonActive = false;
+      document.getElementById('login-overlay').style.display = 'none';
+      const lbl = document.getElementById('logged-user-label');
+      if (lbl) lbl.innerText = `Sessão: ${loggedUser.name} (${loggedUser.role})`;
+      
+      aplicarPermissoesMenu();
+      navigate('dashboard');
+      refreshAll();
+    }
+
+    function aplicarPermissoesMenu() {
+      if (!loggedUser) return;
+      if (loggedUser.perms.includes('all')) {
+        document.querySelectorAll('.nav-item').forEach(el => el.style.display = 'flex');
+        return;
+      }
+      
+      const mapNav = {
+        membros: 'nav-membros', checkins: 'nav-checkins', planos: 'nav-planos', cartaodigital: 'nav-cartaodigital',
+        pagamentos: 'nav-pagamentos', faturas: 'nav-faturas', despesas: 'nav-despesas', salarios: 'nav-salarios',
+        pos: 'nav-pos', produtos: 'nav-produtos', categorias: 'nav-categorias', stock: 'nav-stock', vendas: 'nav-vendas',
+        picaponto: 'nav-picaponto'
+      };
+
+      document.querySelectorAll('.nav-item').forEach(el => {
+        if (el.id === 'nav-dashboard' || el.id === 'nav-export' || el.id === 'nav-mensagens' || el.id === 'nav-lembretes') {
+          el.style.display = 'flex';
+          return;
+        }
+        let permitido = false;
+        for (let permKey in mapNav) {
+          if (el.id === mapNav[permKey] && loggedUser.perms.includes(permKey)) {
+            permitido = true;
+          }
+        }
+        el.style.display = permitido ? 'flex' : 'none';
+      });
     }
 
     function navigate(viewId) {
@@ -622,26 +710,37 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           fotoTemp = e.target.result;
-          document.getElementById('m-foto-base64').value = fotoTemp;
+          const hid = document.getElementById('m-foto-base64');
+          if (hid) hid.value = fotoTemp;
         };
         reader.readAsDataURL(file);
       }
     }
 
     function addMember() {
-      const name = document.getElementById('m-name').value.trim();
-      const barcode = document.getElementById('m-barcode').value.trim();
-      const phone = document.getElementById('m-phone').value.trim();
-      const plan = document.getElementById('m-plan').value;
-      const foto = document.getElementById('m-foto-base64').value;
-      if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
+      const nameEl = document.getElementById('m-name');
+      const barcodeEl = document.getElementById('m-barcode');
+      const phoneEl = document.getElementById('m-phone');
+      const planEl = document.getElementById('m-plan');
+      const fotoEl = document.getElementById('m-foto-base64');
+
+      const name = nameEl ? nameEl.value.trim() : '';
+      const barcode = barcodeEl ? barcodeEl.value.trim() : '';
+      const phone = phoneEl ? phoneEl.value.trim() : '';
+      const plan = planEl ? planEl.value : 'Mensal Trabalhador';
+      const foto = fotoEl ? fotoEl.value : '';
+
+      if (!name || !barcode) { alert('Preencha o Nome e o Código/ID do Membro.'); return; }
+
       members.push({ id: Date.now(), name, barcode, phone, plan, foto, date: new Date().toISOString().split('T')[0] });
       refreshAll();
-      document.getElementById('m-name').value = '';
-      document.getElementById('m-barcode').value = '';
-      document.getElementById('m-phone').value = '';
-      document.getElementById('m-foto-base64').value = '';
-      document.getElementById('m-foto-file').value = '';
+
+      if (nameEl) nameEl.value = '';
+      if (barcodeEl) barcodeEl.value = '';
+      if (phoneEl) phoneEl.value = '';
+      if (fotoEl) fotoEl.value = '';
+      const fileInput = document.getElementById('m-foto-file');
+      if (fileInput) fileInput.value = '';
       fotoTemp = '';
       alert('Membro registado com sucesso!');
     }
@@ -808,7 +907,7 @@
       categories.forEach(c => {
         if (c.produtos > 0) comProd++; else semProd++;
         if (c.produtos > popular.produtos) popular = c;
-        tbody.innerHTML += `<tr><td>🏷️️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
+        tbody.innerHTML += `<tr><td>🏷️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
       });
       if (document.getElementById('cat-total')) document.getElementById('cat-total').innerText = categories.length;
       if (document.getElementById('cat-com')) document.getElementById('cat-com').innerText = comProd;
@@ -851,17 +950,34 @@
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
+    /* ADICIONAR COLABORADOR COM CREDENCIAIS E PERMISSÕES GRANULARES */
     function addColab() {
       const name = document.getElementById('colab-name').value.trim();
       const role = document.getElementById('colab-role').value.trim();
       const phone = document.getElementById('colab-phone').value.trim();
-      if (!name) { alert('Insira o nome do colaborador.'); return; }
-      collaborators.push({ id: Date.now(), name, role, phone });
+      const user = document.getElementById('colab-user').value.trim();
+      const pass = document.getElementById('colab-pass').value.trim();
+
+      if (!name || !user || !pass) {
+        alert('Preencha o Nome, Utilizador e Palavra-passe do colaborador.');
+        return;
+      }
+
+      const permCheckboxes = document.querySelectorAll('#colab-perms-group input[type="checkbox"]');
+      let perms = [];
+      permCheckboxes.forEach(chk => {
+        if (chk.checked) perms.push(chk.value);
+      });
+
+      collaborators.push({ id: Date.now(), name, role: role || 'Staff', phone, user, pass, perms });
       refreshAll();
+
       document.getElementById('colab-name').value = '';
       document.getElementById('colab-role').value = '';
       document.getElementById('colab-phone').value = '';
-      alert('Colaborador registado com sucesso!');
+      document.getElementById('colab-user').value = '';
+      document.getElementById('colab-pass').value = '';
+      alert('Colaborador e permissões registados com sucesso!');
     }
 
     function renderColabs() {
@@ -869,11 +985,12 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       if (collaborators.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#777;">Sem colaboradores registados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem colaboradores registados.</td></tr>`;
         return;
       }
       collaborators.forEach(c => {
-        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role || 'Staff'}</td><td>${c.phone || '---'}</td><td><button class="btn-action" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">🗑️️</button></td></tr>`;
+        const permList = c.perms && c.perms.length ? c.perms.join(', ') : 'Nenhuma';
+        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td><small>${permList}</small></td><td><button class="btn-action" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
       });
     }
 
@@ -969,21 +1086,22 @@
         try {
           const content = e.target.result;
           const data = JSON.parse(content);
-          if (data.members) members = data.members;
-          if (data.plans) plans = data.plans;
-          if (data.payments) payments = data.payments;
-          if (data.expenses) expenses = data.expenses;
-          if (data.salaries) salaries = data.salaries;
-          if (data.products) products = data.products;
-          if (data.categories) categories = data.categories;
-          if (data.sales) sales = data.sales;
-          if (data.attendanceLogs) attendanceLogs = data.attendanceLogs;
-          if (data.collaborators) collaborators = data.collaborators;
-          if (data.picaPontoLogs) picaPontoLogs = data.picaPontoLogs;
+          if (data.members && Array.isArray(data.members)) members = data.members;
+          if (data.plans && Array.isArray(data.plans)) plans = data.plans;
+          if (data.payments && Array.isArray(data.payments)) payments = data.payments;
+          if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
+          if (data.salaries && Array.isArray(data.salaries)) salaries = data.salaries;
+          if (data.products && Array.isArray(data.products)) products = data.products;
+          if (data.categories && Array.isArray(data.categories)) categories = data.categories;
+          if (data.sales && Array.isArray(data.sales)) sales = data.sales;
+          if (data.attendanceLogs && Array.isArray(data.attendanceLogs)) attendanceLogs = data.attendanceLogs;
+          if (data.collaborators && Array.isArray(data.collaborators)) collaborators = data.collaborators;
+          if (data.picaPontoLogs && Array.isArray(data.picaPontoLogs)) picaPontoLogs = data.picaPontoLogs;
+          
           refreshAll();
-          alert('Backup importado com sucesso!');
+          alert('Backup carregado e restaurado com sucesso!');
         } catch(err) {
-          alert('Erro ao processar ficheiro de backup.');
+          alert('Erro ao carregar o ficheiro de backup.');
         }
       };
       reader.readAsText(file);
