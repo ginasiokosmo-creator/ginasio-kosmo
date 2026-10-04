@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine & Cloud Realtime Completo)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine & Portal Online)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -114,14 +114,14 @@
 </head>
 <body>
 
-  <!-- LOGIN DE ACESSO -->
+  <!-- LOGIN DE ACESSO (CAMPOS TOTALMENTE LIMPOS) -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
       <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
-      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Admin: <strong>admin / admin123</strong></p>
-      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" value="admin"></div>
-      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" value="admin123"></div>
+      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Insira as suas credenciais de acesso</p>
+      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" placeholder="Insira o utilizador..."></div>
+      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" placeholder="Insira a palavra-passe..."></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
       <button type="button" class="btn btn-blue" style="width: 100%; padding: 10px; margin-top: 8px;" onclick="abrirPortalInscricao()">🌐 Abrir Portal de Inscrição Online</button>
     </div>
@@ -168,7 +168,7 @@
 
       <div class="nav-group-title">Colaboradores</div>
       <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores</span></button>
-      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
+      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
@@ -193,7 +193,6 @@
     </header>
 
     <main>
-      <!-- 1. DASHBOARD -->
       <section id="view-dashboard" class="view-section active">
         <div class="metrics-grid">
           <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
@@ -203,7 +202,6 @@
         </div>
       </section>
 
-      <!-- 2. MEMBROS ATIVOS -->
       <section id="view-membros" class="view-section">
         <div class="card">
           <h2 id="form-member-title">Registar Novo Membro</h2>
@@ -232,7 +230,6 @@
         </div>
       </section>
 
-      <!-- 3. GESTÃO DE INSCRIÇÕES ONLINE -->
       <section id="view-inscricoes" class="view-section">
         <div class="card">
           <h2>Gestão Completa de Inscrições Online</h2>
@@ -244,18 +241,16 @@
         </div>
       </section>
 
-      <!-- 4. QR CODE DE INSCRIÇÃO PÚBLICA -->
       <section id="view-qrinscricao" class="view-section">
         <div class="card" style="text-align:center;">
           <h2>Código de Barras / QR Code de Inscrição Online</h2>
-          <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Os clientes podem ler este código a partir de qualquer telemóvel em qualquer parte do mundo para se inscreverem online em tempo real.</p>
+          <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Os clientes podem ler este código para aceder diretamente ao portal de inscrição online.</p>
           <div id="qrcode-container" style="display:inline-block; background:#fff; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px;"></div>
           <p><code id="portal-url-txt" style="font-weight:bold; color:var(--primary);"></code></p>
           <button type="button" class="btn btn-blue" style="margin-top:15px;" onclick="window.print()">🖨 Imprimir Cartaz de Inscrição</button>
         </div>
       </section>
 
-      <!-- 5. CHECK-INS -->
       <section id="view-checkins" class="view-section">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
@@ -270,7 +265,6 @@
         </div>
       </section>
 
-      <!-- 6. PLANOS -->
       <section id="view-planos" class="view-section">
         <div class="card">
           <h2>Gestão de Planos</h2>
@@ -290,7 +284,6 @@
         </div>
       </section>
 
-      <!-- 7. CARTÃO DIGITAL -->
       <section id="view-cartaodigital" class="view-section">
         <div class="card" style="text-align:center;">
           <h2>Cartão Digital Oficial de Membro</h2>
@@ -303,7 +296,6 @@
         </div>
       </section>
 
-      <!-- 8. PAGAMENTOS -->
       <section id="view-pagamentos" class="view-section">
         <div class="card">
           <h2>Registo de Pagamentos</h2>
@@ -323,7 +315,6 @@
         </div>
       </section>
 
-      <!-- 9. FATURAS -->
       <section id="view-faturas" class="view-section">
         <div class="card">
           <h2>Emissão de Faturas e Recibos (NIF: 283023805)</h2>
@@ -334,7 +325,6 @@
         </div>
       </section>
 
-      <!-- 10. DESPESAS -->
       <section id="view-despesas" class="view-section">
         <div class="card">
           <h2>Controlo de Custos</h2>
@@ -353,7 +343,6 @@
         </div>
       </section>
 
-      <!-- 11. SALÁRIOS -->
       <section id="view-salarios" class="view-section">
         <div class="card">
           <h2>Salários</h2>
@@ -372,7 +361,6 @@
         </div>
       </section>
 
-      <!-- 12. POS -->
       <section id="view-pos" class="view-section">
         <div class="card">
           <h2>POS (Ponto de Venda Inteligente)</h2>
@@ -392,7 +380,6 @@
         </div>
       </section>
 
-      <!-- 13. PRODUTOS -->
       <section id="view-produtos" class="view-section">
         <div class="card">
           <h2>Registar Produto no Catálogo</h2>
@@ -416,7 +403,6 @@
         </div>
       </section>
 
-      <!-- 14. CATEGORIAS -->
       <section id="view-categorias" class="view-section">
         <div class="metrics-grid">
           <div class="metric-card"><span>Total Registadas</span><h3 id="cat-total">0</h3></div>
@@ -442,16 +428,10 @@
         </div>
       </section>
 
-      <!-- 15. STOCK -->
       <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><table><thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead><tbody id="stock-table-body"></tbody></table></div></section>
-
-      <!-- 16. HISTÓRICO DE VENDAS -->
       <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><table><thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></section>
-
-      <!-- 17. MENSAGENS -->
       <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens WhatsApp</h2><div class="form-grid"><div><label>Membro</label><select id="msg-member"></select></div><div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Mensagem..."></textarea></div></div><button class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button></div></section>
 
-      <!-- 18. CHAT ONLINE COM SUPORTE A CLIP -->
       <section id="view-chat" class="view-section">
         <div class="card">
           <h2>Chat Online com Clientes (Staff & Gerência)</h2>
@@ -468,7 +448,6 @@
         </div>
       </section>
 
-      <!-- 19. LEMBRETES E ALERTAS -->
       <section id="view-lembretes" class="view-section">
         <div class="card">
           <h2>Alertas Automáticos de Vencimento (-5 Dias)</h2>
@@ -480,10 +459,7 @@
         </div>
       </section>
 
-      <!-- 20. REPORTES -->
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias.</p></div></section>
-
-      <!-- 21. CONFIGURAÇÕES CLOUD -->
       <section id="view-config" class="view-section">
         <div class="card">
           <h2>Configuração Cloud em Tempo Real (Supabase)</h2>
@@ -495,7 +471,6 @@
         </div>
       </section>
 
-      <!-- 22. COLABORADORES -->
       <section id="view-colab" class="view-section">
         <div class="card">
           <h2>Gerir Colaboradores</h2>
@@ -517,7 +492,6 @@
         </div>
       </section>
 
-      <!-- 23. PICA PONTO -->
       <section id="view-picaponto" class="view-section">
         <div class="card">
           <h2>Pica Ponto</h2>
@@ -536,7 +510,6 @@
         </div>
       </section>
 
-      <!-- 24. RELATÓRIOS -->
       <section id="view-visao" class="view-section">
         <div class="metrics-grid">
           <div class="metric-card"><span>Total Membros</span><h3 id="rel-total">0</h3></div>
@@ -547,10 +520,9 @@
       <section id="view-retencao" class="view-section"><div class="metrics-grid"><div class="metric-card"><span>Taxa Atividade</span><h3 id="ret-taxa">100%</h3></div></div></section>
       <section id="view-perf" class="view-section"><div class="metrics-grid"><div class="metric-card"><span>Balanço</span><h3 id="per-liq">0 CVE</h3></div></div></section>
 
-      <!-- 25. EXPORTAR / IMPORTAR -->
       <section id="view-export" class="view-section">
         <div class="card" style="margin-bottom: 20px;">
-          <h2>Exportar Backup (.JSON)</h2>
+          <h2>Exportar Cópia de Segurança (.JSON)</h2>
           <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup</button>
         </div>
         <div class="card">
@@ -586,7 +558,6 @@
       <input type="hidden" id="portal-anexo-b64" value="">
       <button type="button" class="btn" style="width:100%; margin-top:15px; padding:12px;" onclick="submeterInscricaoOnline()">Submeter Inscrição Online</button>
       
-      <!-- CHAT ONLINE DO CLIENTE -->
       <div style="margin-top:30px; border-top:2px solid #dee2e6; padding-top:20px;">
         <h3>💬 Chat Online com a Gerência KOSMO</h3>
         <div id="client-chat-login" style="display:flex; gap:10px; margin-bottom:10px;">
@@ -606,7 +577,6 @@
     </div>
   </div>
 
-  <!-- MODAL DE EDIÇÃO DE INSCRIÇÃO ONLINE -->
   <div id="modal-edit-inscricao" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:95000; display:none; justify-content:center; align-items:center;">
     <div style="background:#fff; width:100%; max-width:500px; border-radius:10px; padding:25px;">
       <h3>Editar Inscrição Online</h3>
@@ -625,7 +595,6 @@
     </div>
   </div>
 
-  <!-- SCRIPT INTEGRAL (MAIS DE 1470 LINHAS) -->
   <script>
     let members = [];
     let inscricoesOnline = [];
@@ -650,6 +619,15 @@
     let clienteChatAtivo = null;
     let isLogonActive = true;
     let loggedUser = null;
+
+    // Se o link contiver #portal ou ?portal, abre diretamente a inscrição para clientes
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(window.location.search);
+      if (hash === '#inscricao' || params.has('portal') || params.has('inscricao')) {
+        abrirPortalInscricao();
+      }
+    });
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
@@ -914,7 +892,7 @@
       const urlTxt = document.getElementById('portal-url-txt');
       if (!container) return;
       container.innerHTML = '';
-      const appUrl = window.location.href.split('#')[0];
+      const appUrl = window.location.href.split('#')[0].split('?')[0] + '?portal=inscricao';
       if (urlTxt) urlTxt.innerText = appUrl;
       try { new QRCode(container, { text: appUrl, width: 180, height: 180 }); } catch(e) {}
     }
