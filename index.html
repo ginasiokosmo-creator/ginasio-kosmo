@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite</title>
+  <title>Ginásio KOSMO - Dashboard de Gestão Integral</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -43,18 +43,19 @@
 
     aside {
       width: 260px; min-width: 260px; background: var(--sidebar-bg); color: var(--sidebar-text);
-      display: flex; flex-direction: column; height: 100%; border-right: 1px solid #14171a;
+      display: flex; flex-direction: column; height: 100%; border-right: 1px solid #14171a; overflow-x: hidden;
     }
     .gym-header { padding: 16px 12px; text-align: center; background: #14171a; border-bottom: 1px solid rgba(255,255,255,0.08); }
     .gym-logo-sidebar { width: 100%; height: 50px; object-fit: contain; background: #ffffff; border-radius: 6px; padding: 3px; margin-bottom: 8px; }
     .gym-header h3 { font-size: 1.1rem; color: #fff; font-weight: 800; }
     .gym-header p { font-size: 0.75rem; color: #88929b; }
 
-    .menu-scroll { flex: 1; overflow-y: auto; padding: 8px 0; }
+    .menu-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 0; }
+    .nav-group-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.8px; color: #6c7884; padding: 12px 16px 4px; font-weight: 700; white-space: nowrap; }
     .nav-item {
       display: flex; align-items: center; width: 100%; padding: 10px 16px; font-size: 0.88rem;
       color: var(--sidebar-text); cursor: pointer; font-weight: 500; border: none; background: transparent; text-align: left;
-      text-decoration: none; transition: background 0.15s;
+      text-decoration: none; transition: background 0.15s; white-space: nowrap;
     }
     .nav-item:hover { background: var(--sidebar-hover); color: #fff; }
     .nav-item.active { background: var(--primary); color: #fff; font-weight: 700; }
@@ -93,19 +94,19 @@
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN SEGURO COM VALIDAÇÃO DE STAFF -->
+  <!-- ECRÃ DE LOGIN SEGURO -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
       <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
-      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Predefinido: utilizador <strong>admin</strong> | passe <strong>admin123</strong></p>
-      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" placeholder="Insira o seu utilizador"></div>
-      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" placeholder="Insira a palavra-passe"></div>
+      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Utilizador: <strong>admin</strong> | Palavra-passe: <strong>admin123</strong></p>
+      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" value="admin"></div>
+      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" value="admin123"></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
     </div>
   </div>
 
-  <!-- MENU LATERAL -->
+  <!-- MENU LATERAL COM TODAS AS SECÇÕES PEDIDAS -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -113,9 +114,42 @@
       <p>Praia, Cabo Verde<br><strong>NIF: 283023805</strong></p>
     </div>
     <div class="menu-scroll">
-      <button type="button" class="nav-item active" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-in / Totem</span></button>
-      <button type="button" class="nav-item" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros Ativos</span></button>
-      <button type="button" class="nav-item" id="nav-staff" onclick="navigate('staff')"><span class="icon">👥</span><span class="nav-text">Gerir Staff</span></button>
+      <div class="nav-group-title">Membros</div>
+      <button type="button" class="nav-item active" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros</span></button>
+      <button type="button" class="nav-item" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-ins</span></button>
+      <button type="button" class="nav-item" id="nav-planos" onclick="navigate('planos')"><span class="icon">📋</span><span class="nav-text">Planos</span></button>
+      <button type="button" class="nav-item" id="nav-cartaodigital" onclick="navigate('cartaodigital')"><span class="icon">🪪</span><span class="nav-text">Cartão Digital</span></button>
+
+      <div class="nav-group-title">Financeiro</div>
+      <button type="button" class="nav-item" id="nav-pagamentos" onclick="navigate('pagamentos')"><span class="icon">💳</span><span class="nav-text">Pagamentos</span></button>
+      <button type="button" class="nav-item" id="nav-faturas" onclick="navigate('faturas')"><span class="icon">📄</span><span class="nav-text">Faturas</span></button>
+      <button type="button" class="nav-item" id="nav-despesas" onclick="navigate('despesas')"><span class="icon">📉</span><span class="nav-text">Despesas & Contas</span></button>
+      <button type="button" class="nav-item" id="nav-salarios" onclick="navigate('salarios')"><span class="icon">💵</span><span class="nav-text">Salários</span></button>
+
+      <div class="nav-group-title">Loja</div>
+      <button type="button" class="nav-item" id="nav-pos" onclick="navigate('pos')"><span class="icon">🛒</span><span class="nav-text">POS</span></button>
+      <button type="button" class="nav-item" id="nav-produtos" onclick="navigate('produtos')"><span class="icon">📦</span><span class="nav-text">Produtos</span></button>
+      <button type="button" class="nav-item" id="nav-categorias" onclick="navigate('categorias')"><span class="icon">🏷️</span><span class="nav-text">Categorias</span></button>
+      <button type="button" class="nav-item" id="nav-stock" onclick="navigate('stock')"><span class="icon">📊</span><span class="nav-text">Stock</span></button>
+      <button type="button" class="nav-item" id="nav-vendas" onclick="navigate('vendas')"><span class="icon">📑</span><span class="nav-text">Histórico de Vendas</span></button>
+
+      <div class="nav-group-title">Comunicação</div>
+      <button type="button" class="nav-item" id="nav-mensagens" onclick="navigate('mensagens')"><span class="icon">💬</span><span class="nav-text">Enviar Mensagens</span></button>
+      <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes Automáticos</span></button>
+
+      <div class="nav-group-title">Operações</div>
+      <button type="button" class="nav-item" id="nav-reportes" onclick="navigate('reportes')"><span class="icon">🛠️</span><span class="nav-text">Reportes & Manutenção</span></button>
+      <button type="button" class="nav-item" id="nav-config" onclick="navigate('config')"><span class="icon">⚙️</span><span class="nav-text">Configurações</span></button>
+
+      <div class="nav-group-title">Colaboradores</div>
+      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir</span></button>
+      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
+
+      <div class="nav-group-title">Relatórios</div>
+      <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
+      <button type="button" class="nav-item" id="nav-retencao" onclick="navigate('retencao')"><span class="icon">📉</span><span class="nav-text">Retenção de Membros</span></button>
+      <button type="button" class="nav-item" id="nav-perf" onclick="navigate('perf')"><span class="icon">💹</span><span class="nav-text">Performance Financeira</span></button>
+      <button type="button" class="nav-item" id="nav-export" onclick="navigate('export')"><span class="icon">💾</span><span class="nav-text">Exportar Dados</span></button>
     </div>
     <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
       <button type="button" onclick="location.reload()" class="btn btn-sm" style="background:#e03131; width:100%;">Terminar Sessão</button>
@@ -124,85 +158,88 @@
 
   <div class="main-wrapper">
     <header>
-      <div class="top-title" id="page-title">Check-in de Membros</div>
+      <div class="top-title" id="page-title">Membros</div>
       <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Abrir Ecrã Totem Gigante</button>
     </header>
 
     <main>
-      <!-- 1. CHECK-INS -->
-      <section id="view-checkins" class="view-section active">
+      <!-- 1. MEMBROS -->
+      <section id="view-membros" class="view-section active">
+        <div class="card">
+          <h2>Registar Novo Membro</h2>
+          <div class="form-grid">
+            <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
+            <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 1001"></div>
+            <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Telemóvel"></div>
+          </div>
+          <button type="button" class="btn" onclick="addMember()">Registar Membro</button>
+        </div>
+        <div class="card">
+          <h2>Lista de Membros Ativos</h2>
+          <table>
+            <thead><tr><th>Código</th><th>Nome</th><th>Telemóvel</th></tr></thead>
+            <tbody id="member-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 2. CHECK-INS -->
+      <section id="view-checkins" class="view-section">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
           <div style="max-width: 480px; margin: 0 auto 15px;">
             <label style="text-align:center; display:block; font-weight:bold;">Aproxime o Cartão / QR Code ou ID:</label>
             <input type="text" id="chk-input" placeholder="Passe o leitor aqui..." onkeydown="onScan(event)" style="font-size:1.15rem; text-align:center; border:2px solid var(--primary); font-weight:bold; padding:10px;">
           </div>
-          <div style="margin-top:20px;">
-            <h3>Registo de Entradas e Saídas</h3>
-            <table>
-              <thead><tr><th>Data</th><th>Horário</th><th>Membro</th><th>Código</th><th>Plano</th><th>Estado</th></tr></thead>
-              <tbody id="today-attendance-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. MEMBROS -->
-      <section id="view-membros" class="view-section">
-        <div class="card">
-          <h2>Membros Ativos</h2>
           <table>
-            <thead><tr><th>Código</th><th>Nome</th><th>Plano</th></tr></thead>
-            <tbody id="member-table-body"></tbody>
+            <thead><tr><th>Data</th><th>Horário</th><th>Membro</th><th>Código</th><th>Estado</th></tr></thead>
+            <tbody id="today-attendance-tbody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- 3. GERIR STAFF -->
-      <section id="view-staff" class="view-section">
-        <div class="card">
-          <h2>Registar Novo Colaborador de Staff</h2>
-          <div class="form-grid">
-            <div><label>Nome Completo</label><input type="text" id="st-name" placeholder="Nome do funcionário"></div>
-            <div><label>Utilizador de Login</label><input type="text" id="st-user" placeholder="utilizador"></div>
-            <div><label>Palavra-passe</label><input type="text" id="st-pass" placeholder="palavra-passe"></div>
-          </div>
-          <button type="button" class="btn" onclick="addStaff()">Adicionar Colaborador</button>
-        </div>
-        <div class="card">
-          <h2>Colaboradores Registados</h2>
-          <table>
-            <thead><tr><th>Nome</th><th>Utilizador</th><th>Ações</th></tr></thead>
-            <tbody id="staff-table-body"></tbody>
-          </table>
-        </div>
-      </section>
+      <!-- RESTANTES SECÇÕES DO DASHBOARD -->
+      <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><p>Gestão de planos e mensalidades do ginásio.</p></div></section>
+      <section id="view-cartaodigital" class="view-section"><div class="card"><h2>Cartão Digital</h2><p>Emissão e visualização de cartões digitais.</p></div></section>
+      <section id="view-pagamentos" class="view-section"><div class="card"><h2>Pagamentos</h2><p>Registo e controlo de pagamentos efetuados.</p></div></section>
+      <section id="view-faturas" class="view-section"><div class="card"><h2>Faturas</h2><p>Emissão de recibos e faturas oficiais.</p></div></section>
+      <section id="view-despesas" class="view-section"><div class="card"><h2>Despesas & Contas</h2><p>Registo de gastos e contas operacionais.</p></div></section>
+      <section id="view-salarios" class="view-section"><div class="card"><h2>Salários</h2><p>Processamento e registo salarial da equipa.</p></div></section>
+      <section id="view-pos" class="view-section"><div class="card"><h2>POS (Ponto de Venda)</h2><p>Interface de venda rápida de produtos.</p></div></section>
+      <section id="view-produtos" class="view-section"><div class="card"><h2>Produtos</h2><p>Catálogo de artigos da loja.</p></div></section>
+      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><p>Gestão de categorias de stock e loja.</p></div></section>
+      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><p>Monitorização e inventário de produtos.</p></div></section>
+      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><p>Registo de transações comerciais.</p></div></section>
+      <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens</h2><p>Comunicação via WhatsApp e SMS com membros.</p></div></section>
+      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Automação de avisos de vencimento.</p></div></section>
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Controlo de avarias e manutenções de equipamentos.</p></div></section>
+      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>Definições gerais do sistema e dados do ginásio.</p></div></section>
+      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Registo e permissões da equipa de staff.</p></div></section>
+      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Controlo de entradas e saídas do staff.</p></div></section>
+      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Resumo analítico das operações do ginásio.</p></div></section>
+      <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise de renovações e fluxo de alunos.</p></div></section>
+      <section id="view-perf" class="view-section"><div class="card"><h2>Performance Financeira</h2><p>Balanço de lucros, receitas e despesas.</p></div></section>
+      <section id="view-export" class="view-section"><div class="card"><h2>Exportar Dados</h2><p>Cópia de segurança e extração de relatórios.</p></div></section>
     </main>
   </div>
 
   <script>
     let members = [
-      { id: 1, name: 'Silvio Cabral', barcode: '1001', plan: 'Musculação Simples', date: '2026-01-01', foto: '' }
-    ];
-    let staffs = JSON.parse(localStorage.getItem('kosmo_safe_st')) || [
-      { id: 1, name: 'Administrador', user: 'admin', pass: 'admin123' }
+      { id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886' }
     ];
     let attendanceLogs = [];
     let totemWindowRef = null;
-    let currentUser = null;
-    let isLogonActive = true; // Controla se o login está visível
+    let isLogonActive = true;
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
       const p = document.getElementById('log-pass').value.trim();
 
-      const found = staffs.find(s => s.user.toLowerCase() === u.toLowerCase() && s.pass === p);
-      if (found) {
-        currentUser = found;
-        isLogonActive = false; // Desativa o bloqueio do login e permite foco no leitor
+      if (u === 'admin' && p === 'admin123') {
+        isLogonActive = false; // Permite foco no leitor após login
         document.getElementById('login-overlay').style.display = 'none';
-        navigate('checkins');
-        renderStaffs();
+        navigate('membros');
+        renderMembers();
       } else {
         alert('Utilizador ou palavra-passe incorretos. Utilize admin / admin123');
       }
@@ -215,46 +252,42 @@
       if (target) target.classList.add('active');
       const navBtn = document.getElementById('nav-' + viewId);
       if (navBtn) navBtn.classList.add('active');
-      
-      if (viewId === 'staff') renderStaffs();
+
+      // Atualiza o título no header
+      const titles = {
+        membros: 'Membros', checkins: 'Check-ins', planos: 'Planos', cartaodigital: 'Cartão Digital',
+        pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
+        pos: 'POS', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
+        mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
+        config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
+        retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar Dados'
+      };
+      if (document.getElementById('page-title')) {
+        document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
+      }
     }
 
-    function addStaff() {
-      const name = document.getElementById('st-name').value.trim();
-      const user = document.getElementById('st-user').value.trim();
-      const pass = document.getElementById('st-pass').value.trim();
-      if (!name || !user || !pass) { alert('Preencha todos os campos.'); return; }
+    function addMember() {
+      const name = document.getElementById('m-name').value.trim();
+      const barcode = document.getElementById('m-barcode').value.trim();
+      const phone = document.getElementById('m-phone').value.trim();
+      if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
       
-      staffs.push({ id: Date.now(), name, user, pass });
-      localStorage.setItem('kosmo_safe_st', JSON.stringify(staffs));
-      renderStaffs();
-      
-      document.getElementById('st-name').value = '';
-      document.getElementById('st-user').value = '';
-      document.getElementById('st-pass').value = '';
-      alert('Colaborador registado com sucesso!');
+      members.push({ id: Date.now(), name, barcode, phone });
+      renderMembers();
+      document.getElementById('m-name').value = '';
+      document.getElementById('m-barcode').value = '';
+      document.getElementById('m-phone').value = '';
+      alert('Membro registado com sucesso!');
     }
 
-    function renderStaffs() {
-      const tbody = document.getElementById('staff-table-body');
+    function renderMembers() {
+      const tbody = document.getElementById('member-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
-      staffs.forEach(s => {
-        tbody.innerHTML += `
-          <tr>
-            <td><strong>${s.name}</strong></td>
-            <td><code>${s.user}</code></td>
-            <td>${s.id !== 1 ? `<button class="btn-sm" style="background:#e03131;" onclick="deleteStaff(${s.id})">Eliminar</button>` : 'Principal'}</td>
-          </tr>
-        `;
+      members.forEach(m => {
+        tbody.innerHTML += `<tr><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.phone || '---'}</td></tr>`;
       });
-    }
-
-    function deleteStaff(id) {
-      if (id === 1) { alert('Não pode remover o administrador principal.'); return; }
-      staffs = staffs.filter(x => x.id !== id);
-      localStorage.setItem('kosmo_safe_st', JSON.stringify(staffs));
-      renderStaffs();
     }
 
     function onScan(e) {
@@ -262,15 +295,15 @@
         const inputEl = document.getElementById('chk-input');
         const code = inputEl.value.trim();
         if (!code) return;
-        const m = members.find(x => x.barcode === code) || { name: 'Membro Exemplo', barcode: code, plan: 'Geral' };
+        const m = members.find(x => x.barcode === code) || { name: 'Membro Exemplo', barcode: code };
         const agora = new Date();
         const horaStr = agora.toLocaleTimeString('pt-PT');
         const dataStr = agora.toLocaleDateString('pt-PT');
 
-        attendanceLogs.unshift({ data: dataStr, time: horaStr, name: m.name, barcode: m.barcode, plan: m.plan, status: 'Ativo' });
+        attendanceLogs.unshift({ data: dataStr, time: horaStr, name: m.name, barcode: m.barcode, status: 'Ativo' });
         renderAttendance();
 
-        const totemData = { name: m.name, plan: m.plan, auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: '', time: Date.now() };
+        const totemData = { name: m.name, plan: 'Mensal', auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: '', time: Date.now() };
         localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
         if (totemWindowRef && !totemWindowRef.closed) {
           totemWindowRef.postMessage(totemData, '*');
@@ -285,7 +318,7 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       attendanceLogs.forEach(a => {
-        tbody.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td>${a.plan}</td><td><span class="badge badge-ok">${a.status}</span></td></tr>`;
+        tbody.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td><span class="badge badge-ok">${a.status}</span></td></tr>`;
       });
     }
 
@@ -373,7 +406,6 @@
     }
 
     window.onload = function() {
-      // SÓ ATIVA O FOCO NO LEITOR DEPOIS DO LOGIN ESTAR FECHADO
       setInterval(() => {
         if (!isLogonActive) {
           const inp = document.getElementById('chk-input');
