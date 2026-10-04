@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -76,8 +76,6 @@
     .metric-card span { font-size: 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; }
     .metric-card h3 { font-size: 1.5rem; margin-top: 5px; color: var(--dark); }
 
-    .alert-card { background: #fff; border-left: 4px solid var(--warning); padding: 12px 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #dee2e6; }
-
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 12px; }
     label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px; color: #495057; }
     input, select, textarea { width: 100%; padding: 8px 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem; background-color: #fff; }
@@ -99,7 +97,7 @@
     .badge-ok { background: var(--success); }
     .badge-err { background: var(--danger); }
 
-    /* CARTÃO DIGITAL IDÊNTICO À FOTO */
+    /* CARTÃO DIGITAL KOSMO (ESTILO IDÊNTICO À FOTO COM FOTO DO MEMBRO) */
     .id-card-wrap {
       width: 480px; background: #111417; color: #fff; border-radius: 12px; padding: 22px 20px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative; overflow: hidden;
@@ -121,7 +119,7 @@
     </div>
   </div>
 
-  <!-- MENU LATERAL COMPLETO -->
+  <!-- MENU LATERAL COMPLETO (GYMMER ENGINE) -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -179,7 +177,7 @@
     </header>
 
     <main>
-      <!-- 1. DASHBOARD GERAL -->
+      <!-- DASHBOARD -->
       <section id="view-dashboard" class="view-section active">
         <div class="metrics-grid">
           <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
@@ -189,7 +187,7 @@
         </div>
       </section>
 
-      <!-- 2. MEMBROS ATIVOS -->
+      <!-- MEMBROS -->
       <section id="view-membros" class="view-section">
         <div class="card">
           <h2>Registar Novo Membro</h2>
@@ -197,7 +195,7 @@
             <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
             <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
             <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Telemóvel"></div>
-            <div><label>Plano</label><select id="m-plan"><option value="MENSAIS TRABALHADOR">MENSAIS TRABALHADOR</option><option value="Musculação Mensal">Musculação Mensal</option></select></div>
+            <div><label>Plano</label><select id="m-plan"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option></select></div>
             <div><label>Fotografia do Membro</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
           </div>
           <input type="hidden" id="m-foto-base64" value="">
@@ -212,7 +210,7 @@
         </div>
       </section>
 
-      <!-- 3. CHECK-INS / TOTEM -->
+      <!-- CHECK-INS -->
       <section id="view-checkins" class="view-section">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
@@ -227,7 +225,7 @@
         </div>
       </section>
 
-      <!-- 4. PLANOS -->
+      <!-- PLANOS -->
       <section id="view-planos" class="view-section">
         <div class="card">
           <h2>Gestão de Planos</h2>
@@ -247,7 +245,7 @@
         </div>
       </section>
 
-      <!-- 5. CARTÃO DIGITAL COM FOTO REAL E CÓDIGO DE BARRAS AMPLIADO -->
+      <!-- CARTÃO DIGITAL -->
       <section id="view-cartaodigital" class="view-section">
         <div class="card" style="text-align:center;">
           <h2>Cartão Digital Oficial de Membro</h2>
@@ -260,7 +258,7 @@
         </div>
       </section>
 
-      <!-- 6. PAGAMENTOS -->
+      <!-- PAGAMENTOS -->
       <section id="view-pagamentos" class="view-section">
         <div class="card">
           <h2>Registo de Pagamentos</h2>
@@ -280,7 +278,7 @@
         </div>
       </section>
 
-      <!-- 7. FATURAS -->
+      <!-- FATURAS -->
       <section id="view-faturas" class="view-section">
         <div class="card">
           <h2>Emissão de Faturas e Recibos (NIF: 283023805)</h2>
@@ -291,7 +289,7 @@
         </div>
       </section>
 
-      <!-- 8. DESPESAS -->
+      <!-- DESPESAS -->
       <section id="view-despesas" class="view-section">
         <div class="card">
           <h2>Controlo de Custos</h2>
@@ -310,7 +308,7 @@
         </div>
       </section>
 
-      <!-- 9. SALÁRIOS -->
+      <!-- SALÁRIOS -->
       <section id="view-salarios" class="view-section">
         <div class="card">
           <h2>Salários</h2>
@@ -329,7 +327,7 @@
         </div>
       </section>
 
-      <!-- 10. POS -->
+      <!-- POS -->
       <section id="view-pos" class="view-section">
         <div class="card">
           <h2>POS (Ponto de Venda)</h2>
@@ -341,7 +339,7 @@
         </div>
       </section>
 
-      <!-- 11. PRODUTOS -->
+      <!-- PRODUTOS -->
       <section id="view-produtos" class="view-section">
         <div class="card">
           <h2>Produtos</h2>
@@ -361,7 +359,7 @@
         </div>
       </section>
 
-      <!-- 12. CATEGORIAS -->
+      <!-- CATEGORIAS -->
       <section id="view-categorias" class="view-section">
         <div class="metrics-grid">
           <div class="metric-card"><span>Total Registadas</span><h3 id="cat-total">0</h3></div>
@@ -387,7 +385,7 @@
         </div>
       </section>
 
-      <!-- 13. STOCK -->
+      <!-- STOCK -->
       <section id="view-stock" class="view-section">
         <div class="card">
           <h2>Stock</h2>
@@ -398,7 +396,7 @@
         </div>
       </section>
 
-      <!-- 14. HISTÓRICO DE VENDAS -->
+      <!-- HISTÓRICO DE VENDAS -->
       <section id="view-vendas" class="view-section">
         <div class="card">
           <h2>Histórico de Vendas</h2>
@@ -409,7 +407,7 @@
         </div>
       </section>
 
-      <!-- 15. ENVIAR MENSAGENS -->
+      <!-- MENSAGENS -->
       <section id="view-mensagens" class="view-section">
         <div class="card">
           <h2>Enviar Mensagens</h2>
@@ -421,14 +419,14 @@
         </div>
       </section>
 
-      <!-- 16 a 20. OPERAÇÕES & STAFF -->
+      <!-- OUTRAS SECÇÕES OPERACIONAIS -->
       <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema ativo.</p></div></section>
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
       <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Admin principal ativo.</p></div></section>
       <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Assiduidade de staff.</p></div></section>
 
-      <!-- 21. RELATÓRIO: VISÃO GERAL -->
+      <!-- RELATÓRIOS -->
       <section id="view-visao" class="view-section">
         <div class="metrics-grid">
           <div class="metric-card"><span>Total de Membros</span><h3 id="rel-total">0</h3></div>
@@ -436,25 +434,8 @@
           <div class="metric-card"><span>Check-ins Hoje</span><h3 id="rel-checkins-hoje">0</h3></div>
           <div class="metric-card"><span>Estimativa MRR</span><h3 id="rel-mrr">0 CVE</h3></div>
         </div>
-        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px;">
-          <div class="card">
-            <h2>Estado dos Membros</h2>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Situação calculada em tempo real</p>
-            <div style="text-align:center; padding:30px;">
-              <h3 id="rel-ativos-txt" style="font-size:2rem; color:var(--success);">0 Ativos</h3>
-              <p id="rel-exp-txt" style="color:var(--danger); margin-top:5px;">0 Expirados</p>
-            </div>
-          </div>
-          <div class="card">
-            <h2>Alertas Dinâmicos</h2>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Baseado no estado atual dos dados</p>
-            <div class="alert-card"><span>Membros Ativos</span><strong id="alert-ativos" style="color:var(--success);">0</strong></div>
-            <div class="alert-card"><span>Membros Expirados</span><strong id="alert-exp" style="color:var(--danger);">0</strong></div>
-          </div>
-        </div>
       </section>
 
-      <!-- 22. RELATÓRIO: RETENÇÃO -->
       <section id="view-retencao" class="view-section">
         <div class="metrics-grid">
           <div class="metric-card"><span>Total Registados</span><h3 id="ret-total">0</h3></div>
@@ -464,7 +445,6 @@
         </div>
       </section>
 
-      <!-- 23. RELATÓRIO: PERFORMANCE FINANCEIRA -->
       <section id="view-perf" class="view-section">
         <div class="metrics-grid">
           <div class="metric-card"><span>Receita Total</span><h3 id="per-rec" style="color:var(--success);">0 CVE</h3></div>
@@ -473,33 +453,27 @@
         </div>
       </section>
 
-      <!-- 24. EXPORTAR / IMPORTAR DADOS -->
       <section id="view-export" class="view-section">
         <div class="card" style="margin-bottom: 20px;">
           <h2>Exportar Cópia de Segurança</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Transfira um ficheiro JSON com todos os dados do ginásio.</p>
-          <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup Completo (.JSON)</button>
+          <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup (.JSON)</button>
         </div>
         <div class="card">
-          <h2>Carregar Backup do Computador</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Selecione um ficheiro de backup (.json) para restaurar os dados.</p>
-          <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
+          <h2>Carregar Backup do Computador (Qualquer Formato)</h2>
+          <input type="file" id="import-file" onchange="importDataAnyFormat(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
         </div>
       </section>
     </main>
   </div>
 
   <script>
-    let members = [{ id: 1, name: 'Cristina Augusta Vicente Spencer', barcode: '45152030', phone: '9988886', plan: 'MENSAIS TRABALHADOR', foto: '' }];
-    let plans = [{ name: 'MENSAIS TRABALHADOR', price: 2500, days: 30 }];
+    let members = [];
+    let plans = [{ name: 'Mensal Trabalhador', price: 2500, days: 30 }];
     let payments = [];
     let expenses = [];
     let salaries = [];
     let products = [{ name: 'Creatina 300g', price: 2500, stock: 12 }];
-    let categories = [
-      { id: 1, name: 'Proteínas Para Ganho de Massa', desc: 'Suplementos Alimentares', produtos: 5 },
-      { id: 2, name: 'Proteínas para Emagrecimento', desc: 'Suplementos Alimentares', produtos: 1 }
-    ];
+    let categories = [{ id: 1, name: 'Proteínas', desc: 'Suplementos', produtos: 5 }];
     let sales = [];
     let attendanceLogs = [];
     let totemWindowRef = null;
@@ -515,7 +489,7 @@
         navigate('dashboard');
         refreshAll();
       } else {
-        alert('Utilizador ou palavra-passe incorretos. Utilize admin / admin123');
+        alert('Utilizador ou palavra-passe incorretos.');
       }
     }
 
@@ -530,7 +504,7 @@
       const titles = {
         dashboard: 'Dashboard Geral', membros: 'Membros Ativos', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
         pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
-        pos: 'POS', produtos: 'Produtos', categorias: 'Categorias de Produtos', stock: 'Stock', vendas: 'Histórico de Vendas',
+        pos: 'POS', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
         mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
         config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
         retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
@@ -579,10 +553,6 @@
       if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = ativos;
       if (document.getElementById('rel-checkins-hoje')) document.getElementById('rel-checkins-hoje').innerText = attendanceLogs.length;
       if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = totalRec + ' CVE';
-      if (document.getElementById('rel-ativos-txt')) document.getElementById('rel-ativos-txt').innerText = ativos + ' Ativos';
-      if (document.getElementById('rel-exp-txt')) document.getElementById('rel-exp-txt').innerText = expirados + ' Expirados';
-      if (document.getElementById('alert-ativos')) document.getElementById('alert-ativos').innerText = ativos;
-      if (document.getElementById('alert-exp')) document.getElementById('alert-exp').innerText = expirados;
 
       if (document.getElementById('ret-total')) document.getElementById('ret-total').innerText = members.length;
       if (document.getElementById('ret-ativos')) document.getElementById('ret-ativos').innerText = ativos;
@@ -613,7 +583,7 @@
       const plan = document.getElementById('m-plan').value;
       const foto = document.getElementById('m-foto-base64').value;
       if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
-      members.push({ id: Date.now(), name, barcode, phone, plan, foto });
+      members.push({ id: Date.now(), name, barcode, phone, plan, foto, date: new Date().toISOString().split('T')[0] });
       refreshAll();
       document.getElementById('m-name').value = '';
       document.getElementById('m-barcode').value = '';
@@ -628,6 +598,10 @@
       const tbody = document.getElementById('member-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
+      if (members.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#777;">Sem membros registados.</td></tr>`;
+        return;
+      }
       members.forEach(m => {
         const fotoTag = m.foto ? `<img src="${m.foto}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">` : `<div style="width:36px; height:36px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold;">${m.name[0]}</div>`;
         tbody.innerHTML += `<tr><td>${fotoTag}</td><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.plan}</td></tr>`;
@@ -651,12 +625,17 @@
       plans.forEach(p => { tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td><td>${p.days} dias</td></tr>`; });
     }
 
-    // CARTÃO DIGITAL COM FOTO REAL E CÓDIGO DE BARRAS AMPLIADO
     function renderDigitalCard() {
-      const name = document.getElementById('card-member-select').value;
+      const selectEl = document.getElementById('card-member-select');
       const zone = document.getElementById('digital-card-container');
+      if (!selectEl || !zone) return;
+      
+      const name = selectEl.value;
       const m = members.find(x => x.name === name);
-      if (!m) { zone.innerHTML = ''; return; }
+      if (!m) {
+        zone.innerHTML = `<p style="color:#777; padding:20px;">Nenhum membro selecionado ou registado.</p>`;
+        return;
+      }
 
       zone.innerHTML = `
         <div class="id-card-wrap">
@@ -680,7 +659,7 @@
         </div>
       `;
       setTimeout(() => {
-        if (window.JsBarcode) {
+        if (window.JsBarcode && m.barcode) {
           JsBarcode("#card-bc", m.barcode, { format: "CODE128", width: 2.2, height: 65, displayValue: true, fontSize: 18, margin: 2 });
         }
       }, 150);
@@ -821,10 +800,20 @@
     }
 
     function populateSelects() {
-      if (document.getElementById('card-member-select')) { document.getElementById('card-member-select').innerHTML = ''; members.forEach(m => document.getElementById('card-member-select').innerHTML += `<option value="${m.name}">${m.name}</option>`); renderDigitalCard(); }
-      if (document.getElementById('pay-member')) { document.getElementById('pay-member').innerHTML = ''; members.forEach(m => document.getElementById('pay-member').innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (document.getElementById('msg-member')) { document.getElementById('msg-member').innerHTML = ''; members.forEach(m => document.getElementById('msg-member').innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (document.getElementById('pos-prod')) { document.getElementById('pos-prod').innerHTML = ''; products.forEach(p => document.getElementById('pos-prod').innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
+      const pSel = document.getElementById('card-member-select');
+      const paySel = document.getElementById('pay-member');
+      const msgSel = document.getElementById('msg-member');
+      const posSel = document.getElementById('pos-prod');
+
+      if (pSel) {
+        pSel.innerHTML = '';
+        if (members.length === 0) pSel.innerHTML = `<option value="">Sem membros</option>`;
+        members.forEach(m => pSel.innerHTML += `<option value="${m.name}">${m.name}</option>`);
+        renderDigitalCard();
+      }
+      if (paySel) { paySel.innerHTML = ''; members.forEach(m => paySel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (msgSel) { msgSel.innerHTML = ''; members.forEach(m => msgSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
+      if (posSel) { posSel.innerHTML = ''; products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
     }
 
     function onScan(e) {
@@ -832,7 +821,7 @@
         const inputEl = document.getElementById('chk-input');
         const code = inputEl.value.trim();
         if (!code) return;
-        const m = members.find(x => x.barcode === code) || { name: 'Membro Exemplo', barcode: code };
+        const m = members.find(x => x.barcode === code) || { name: 'Membro Desconhecido', barcode: code, plan: 'Geral', foto: '' };
         const agora = new Date();
         attendanceLogs.unshift({ data: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: m.name, barcode: m.barcode, status: 'Ativo' });
         renderAttendance();
@@ -864,13 +853,14 @@
       a.click();
     }
 
-    function importData(event) {
+    function importDataAnyFormat(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
-          const data = JSON.parse(e.target.result);
+          const content = e.target.result;
+          const data = JSON.parse(content);
           if (data.members) members = data.members;
           if (data.plans) plans = data.plans;
           if (data.payments) payments = data.payments;
@@ -881,9 +871,9 @@
           if (data.sales) sales = data.sales;
           if (data.attendanceLogs) attendanceLogs = data.attendanceLogs;
           refreshAll();
-          alert('Backup carregado e restaurado com sucesso!');
+          alert('Dados importados com sucesso!');
         } catch(err) {
-          alert('Erro ao ler o ficheiro de backup. Certifique-se de que é um JSON válido.');
+          alert('Erro ao ler o ficheiro.');
         }
       };
       reader.readAsText(file);
