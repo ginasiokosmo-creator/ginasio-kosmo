@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -97,7 +97,6 @@
     .badge-ok { background: var(--success); }
     .badge-err { background: var(--danger); }
 
-    /* CARTÃO DIGITAL KOSMO (ESTILO IDÊNTICO À FOTO COM FOTO DO MEMBRO) */
     .id-card-wrap {
       width: 480px; background: #111417; color: #fff; border-radius: 12px; padding: 22px 20px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative; overflow: hidden;
@@ -107,7 +106,9 @@
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN SEGURO -->
+  <!-- ========================================== -->
+  <!-- ECRÃ DE LOGIN SEGURO                       -->
+  <!-- ========================================== -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
@@ -119,7 +120,9 @@
     </div>
   </div>
 
-  <!-- MENU LATERAL COMPLETO (GYMMER ENGINE) -->
+  <!-- ========================================== -->
+  <!-- MENU LATERAL DE NAVEGAÇÃO COMPLETO         -->
+  <!-- ========================================== -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -170,6 +173,9 @@
     </div>
   </aside>
 
+  <!-- ========================================== -->
+  <!-- CONTEÚDO PRINCIPAL (TODAS AS SECÇÕES)      -->
+  <!-- ========================================== -->
   <div class="main-wrapper">
     <header>
       <div class="top-title" id="page-title">Dashboard Geral</div>
@@ -419,12 +425,49 @@
         </div>
       </section>
 
-      <!-- OUTRAS SECÇÕES OPERACIONAIS -->
+      <!-- OUTRAS SECÇÕES -->
       <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema ativo.</p></div></section>
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
-      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Admin principal ativo.</p></div></section>
-      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Assiduidade de staff.</p></div></section>
+
+      <!-- COLABORADORES -->
+      <section id="view-colab" class="view-section">
+        <div class="card">
+          <h2>Gerir Colaboradores</h2>
+          <div class="form-grid">
+            <div><label>Nome do Funcionário</label><input type="text" id="colab-name" placeholder="Nome do Staff"></div>
+            <div><label>Cargo / Função</label><input type="text" id="colab-role" placeholder="Ex: Rececionista / PT"></div>
+            <div><label>Telemóvel</label><input type="tel" id="colab-phone" placeholder="Telemóvel"></div>
+          </div>
+          <button type="button" class="btn" onclick="addColab()">Adicionar Colaborador</button>
+        </div>
+        <div class="card">
+          <h2>Equipa Autorizada</h2>
+          <table>
+            <thead><tr><th>Nome</th><th>Cargo</th><th>Telemóvel</th><th>Ações</th></tr></thead>
+            <tbody id="colab-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PICA PONTO -->
+      <section id="view-picaponto" class="view-section">
+        <div class="card">
+          <h2>Registo de Assiduidade (Pica Ponto)</h2>
+          <div class="form-grid">
+            <div><label>Colaborador</label><select id="pica-colab-select"></select></div>
+            <div><label>Estado / Ação</label><select id="pica-type"><option value="Entrada">Entrada</option><option value="Saída">Saída</option></select></div>
+          </div>
+          <button type="button" class="btn btn-green" onclick="regPicaPonto()">Registar Ponto Agora</button>
+        </div>
+        <div class="card">
+          <h2>Histórico de Picagem de Ponto</h2>
+          <table>
+            <thead><tr><th>Data</th><th>Hora</th><th>Colaborador</th><th>Registo</th></tr></thead>
+            <tbody id="pica-table-body"></tbody>
+          </table>
+        </div>
+      </section>
 
       <!-- RELATÓRIOS -->
       <section id="view-visao" class="view-section">
@@ -453,6 +496,7 @@
         </div>
       </section>
 
+      <!-- EXPORTAR / IMPORTAR DADOS -->
       <section id="view-export" class="view-section">
         <div class="card" style="margin-bottom: 20px;">
           <h2>Exportar Cópia de Segurança</h2>
@@ -460,12 +504,16 @@
         </div>
         <div class="card">
           <h2>Carregar Backup do Computador (Qualquer Formato)</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Selecione um ficheiro JSON ou texto para restaurar os dados.</p>
           <input type="file" id="import-file" onchange="importDataAnyFormat(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
         </div>
       </section>
     </main>
   </div>
 
+  <!-- ========================================== -->
+  <!-- SCRIPT DE MOTOR LÓGICO COMPLETO            -->
+  <!-- ========================================== -->
   <script>
     let members = [];
     let plans = [{ name: 'Mensal Trabalhador', price: 2500, days: 30 }];
@@ -476,6 +524,8 @@
     let categories = [{ id: 1, name: 'Proteínas', desc: 'Suplementos', produtos: 5 }];
     let sales = [];
     let attendanceLogs = [];
+    let collaborators = [{ id: 1, name: 'Administrador KOSMO', role: 'Gerente', phone: '9988886' }];
+    let picaPontoLogs = [];
     let totemWindowRef = null;
     let fotoTemp = '';
     let isLogonActive = true;
@@ -525,6 +575,8 @@
       renderSalaries();
       renderSales();
       renderStock();
+      renderColabs();
+      renderPicaPonto();
       populateSelects();
       updateDynamicMetrics();
     }
@@ -756,7 +808,7 @@
       categories.forEach(c => {
         if (c.produtos > 0) comProd++; else semProd++;
         if (c.produtos > popular.produtos) popular = c;
-        tbody.innerHTML += `<tr><td>🏷️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
+        tbody.innerHTML += `<tr><td>🏷️️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
       });
       if (document.getElementById('cat-total')) document.getElementById('cat-total').innerText = categories.length;
       if (document.getElementById('cat-com')) document.getElementById('cat-com').innerText = comProd;
@@ -799,11 +851,62 @@
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
+    function addColab() {
+      const name = document.getElementById('colab-name').value.trim();
+      const role = document.getElementById('colab-role').value.trim();
+      const phone = document.getElementById('colab-phone').value.trim();
+      if (!name) { alert('Insira o nome do colaborador.'); return; }
+      collaborators.push({ id: Date.now(), name, role, phone });
+      refreshAll();
+      document.getElementById('colab-name').value = '';
+      document.getElementById('colab-role').value = '';
+      document.getElementById('colab-phone').value = '';
+      alert('Colaborador registado com sucesso!');
+    }
+
+    function renderColabs() {
+      const tbody = document.getElementById('colab-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (collaborators.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#777;">Sem colaboradores registados.</td></tr>`;
+        return;
+      }
+      collaborators.forEach(c => {
+        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role || 'Staff'}</td><td>${c.phone || '---'}</td><td><button class="btn-action" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">🗑️️</button></td></tr>`;
+      });
+    }
+
+    function regPicaPonto() {
+      const colabName = document.getElementById('pica-colab-select').value;
+      const picaType = document.getElementById('pica-type').value;
+      if (!colabName) { alert('Selecione um colaborador.'); return; }
+      const agora = new Date();
+      picaPontoLogs.unshift({ date: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: colabName, type: picaType });
+      renderPicaPonto();
+      alert(`Ponto registado: ${colabName} (${picaType})`);
+    }
+
+    function renderPicaPonto() {
+      const tbody = document.getElementById('pica-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (picaPontoLogs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#777;">Nenhum registo de ponto hoje.</td></tr>`;
+        return;
+      }
+      picaPontoLogs.forEach(l => {
+        const badgeCol = l.type === 'Entrada' ? 'badge-ok' : 'badge-err';
+        tbody.innerHTML += `<tr><td>${l.date}</td><td>${l.time}</td><td><strong>${l.name}</strong></td><td><span class="badge ${badgeCol}">${l.type}</span></td></tr>`;
+      });
+    }
+
     function populateSelects() {
       const pSel = document.getElementById('card-member-select');
       const paySel = document.getElementById('pay-member');
       const msgSel = document.getElementById('msg-member');
       const posSel = document.getElementById('pos-prod');
+      const picaSel = document.getElementById('pica-colab-select');
 
       if (pSel) {
         pSel.innerHTML = '';
@@ -814,6 +917,11 @@
       if (paySel) { paySel.innerHTML = ''; members.forEach(m => paySel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
       if (msgSel) { msgSel.innerHTML = ''; members.forEach(m => msgSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
       if (posSel) { posSel.innerHTML = ''; products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
+      if (picaSel) {
+        picaSel.innerHTML = '';
+        if (collaborators.length === 0) picaSel.innerHTML = `<option value="">Sem colaboradores</option>`;
+        collaborators.forEach(c => picaSel.innerHTML += `<option value="${c.name}">${c.name} (${c.role || 'Staff'})</option>`);
+      }
     }
 
     function onScan(e) {
@@ -845,7 +953,7 @@
     }
 
     function exportData() {
-      const data = { members, plans, payments, expenses, salaries, products, categories, sales, attendanceLogs };
+      const data = { members, plans, payments, expenses, salaries, products, categories, sales, attendanceLogs, collaborators, picaPontoLogs };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -870,10 +978,12 @@
           if (data.categories) categories = data.categories;
           if (data.sales) sales = data.sales;
           if (data.attendanceLogs) attendanceLogs = data.attendanceLogs;
+          if (data.collaborators) collaborators = data.collaborators;
+          if (data.picaPontoLogs) picaPontoLogs = data.picaPontoLogs;
           refreshAll();
-          alert('Dados importados com sucesso!');
+          alert('Backup importado com sucesso!');
         } catch(err) {
-          alert('Erro ao ler o ficheiro.');
+          alert('Erro ao processar ficheiro de backup.');
         }
       };
       reader.readAsText(file);
