@@ -125,7 +125,7 @@
   <div class="main-wrapper">
     <header>
       <div class="top-title" id="page-title">Check-in de Membros</div>
-      <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥️️ Abrir Ecrã Totem Gigante</button>
+      <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Abrir Ecrã Totem Gigante</button>
     </header>
 
     <main>
@@ -190,6 +190,7 @@
     let attendanceLogs = [];
     let totemWindowRef = null;
     let currentUser = null;
+    let isLogonActive = true; // Controla se o login está visível
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
@@ -198,6 +199,7 @@
       const found = staffs.find(s => s.user.toLowerCase() === u.toLowerCase() && s.pass === p);
       if (found) {
         currentUser = found;
+        isLogonActive = false; // Desativa o bloqueio do login e permite foco no leitor
         document.getElementById('login-overlay').style.display = 'none';
         navigate('checkins');
         renderStaffs();
@@ -371,9 +373,15 @@
     }
 
     window.onload = function() {
+      // SÓ ATIVA O FOCO NO LEITOR DEPOIS DO LOGIN ESTAR FECHADO
       setInterval(() => {
-        const inp = document.getElementById('chk-input');
-        if (inp && document.activeElement !== inp) inp.focus();
+        if (!isLogonActive) {
+          const inp = document.getElementById('chk-input');
+          const isCheckinActive = document.getElementById('view-checkins').classList.contains('active');
+          if (inp && isCheckinActive && document.activeElement !== inp) {
+            inp.focus();
+          }
+        }
       }, 500);
     };
   </script>
