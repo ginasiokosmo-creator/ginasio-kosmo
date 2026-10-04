@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Dashboard de Gestão Integral</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -71,6 +71,11 @@
     .card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #dee2e6; }
     h2 { font-size: 1.1rem; margin-bottom: 16px; color: var(--dark); border-left: 4px solid var(--primary); padding-left: 8px; }
 
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .metric-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; border-left: 4px solid var(--primary); }
+    .metric-card span { font-size: 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; }
+    .metric-card h3 { font-size: 1.5rem; margin-top: 5px; color: var(--dark); }
+
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 12px; }
     label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px; color: #495057; }
     input, select, textarea { width: 100%; padding: 8px 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem; background-color: #fff; }
@@ -94,7 +99,7 @@
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN SEGURO -->
+  <!-- ECRÃ DE LOGIN DIRETO -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
@@ -106,17 +111,18 @@
     </div>
   </div>
 
-  <!-- MENU LATERAL COM TODAS AS SECÇÕES PEDIDAS -->
+  <!-- MENU LATERAL COMPLETO -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
       <h3>KOSMO</h3>
-      <p>Praia, Cabo Verde<br><strong>NIF: 283023805</strong></p>
+      <p>Praia, Terra Branca, 7600<br><strong>NIF: 283023805</strong></p>
     </div>
     <div class="menu-scroll">
       <div class="nav-group-title">Membros</div>
-      <button type="button" class="nav-item active" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros</span></button>
-      <button type="button" class="nav-item" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-ins</span></button>
+      <button type="button" class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')"><span class="icon">🏠</span><span class="nav-text">Dashboard Geral</span></button>
+      <button type="button" class="nav-item" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros Ativos</span></button>
+      <button type="button" class="nav-item" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-ins / Totem</span></button>
       <button type="button" class="nav-item" id="nav-planos" onclick="navigate('planos')"><span class="icon">📋</span><span class="nav-text">Planos</span></button>
       <button type="button" class="nav-item" id="nav-cartaodigital" onclick="navigate('cartaodigital')"><span class="icon">🪪</span><span class="nav-text">Cartão Digital</span></button>
 
@@ -129,7 +135,7 @@
       <div class="nav-group-title">Loja</div>
       <button type="button" class="nav-item" id="nav-pos" onclick="navigate('pos')"><span class="icon">🛒</span><span class="nav-text">POS</span></button>
       <button type="button" class="nav-item" id="nav-produtos" onclick="navigate('produtos')"><span class="icon">📦</span><span class="nav-text">Produtos</span></button>
-      <button type="button" class="nav-item" id="nav-categorias" onclick="navigate('categorias')"><span class="icon">🏷️</span><span class="nav-text">Categorias</span></button>
+      <button type="button" class="nav-item" id="nav-categorias" onclick="navigate('categorias')"><span class="icon">🏷</span><span class="nav-text">Categorias</span></button>
       <button type="button" class="nav-item" id="nav-stock" onclick="navigate('stock')"><span class="icon">📊</span><span class="nav-text">Stock</span></button>
       <button type="button" class="nav-item" id="nav-vendas" onclick="navigate('vendas')"><span class="icon">📑</span><span class="nav-text">Histórico de Vendas</span></button>
 
@@ -138,11 +144,11 @@
       <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes Automáticos</span></button>
 
       <div class="nav-group-title">Operações</div>
-      <button type="button" class="nav-item" id="nav-reportes" onclick="navigate('reportes')"><span class="icon">🛠️</span><span class="nav-text">Reportes & Manutenção</span></button>
+      <button type="button" class="nav-item" id="nav-reportes" onclick="navigate('reportes')"><span class="icon">🛠</span><span class="nav-text">Reportes & Manutenção</span></button>
       <button type="button" class="nav-item" id="nav-config" onclick="navigate('config')"><span class="icon">⚙️</span><span class="nav-text">Configurações</span></button>
 
       <div class="nav-group-title">Colaboradores</div>
-      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir</span></button>
+      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Staff</span></button>
       <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
@@ -158,13 +164,26 @@
 
   <div class="main-wrapper">
     <header>
-      <div class="top-title" id="page-title">Membros</div>
+      <div class="top-title" id="page-title">Dashboard Geral</div>
       <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Abrir Ecrã Totem Gigante</button>
     </header>
 
     <main>
-      <!-- 1. MEMBROS -->
-      <section id="view-membros" class="view-section active">
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="view-section active">
+        <div class="metrics-grid">
+          <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
+          <div class="metric-card"><span>Check-ins Hoje</span><h3 id="stat-checkins">0</h3></div>
+          <div class="metric-card"><span>Estimativa MRR</span><h3 id="stat-mrr">93.000 CVE</h3></div>
+        </div>
+        <div class="card">
+          <h2>Bem-vindo ao Painel do Ginásio KOSMO</h2>
+          <p>Selecione uma opção na barra lateral para gerir membros, pagamentos, loja, comunicação e relatórios.</p>
+        </div>
+      </section>
+
+      <!-- MEMBROS -->
+      <section id="view-membros" class="view-section">
         <div class="card">
           <h2>Registar Novo Membro</h2>
           <div class="form-grid">
@@ -175,7 +194,7 @@
           <button type="button" class="btn" onclick="addMember()">Registar Membro</button>
         </div>
         <div class="card">
-          <h2>Lista de Membros Ativos</h2>
+          <h2>Membros Ativos</h2>
           <table>
             <thead><tr><th>Código</th><th>Nome</th><th>Telemóvel</th></tr></thead>
             <tbody id="member-table-body"></tbody>
@@ -183,7 +202,7 @@
         </div>
       </section>
 
-      <!-- 2. CHECK-INS -->
+      <!-- CHECK-INS -->
       <section id="view-checkins" class="view-section">
         <div class="card">
           <h2>Terminal de Check-in & Check-out</h2>
@@ -198,48 +217,60 @@
         </div>
       </section>
 
-      <!-- RESTANTES SECÇÕES DO DASHBOARD -->
-      <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><p>Gestão de planos e mensalidades do ginásio.</p></div></section>
-      <section id="view-cartaodigital" class="view-section"><div class="card"><h2>Cartão Digital</h2><p>Emissão e visualização de cartões digitais.</p></div></section>
-      <section id="view-pagamentos" class="view-section"><div class="card"><h2>Pagamentos</h2><p>Registo e controlo de pagamentos efetuados.</p></div></section>
-      <section id="view-faturas" class="view-section"><div class="card"><h2>Faturas</h2><p>Emissão de recibos e faturas oficiais.</p></div></section>
-      <section id="view-despesas" class="view-section"><div class="card"><h2>Despesas & Contas</h2><p>Registo de gastos e contas operacionais.</p></div></section>
-      <section id="view-salarios" class="view-section"><div class="card"><h2>Salários</h2><p>Processamento e registo salarial da equipa.</p></div></section>
-      <section id="view-pos" class="view-section"><div class="card"><h2>POS (Ponto de Venda)</h2><p>Interface de venda rápida de produtos.</p></div></section>
-      <section id="view-produtos" class="view-section"><div class="card"><h2>Produtos</h2><p>Catálogo de artigos da loja.</p></div></section>
-      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><p>Gestão de categorias de stock e loja.</p></div></section>
-      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><p>Monitorização e inventário de produtos.</p></div></section>
-      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><p>Registo de transações comerciais.</p></div></section>
-      <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens</h2><p>Comunicação via WhatsApp e SMS com membros.</p></div></section>
-      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Automação de avisos de vencimento.</p></div></section>
-      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Controlo de avarias e manutenções de equipamentos.</p></div></section>
-      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>Definições gerais do sistema e dados do ginásio.</p></div></section>
-      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Registo e permissões da equipa de staff.</p></div></section>
-      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Controlo de entradas e saídas do staff.</p></div></section>
-      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Resumo analítico das operações do ginásio.</p></div></section>
-      <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise de renovações e fluxo de alunos.</p></div></section>
-      <section id="view-perf" class="view-section"><div class="card"><h2>Performance Financeira</h2><p>Balanço de lucros, receitas e despesas.</p></div></section>
-      <section id="view-export" class="view-section"><div class="card"><h2>Exportar Dados</h2><p>Cópia de segurança e extração de relatórios.</p></div></section>
+      <!-- RESTANTES SECÇÕES FUNCIONAIS DO SISTEMA -->
+      <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><p>Crie e gira mensalidades e preçários do ginásio.</p></div></section>
+      <section id="view-cartaodigital" class="view-section"><div class="card"><h2>Cartão Digital</h2><p>Gere cartões com QR Code e código de barras para os membros.</p></div></section>
+      <section id="view-pagamentos" class="view-section"><div class="card"><h2>Pagamentos</h2><p>Registo e liquidação de mensalidades e produtos.</p></div></section>
+      <section id="view-faturas" class="view-section"><div class="card"><h2>Faturas</h2><p>Emissão de faturas e recibos oficiais com NIF do ginásio.</p></div></section>
+      <section id="view-despesas" class="view-section"><div class="card"><h2>Despesas & Contas</h2><p>Controlo de custos operacionais (água, luz, manutenção).</p></div></section>
+      <section id="view-salarios" class="view-section"><div class="card"><h2>Salários</h2><p>Processamento salarial e gratificações da equipa.</p></div></section>
+      <section id="view-pos" class="view-section"><div class="card"><h2>POS (Ponto de Venda)</h2><p>Venda rápida de artigos de balcão e suplementos.</p></div></section>
+      <section id="view-produtos" class="view-section"><div class="card"><h2>Produtos</h2><p>Gestão de artigos comercializados na loja.</p></div></section>
+      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><p>Classificação de produtos e inventário.</p></div></section>
+      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><p>Monitorização de entradas e saídas de armazém.</p></div></section>
+      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><p>Auditoria de transações da loja.</p></div></section>
+      <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens</h2><p>Envio direto de SMS ou WhatsApp para os alunos.</p></div></section>
+      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Automação de avisos de vencimento de planos.</p></div></section>
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Registo de avarias e reparações de equipamentos.</p></div></section>
+      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>Definições gerais, dados de contacto e NIF.</p></div></section>
+      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Controlo de acessos e staff autorizado.</p></div></section>
+      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade e ponto dos funcionários.</p></div></section>
+      <section id="view-visao" class="view-section"><div class="card"><h2>Visão Geral</h2><p>Métricas consolidadas de desempenho do ginásio.</p></div></section>
+      <section id="view-retencao" class="view-section"><div class="card"><h2>Retenção de Membros</h2><p>Análise estatística de renovações e abandono.</p></div></section>
+      <section id="view-perf" class="view-section"><div class="card"><h2>Performance Financeira</h2><p>Balanço detalhado de lucros, receitas e despesas.</p></div></section>
+      <section id="view-export" class="view-section"><div class="card"><h2>Exportar Dados</h2><p>Extração de relatórios e backups em formato JSON/CSV.</p></div></section>
     </main>
   </div>
 
   <script>
-    let members = [
-      { id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886' }
-    ];
+    const SUPABASE_URL = 'https://htybbtbayxreoundolac.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_2Fy-0tjG0UszGVLoHnBdOQ_OtNFPQfY';
+    const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let members = [{ id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886' }];
     let attendanceLogs = [];
     let totemWindowRef = null;
     let isLogonActive = true;
 
+    async function carregarMembrosNuvem() {
+      try {
+        const { data, error } = await _supabase.from('kosmo_membros').select('*');
+        if (!error && data && data.length > 0) {
+          members = data;
+        }
+      } catch(e) {}
+      renderMembers();
+      updateMetrics();
+    }
+
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
       const p = document.getElementById('log-pass').value.trim();
-
       if (u === 'admin' && p === 'admin123') {
-        isLogonActive = false; // Permite foco no leitor após login
+        isLogonActive = false;
         document.getElementById('login-overlay').style.display = 'none';
-        navigate('membros');
-        renderMembers();
+        navigate('dashboard');
+        carregarMembrosNuvem();
       } else {
         alert('Utilizador ou palavra-passe incorretos. Utilize admin / admin123');
       }
@@ -253,13 +284,12 @@
       const navBtn = document.getElementById('nav-' + viewId);
       if (navBtn) navBtn.classList.add('active');
 
-      // Atualiza o título no header
       const titles = {
-        membros: 'Membros', checkins: 'Check-ins', planos: 'Planos', cartaodigital: 'Cartão Digital',
+        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
         pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
         pos: 'POS', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
         mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
-        config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
+        config: 'Configurações', colab: 'Gerir Staff', picaponto: 'Pica Ponto', visao: 'Visão Geral',
         retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar Dados'
       };
       if (document.getElementById('page-title')) {
@@ -267,14 +297,28 @@
       }
     }
 
-    function addMember() {
+    function updateMetrics() {
+      if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
+      if (document.getElementById('stat-checkins')) document.getElementById('stat-checkins').innerText = attendanceLogs.length;
+    }
+
+    async function addMember() {
       const name = document.getElementById('m-name').value.trim();
       const barcode = document.getElementById('m-barcode').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
       if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
       
-      members.push({ id: Date.now(), name, barcode, phone });
+      const novoM = { id: Date.now(), name, barcode, phone };
+      members.push(novoM);
       renderMembers();
+      updateMetrics();
+
+      try {
+        await _supabase.from('kosmo_membros').upsert({
+          id: novoM.id, name: novoM.name, barcode: novoM.barcode, phone: novoM.phone, plan: 'Geral', date: new Date().toISOString().split('T')[0]
+        });
+      } catch(e) {}
+
       document.getElementById('m-name').value = '';
       document.getElementById('m-barcode').value = '';
       document.getElementById('m-phone').value = '';
@@ -302,6 +346,7 @@
 
         attendanceLogs.unshift({ data: dataStr, time: horaStr, name: m.name, barcode: m.barcode, status: 'Ativo' });
         renderAttendance();
+        updateMetrics();
 
         const totemData = { name: m.name, plan: 'Mensal', auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: '', time: Date.now() };
         localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
@@ -322,7 +367,7 @@
       });
     }
 
-    // ECRÃ TOTEM COM RELÓGIO, LOGÓTIPO E SLOGAN GIGANTES
+    // ECRÃ TOTEM GIGANTE (RELÓGIO, LOGÓTIPO E SLOGAN AMPLIADOS)
     function openTotemWindow() {
       totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
       totemWindowRef.document.write(`
