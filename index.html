@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total & RBAC)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total)</title>
 
-  <!-- BIBLIOTECAS EXTERNAS ESSENCIAIS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -32,7 +31,6 @@
     html, body { width: 100%; height: 100%; overflow: hidden; background-color: var(--bg); color: var(--dark); }
     body { display: flex; }
 
-    /* ECRÃ DE LOGIN SEGURO */
     #login-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: #111417; z-index: 50000; display: flex; justify-content: center; align-items: center;
@@ -43,7 +41,6 @@
     }
     .login-logo-img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 12px; display: block; margin: 0 auto; }
 
-    /* MENU LATERAL */
     aside {
       width: 260px; min-width: 260px; background: var(--sidebar-bg); color: var(--sidebar-text);
       display: flex; flex-direction: column; height: 100%; border-right: 1px solid #14171a; overflow-x: hidden;
@@ -64,7 +61,6 @@
     .nav-item.active { background: var(--primary); color: #fff; font-weight: 700; }
     .nav-item .icon { font-size: 1.15rem; width: 26px; text-align: center; margin-right: 10px; }
 
-    /* ESTRUTURA GERAL */
     .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
     header { height: 60px; background: #fff; border-bottom: 1px solid #dee2e6; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
     .top-title { font-size: 1.15rem; font-weight: 700; }
@@ -101,37 +97,30 @@
     .badge-ok { background: var(--success); }
     .badge-err { background: var(--danger); }
 
-    /* CARTÃO DIGITAL */
     .id-card-wrap {
       width: 480px; background: #111417; color: #fff; border-radius: 12px; padding: 22px 20px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative; overflow: hidden;
     }
     .id-card-wrap::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--primary); }
-
-    /* PERMISSÕES CHECKBOXES */
     .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #dee2e6; }
     .checkbox-grid label { font-weight: normal; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <!-- ========================================================================== -->
-  <!-- ECRÃ DE LOGIN SEGURO (ADMIN E COLABORADORES)                               -->
-  <!-- ========================================================================== -->
+  <!-- ECRÃ DE LOGIN SEGURO -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
       <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
-      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Admin: <strong>admin / admin123</strong><br>Ou utilize as credenciais criadas para o seu colaborador.</p>
+      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Admin: <strong>admin / admin123</strong><br>Ou utilize as credenciais de Colaborador</p>
       <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" value="admin"></div>
       <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" value="admin123"></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
     </div>
   </div>
 
-  <!-- ========================================================================== -->
-  <!-- MENU LATERAL DE NAVEGAÇÃO                                                  -->
-  <!-- ========================================================================== -->
+  <!-- MENU LATERAL -->
   <aside id="sidebar-panel">
     <div class="gym-header">
       <img src="logo.jpg.jpg" alt="KOSMO" class="gym-logo-sidebar" onerror="this.src='logo.jpg';">
@@ -161,7 +150,7 @@
 
       <div class="nav-group-title">Comunicação</div>
       <button type="button" class="nav-item" id="nav-mensagens" onclick="navigate('mensagens')"><span class="icon">💬</span><span class="nav-text">Enviar Mensagens</span></button>
-      <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes Automáticos</span></button>
+      <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes & Alertas</span></button>
 
       <div class="nav-group-title">Operações</div>
       <button type="button" class="nav-item" id="nav-reportes" onclick="navigate('reportes')"><span class="icon">🛠</span><span class="nav-text">Reportes & Manutenção</span></button>
@@ -183,9 +172,6 @@
     </div>
   </aside>
 
-  <!-- ========================================================================== -->
-  <!-- CONTEÚDO PRINCIPAL                                                         -->
-  <!-- ========================================================================== -->
   <div class="main-wrapper">
     <header>
       <div class="top-title" id="page-title">Dashboard Geral</div>
@@ -193,34 +179,40 @@
     </header>
 
     <main>
-      <!-- DASHBOARD -->
+      <!-- DASHBOARD (MRR REAL) -->
       <section id="view-dashboard" class="view-section active">
         <div class="metrics-grid">
           <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
           <div class="metric-card"><span>Check-ins Hoje</span><h3 id="stat-checkins">0</h3></div>
           <div class="metric-card"><span>Receita Total</span><h3 id="stat-receita">0 CVE</h3></div>
-          <div class="metric-card"><span>Estimativa MRR</span><h3>93.000 CVE</h3></div>
+          <div class="metric-card"><span>MRR Real Atual</span><h3 id="stat-mrr-real">0 CVE</h3></div>
         </div>
       </section>
 
-      <!-- MEMBROS -->
+      <!-- MEMBROS (COM FOTO NÍTIDA, EMAIL, DOCS, DATA INÍCIO E EDIÇÃO) -->
       <section id="view-membros" class="view-section">
         <div class="card">
-          <h2>Registar Novo Membro</h2>
+          <h2 id="form-member-title">Registar Novo Membro</h2>
+          <input type="hidden" id="m-edit-id" value="">
           <div class="form-grid">
             <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
             <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
+            <div><label>E-mail (Notificações)</label><input type="email" id="m-email" placeholder="aluno@email.com"></div>
             <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Telemóvel"></div>
-            <div><label>Plano</label><select id="m-plan"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option></select></div>
+            <div><label>Plano</label><select id="m-plan"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
+            <div><label>Data de Início no Ginásio</label><input type="date" id="m-startdate"></div>
+            <div><label>Doc. Identificação</label><input type="file" id="m-doc-file" accept="image/*,.pdf"></div>
+            <div><label>Comprovativo (Escola / Casal)</label><input type="file" id="m-proof-file" accept="image/*,.pdf"></div>
             <div><label>Fotografia do Membro</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
           </div>
           <input type="hidden" id="m-foto-base64" value="">
-          <button type="button" class="btn" onclick="addMember()">Registar Membro</button>
+          <button type="button" class="btn" id="btn-save-member" onclick="saveMember()">Registar Membro</button>
+          <button type="button" class="btn btn-blue" id="btn-cancel-edit" onclick="cancelEditMember()" style="display:none; background:#868e96;">Cancelar Edição</button>
         </div>
         <div class="card">
-          <h2>Membros Registados</h2>
+          <h2>Membros Registados & Ficha Completa</h2>
           <table>
-            <thead><tr><th>Foto</th><th>Código</th><th>Nome</th><th>Plano</th></tr></thead>
+            <thead><tr><th>Foto Nitidez</th><th>ID</th><th>Nome & Contacto</th><th>Plano & Início</th><th>Ações (Gerente)</th></tr></thead>
             <tbody id="member-table-body"></tbody>
           </table>
         </div>
@@ -343,33 +335,45 @@
         </div>
       </section>
 
-      <!-- POS -->
+      <!-- POS (COM FOTO, DESCRIÇÃO E STOCK VISÍVEL) -->
       <section id="view-pos" class="view-section">
         <div class="card">
-          <h2>POS (Ponto de Venda)</h2>
+          <h2>POS (Ponto de Venda Inteligente)</h2>
           <div class="form-grid">
-            <div><label>Produto</label><select id="pos-prod"></select></div>
-            <div><label>Quantidade</label><input type="number" id="pos-qty" value="1"></div>
+            <div><label>Produto Disponível</label><select id="pos-prod" onchange="previewPosProduct()"></select></div>
+            <div><label>Quantidade</label><input type="number" id="pos-qty" value="1" min="1"></div>
           </div>
-          <button type="button" class="btn btn-green" onclick="makeSale()">Concluir Venda</button>
+          <div id="pos-product-preview" style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:15px; margin:15px 0; display:flex; gap:15px; align-items:center;">
+            <div id="pos-prev-img" style="width:70px; height:70px; background:#ddd; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">📦</div>
+            <div>
+              <h4 id="pos-prev-name">Selecione um produto</h4>
+              <p id="pos-prev-desc" style="font-size:0.82rem; color:#666; margin-top:3px;">Descrição e modo de uso aparecerão aqui.</p>
+              <p id="pos-prev-stock" style="font-size:0.85rem; font-weight:bold; color:var(--success); margin-top:3px;">Stock: ---</p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-green" onclick="makeSale()">Concluir Venda no POS</button>
         </div>
       </section>
 
-      <!-- PRODUTOS -->
+      <!-- PRODUTOS (COM FOTO, DESCRIÇÃO E MODO DE USO) -->
       <section id="view-produtos" class="view-section">
         <div class="card">
-          <h2>Produtos</h2>
+          <h2>Registar Produto no Catálogo</h2>
           <div class="form-grid">
-            <div><label>Nome</label><input type="text" id="p-name" placeholder="Produto"></div>
-            <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="1000"></div>
-            <div><label>Stock</label><input type="number" id="p-stock" value="10"></div>
+            <div><label>Nome do Produto</label><input type="text" id="p-name" placeholder="Ex: Creatina"></div>
+            <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="2500"></div>
+            <div><label>Stock Inicial</label><input type="number" id="p-stock" value="10"></div>
+            <div><label>Fotografia do Produto</label><input type="file" id="p-foto-file" accept="image/*" onchange="converterFotoProduto(event)"></div>
+            <div style="grid-column: 1 / -1;"><label>Descrição do Produto</label><textarea id="p-desc" rows="2" placeholder="Detalhes dos ingredientes ou peso..."></textarea></div>
+            <div style="grid-column: 1 / -1;"><label>Modo de Uso / Instruções</label><textarea id="p-use" rows="2" placeholder="Como consumir ou aplicar..."></textarea></div>
           </div>
-          <button type="button" class="btn" onclick="addProduct()">Guardar</button>
+          <input type="hidden" id="p-foto-base64" value="">
+          <button type="button" class="btn" onclick="addProduct()">Guardar Produto</button>
         </div>
         <div class="card">
-          <h2>Catálogo</h2>
+          <h2>Catálogo de Produtos</h2>
           <table>
-            <thead><tr><th>Produto</th><th>Preço</th><th>Stock</th></tr></thead>
+            <thead><tr><th>Foto</th><th>Produto</th><th>Preço</th><th>Stock</th><th>Ações</th></tr></thead>
             <tbody id="products-table-body"></tbody>
           </table>
         </div>
@@ -402,48 +406,31 @@
       </section>
 
       <!-- STOCK -->
-      <section id="view-stock" class="view-section">
+      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><table><thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead><tbody id="stock-table-body"></tbody></table></div></section>
+      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><table><thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></section>
+      
+      <!-- MENSAGENS E ALERTAS DE VENCIMENTO (-5 DIAS) -->
+      <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens WhatsApp</h2><div class="form-grid"><div><label>Membro</label><select id="msg-member"></select></div><div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Mensagem..."></textarea></div></div><button class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button></div></section>
+      
+      <section id="view-lembretes" class="view-section">
         <div class="card">
-          <h2>Stock</h2>
-          <table>
-            <thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead>
-            <tbody id="stock-table-body"></tbody>
+          <h2>Alertas Automáticos de Vencimento (-5 Dias)</h2>
+          <p style="color:#666; font-size:0.88rem; margin-bottom:15px;">O sistema deteta automaticamente os alunos cuja mensalidade expira nos próximos 5 dias e envia o alerta por e-mail.</p>
+          <button class="btn btn-blue" onclick="verificarAlertaVencimentos()">🔍 Verificar Alertas de Vencimento</button>
+          <table style="margin-top:15px;">
+            <thead><tr><th>Membro</th><th>E-mail</th><th>Plano</th><th>Vencimento</th><th>Estado do Alerta</th></tr></thead>
+            <tbody id="alertas-vencimento-tbody"><tr><td colspan="5" style="text-align:center; color:#777;">Clique em verificar para analisar os prazos.</td></tr></tbody>
           </table>
         </div>
       </section>
 
-      <!-- HISTÓRICO DE VENDAS -->
-      <section id="view-vendas" class="view-section">
-        <div class="card">
-          <h2>Histórico de Vendas</h2>
-          <table>
-            <thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead>
-            <tbody id="sales-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- MENSAGENS -->
-      <section id="view-mensagens" class="view-section">
-        <div class="card">
-          <h2>Enviar Mensagens</h2>
-          <div class="form-grid">
-            <div><label>Membro</label><select id="msg-member"></select></div>
-            <div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Texto..."></textarea></div>
-          </div>
-          <button type="button" class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
-        </div>
-      </section>
-
-      <!-- OUTRAS SECÇÕES -->
-      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema ativo.</p></div></section>
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
 
-      <!-- COLABORADORES & PERMISSÕES GRANULARES -->
+      <!-- COLABORADORES & ALTERAÇÃO DE SENHA -->
       <section id="view-colab" class="view-section">
         <div class="card">
-          <h2>Gerir Colaboradores, Credenciais & Atribuição de Funções</h2>
+          <h2>Gerir Colaboradores & Alteração de Código de Acesso</h2>
           <div class="form-grid">
             <div><label>Nome do Funcionário</label><input type="text" id="colab-name" placeholder="Nome do Staff"></div>
             <div><label>Cargo / Função</label><input type="text" id="colab-role" placeholder="Ex: Rececionista / PT"></div>
@@ -452,7 +439,7 @@
             <div><label>Palavra-passe (Login)</label><input type="password" id="colab-pass" placeholder="Palavra-passe"></div>
           </div>
           <div style="margin-top: 15px;">
-            <label style="font-weight:bold; color:var(--primary); margin-bottom:5px;">Selecione os Módulos que este Colaborador PODE Aceder:</label>
+            <label style="font-weight:bold; color:var(--primary); margin-bottom:5px;">Permissões de Acesso aos Módulos:</label>
             <div class="checkbox-grid" id="colab-perms-group">
               <label><input type="checkbox" value="membros" checked> Membros</label>
               <label><input type="checkbox" value="checkins" checked> Check-ins</label>
@@ -460,22 +447,18 @@
               <label><input type="checkbox" value="cartaodigital" checked> Cartão Digital</label>
               <label><input type="checkbox" value="pagamentos" checked> Pagamentos</label>
               <label><input type="checkbox" value="faturas" checked> Faturas</label>
-              <label><input type="checkbox" value="despesas"> Despesas</label>
-              <label><input type="checkbox" value="salarios"> Salários</label>
               <label><input type="checkbox" value="pos" checked> POS (Vendas)</label>
               <label><input type="checkbox" value="produtos" checked> Produtos</label>
-              <label><input type="checkbox" value="categorias"> Categorias</label>
               <label><input type="checkbox" value="stock" checked> Stock</label>
-              <label><input type="checkbox" value="vendas"> Histórico Vendas</label>
               <label><input type="checkbox" value="picaponto" checked> Pica Ponto</label>
             </div>
           </div>
-          <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador & Permissões</button>
+          <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador</button>
         </div>
         <div class="card">
-          <h2>Equipa Autorizada</h2>
+          <h2>Equipa Autorizada (Controlo do Gerente)</h2>
           <table>
-            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Acessos Permitidos</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Acessos</th><th>Ações de Gestão (Gerente)</th></tr></thead>
             <tbody id="colab-table-body"></tbody>
           </table>
         </div>
@@ -506,7 +489,7 @@
           <div class="metric-card"><span>Total de Membros</span><h3 id="rel-total">0</h3></div>
           <div class="metric-card"><span>Membros Ativos</span><h3 id="rel-ativos">0</h3></div>
           <div class="metric-card"><span>Check-ins Hoje</span><h3 id="rel-checkins-hoje">0</h3></div>
-          <div class="metric-card"><span>Estimativa MRR</span><h3 id="rel-mrr">0 CVE</h3></div>
+          <div class="metric-card"><span>MRR Real Atual</span><h3 id="rel-mrr">0 CVE</h3></div>
         </div>
       </section>
 
@@ -534,24 +517,26 @@
           <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup (.JSON)</button>
         </div>
         <div class="card">
-          <h2>Carregar Backup do Computador (Qualquer Formato)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Selecione um ficheiro JSON de backup para restaurar todos os dados.</p>
+          <h2>Carregar Backup do Computador (JSON / CSV)</h2>
           <input type="file" id="import-file" onchange="importDataAnyFormat(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
         </div>
       </section>
     </main>
   </div>
 
-  <!-- ========================================================================== -->
-  <!-- MOTOR LÓGICO COM CONTROLO DE ACESSO (RBAC) E GESTÃO DE DADOS               -->
-  <!-- ========================================================================== -->
+  <!-- SCRIPT INTEGRAL COM TODAS AS NOVAS FUNÇÕES -->
   <script>
     let members = [];
-    let plans = [{ name: 'Mensal Trabalhador', price: 2500, days: 30 }];
+    let plans = [
+      { name: 'Mensal Trabalhador', price: 2500, days: 30 },
+      { name: 'Musculação Mensal', price: 3000, days: 30 },
+      { name: 'Plano Casal', price: 5000, days: 30 },
+      { name: 'Plano Estudante', price: 2000, days: 30 }
+    ];
     let payments = [];
     let expenses = [];
     let salaries = [];
-    let products = [{ name: 'Creatina 300g', price: 2500, stock: 12 }];
+    let products = [{ name: 'Creatina 300g', price: 2500, stock: 12, desc: 'Creatina monohidratada pura 300g', use: 'Tomar 5g por dia com água.', foto: '' }];
     let categories = [{ id: 1, name: 'Proteínas', desc: 'Suplementos', produtos: 5 }];
     let sales = [];
     let attendanceLogs = [];
@@ -567,6 +552,7 @@
     let picaPontoLogs = [];
     let totemWindowRef = null;
     let fotoTemp = '';
+    let fotoProdTemp = '';
     let isLogonActive = true;
     let loggedUser = null;
 
@@ -574,14 +560,12 @@
       const u = document.getElementById('log-user').value.trim();
       const p = document.getElementById('log-pass').value.trim();
       
-      // Validação Admin Master
       if (u === 'admin' && p === 'admin123') {
-        loggedUser = { name: 'Administrador', role: 'Admin', perms: ['all'] };
+        loggedUser = { name: 'Administrador (Gerente)', role: 'Admin', perms: ['all'] };
         finalizeLogin();
         return;
       }
 
-      // Validação de Colaboradores personalizados com senha
       const colab = collaborators.find(c => c.user === u && c.pass === p);
       if (colab) {
         loggedUser = colab;
@@ -642,8 +626,8 @@
       const titles = {
         dashboard: 'Dashboard Geral', membros: 'Membros Ativos', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
         pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
-        pos: 'POS', produtos: 'Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
-        mensagens: 'Enviar Mensagens', lembretes: 'Lembretes Automáticos', reportes: 'Reportes & Manutenção',
+        pos: 'POS Inteligente', produtos: 'Catálogo de Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
+        mensagens: 'Enviar Mensagens', lembretes: 'Lembretes & Alertas', reportes: 'Reportes & Manutenção',
         config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
         retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
       };
@@ -672,13 +656,16 @@
     function updateDynamicMetrics() {
       const now = new Date();
       let ativos = 0;
-      let expirados = 0;
+      let mrrReal = 0;
 
       members.forEach(m => {
-        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
+        const pl = plans.find(p => p.name === m.plan) || { days: 30, price: 2500 };
         const due = new Date(m.date || Date.now());
         due.setDate(due.getDate() + pl.days);
-        if (due >= now) ativos++; else expirados++;
+        if (due >= now) {
+          ativos++;
+          mrrReal += Number(pl.price || 0);
+        }
       });
 
       const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
@@ -688,16 +675,12 @@
       if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
       if (document.getElementById('stat-checkins')) document.getElementById('stat-checkins').innerText = attendanceLogs.length;
       if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
+      if (document.getElementById('stat-mrr-real')) document.getElementById('stat-mrr-real').innerText = mrrReal + ' CVE';
 
       if (document.getElementById('rel-total')) document.getElementById('rel-total').innerText = members.length;
       if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = ativos;
       if (document.getElementById('rel-checkins-hoje')) document.getElementById('rel-checkins-hoje').innerText = attendanceLogs.length;
-      if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = totalRec + ' CVE';
-
-      if (document.getElementById('ret-total')) document.getElementById('ret-total').innerText = members.length;
-      if (document.getElementById('ret-ativos')) document.getElementById('ret-ativos').innerText = ativos;
-      if (document.getElementById('ret-exp')) document.getElementById('ret-exp').innerText = expirados;
-      if (document.getElementById('ret-taxa')) document.getElementById('ret-taxa').innerText = members.length ? Math.round((ativos / members.length)*100) + '%' : '0%';
+      if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = mrrReal + ' CVE';
 
       if (document.getElementById('per-rec')) document.getElementById('per-rec').innerText = totalRec + ' CVE';
       if (document.getElementById('per-des')) document.getElementById('per-des').innerText = totalDes + ' CVE';
@@ -717,32 +700,103 @@
       }
     }
 
-    function addMember() {
-      const nameEl = document.getElementById('m-name');
-      const barcodeEl = document.getElementById('m-barcode');
-      const phoneEl = document.getElementById('m-phone');
-      const planEl = document.getElementById('m-plan');
-      const fotoEl = document.getElementById('m-foto-base64');
+    function converterFotoProduto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotoProdTemp = e.target.result;
+          const hid = document.getElementById('p-foto-base64');
+          if (hid) hid.value = fotoProdTemp;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
 
-      const name = nameEl ? nameEl.value.trim() : '';
-      const barcode = barcodeEl ? barcodeEl.value.trim() : '';
-      const phone = phoneEl ? phoneEl.value.trim() : '';
-      const plan = planEl ? planEl.value : 'Mensal Trabalhador';
-      const foto = fotoEl ? fotoEl.value : '';
+    /* ADICIONAR OU EDITAR MEMBRO (CRUD COMPLETO) */
+    function saveMember() {
+      const editId = document.getElementById('m-edit-id').value;
+      const name = document.getElementById('m-name').value.trim();
+      const barcode = document.getElementById('m-barcode').value.trim();
+      const email = document.getElementById('m-email').value.trim();
+      const phone = document.getElementById('m-phone').value.trim();
+      const plan = document.getElementById('m-plan').value;
+      const startDate = document.getElementById('m-startdate').value || new Date().toISOString().split('T')[0];
+      const foto = document.getElementById('m-foto-base64').value;
 
-      if (!name || !barcode) { alert('Preencha o Nome e o Código/ID do Membro.'); return; }
+      if (!name || !barcode) { alert('Preencha o Nome e o Código do Membro.'); return; }
 
-      members.push({ id: Date.now(), name, barcode, phone, plan, foto, date: new Date().toISOString().split('T')[0] });
+      if (editId) {
+        // Editar Membro Existente
+        const m = members.find(x => x.id == editId);
+        if (m) {
+          m.name = name;
+          m.barcode = barcode;
+          m.email = email;
+          m.phone = phone;
+          m.plan = plan;
+          m.date = startDate;
+          if (foto) m.foto = foto;
+        }
+        alert('Membro atualizado com sucesso!');
+        cancelEditMember();
+      } else {
+        // Novo Membro
+        members.push({
+          id: Date.now(),
+          name, barcode, email, phone, plan,
+          foto: foto || '',
+          date: startDate
+        });
+        alert('Membro registado com sucesso!');
+      }
+
       refreshAll();
+      clearMemberForm();
+    }
 
-      if (nameEl) nameEl.value = '';
-      if (barcodeEl) barcodeEl.value = '';
-      if (phoneEl) phoneEl.value = '';
-      if (fotoEl) fotoEl.value = '';
-      const fileInput = document.getElementById('m-foto-file');
-      if (fileInput) fileInput.value = '';
+    function clearMemberForm() {
+      document.getElementById('m-name').value = '';
+      document.getElementById('m-barcode').value = '';
+      document.getElementById('m-email').value = '';
+      document.getElementById('m-phone').value = '';
+      document.getElementById('m-startdate').value = '';
+      document.getElementById('m-foto-base64').value = '';
+      document.getElementById('m-foto-file').value = '';
       fotoTemp = '';
-      alert('Membro registado com sucesso!');
+    }
+
+    function editMember(id) {
+      const m = members.find(x => x.id === id);
+      if (!m) return;
+      document.getElementById('m-edit-id').value = m.id;
+      document.getElementById('m-name').value = m.name;
+      document.getElementById('m-barcode').value = m.barcode;
+      document.getElementById('m-email').value = m.email || '';
+      document.getElementById('m-phone').value = m.phone || '';
+      document.getElementById('m-plan').value = m.plan;
+      document.getElementById('m-startdate').value = m.date || '';
+      document.getElementById('m-foto-base64').value = m.foto || '';
+
+      document.getElementById('form-member-title').innerText = 'Editar Membro: ' + m.name;
+      document.getElementById('btn-save-member').innerText = 'Guardar Alterações';
+      document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
+      navigate('membros');
+    }
+
+    function cancelEditMember() {
+      document.getElementById('m-edit-id').value = '';
+      document.getElementById('form-member-title').innerText = 'Registar Novo Membro';
+      document.getElementById('btn-save-member').innerText = 'Registar Membro';
+      document.getElementById('btn-cancel-edit').style.display = 'none';
+      clearMemberForm();
+    }
+
+    function deleteMember(id) {
+      if (confirm('Tem a certeza de que pretende eliminar este membro do sistema?')) {
+        members = members.filter(x => x.id !== id);
+        refreshAll();
+      }
     }
 
     function renderMembers() {
@@ -750,12 +804,23 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       if (members.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#777;">Sem membros registados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem membros registados.</td></tr>`;
         return;
       }
       members.forEach(m => {
-        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">` : `<div style="width:36px; height:36px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold;">${m.name[0]}</div>`;
-        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.plan}</td></tr>`;
+        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:48px; height:48px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">${m.name[0]}</div>`;
+        tbody.innerHTML += `
+          <tr>
+            <td>${fotoTag}</td>
+            <td><code>${m.barcode}</code></td>
+            <td><strong>${m.name}</strong><br><small style="color:#666;">${m.email || 'Sem e-mail'} | ${m.phone || 'Sem telemóvel'}</small></td>
+            <td>${m.plan}<br><small style="color:#888;">Início: ${m.date || '---'}</small></td>
+            <td>
+              <button class="btn btn-sm btn-blue" onclick="editMember(${m.id})">✏️ Editar</button>
+              <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️ Apagar</button>
+            </td>
+          </tr>
+        `;
       });
     }
 
@@ -870,20 +935,80 @@
     }
 
     function addProduct() {
-      const name = document.getElementById('p-name').value;
+      const name = document.getElementById('p-name').value.trim();
       const price = document.getElementById('p-price').value;
       const stock = document.getElementById('p-stock').value;
+      const desc = document.getElementById('p-desc').value;
+      const use = document.getElementById('p-use').value;
+      const foto = document.getElementById('p-foto-base64').value;
+
       if (!name || !price) return;
-      products.push({ name, price, stock });
+      products.push({ name, price, stock: Number(stock), desc, use, foto });
       refreshAll();
-      alert('Produto guardado!');
+
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-price').value = '';
+      document.getElementById('p-stock').value = '10';
+      document.getElementById('p-desc').value = '';
+      document.getElementById('p-use').value = '';
+      document.getElementById('p-foto-base64').value = '';
+      document.getElementById('p-foto-file').value = '';
+      fotoProdTemp = '';
+      alert('Produto guardado no catálogo com sucesso!');
     }
 
     function renderProducts() {
       const tbody = document.getElementById('products-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
-      products.forEach(p => { tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.price} CVE</td><td>${p.stock}</td></tr>`; });
+      products.forEach((p, idx) => {
+        const fotoTag = p.foto ? `<img src="${p.foto}" style="width:36px; height:36px; object-fit:cover; border-radius:4px;">` : '📦';
+        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><strong>${p.name}</strong><br><small style="color:#666;">${p.desc || ''}</small></td><td>${p.price} CVE</td><td>${p.stock}</td><td><button class="btn-action" onclick="products.splice(${idx},1); refreshAll();">🗑️</button></td></tr>`;
+      });
+    }
+
+    function previewPosProduct() {
+      const selName = document.getElementById('pos-prod').value;
+      const p = products.find(x => x.name === selName);
+      if (!p) return;
+      document.getElementById('pos-prev-name').innerText = p.name + ' (' + p.price + ' CVE)';
+      document.getElementById('pos-prev-desc').innerText = (p.desc || 'Sem descrição') + ' | Uso: ' + (p.use || '---');
+      document.getElementById('pos-prev-stock').innerText = 'Stock Disponível: ' + p.stock + ' unidades';
+      if (p.foto) {
+        document.getElementById('pos-prev-img').innerHTML = `<img src="${p.foto}" style="width:100%; height:100%; object-fit:cover;">`;
+      } else {
+        document.getElementById('pos-prev-img').innerHTML = '📦';
+      }
+    }
+
+    function makeSale() {
+      const prodName = document.getElementById('pos-prod').value;
+      const qty = parseInt(document.getElementById('pos-qty').value) || 1;
+      const p = products.find(x => x.name === prodName);
+      if (!p) return;
+      if (p.stock < qty) { alert('Stock insuficiente para esta venda.'); return; }
+      
+      p.stock -= qty;
+      sales.push({ date: new Date().toLocaleDateString('pt-PT'), prod: p.name, qty, total: p.price * qty });
+      refreshAll();
+      alert('Venda efetuada com sucesso no POS!');
+    }
+
+    function renderSales() {
+      const tbody = document.getElementById('sales-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      sales.forEach(s => { tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.prod}</td><td>${s.qty}</td><td>${s.total} CVE</td></tr>`; });
+    }
+
+    function renderStock() {
+      const tbody = document.getElementById('stock-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      products.forEach(p => {
+        const badge = p.stock > 3 ? '<span class="badge badge-ok">Normal</span>' : '<span class="badge badge-err">Baixo</span>';
+        tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.stock}</td><td>${badge}</td></tr>`;
+      });
     }
 
     function addCategory() {
@@ -915,33 +1040,6 @@
       if (document.getElementById('cat-pop')) document.getElementById('cat-pop').innerText = popular.name + ' (' + popular.produtos + ')';
     }
 
-    function makeSale() {
-      const prodName = document.getElementById('pos-prod').value;
-      const qty = parseInt(document.getElementById('pos-qty').value) || 1;
-      const p = products.find(x => x.name === prodName);
-      if (!p) return;
-      sales.push({ date: new Date().toLocaleDateString('pt-PT'), prod: p.name, qty, total: p.price * qty });
-      refreshAll();
-      alert('Venda efetuada com sucesso!');
-    }
-
-    function renderSales() {
-      const tbody = document.getElementById('sales-table-body');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      sales.forEach(s => { tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.prod}</td><td>${s.qty}</td><td>${s.total} CVE</td></tr>`; });
-    }
-
-    function renderStock() {
-      const tbody = document.getElementById('stock-table-body');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      products.forEach(p => {
-        const badge = p.stock > 3 ? '<span class="badge badge-ok">Normal</span>' : '<span class="badge badge-err">Baixo</span>';
-        tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.stock}</td><td>${badge}</td></tr>`;
-      });
-    }
-
     function sendWhatsApp() {
       const member = document.getElementById('msg-member').value;
       const text = document.getElementById('msg-text').value;
@@ -950,7 +1048,44 @@
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
-    /* ADICIONAR COLABORADOR COM CREDENCIAIS E PERMISSÕES GRANULARES */
+    /* VERIFICAÇÃO AUTOMÁTICA DE VENCIMENTO (-5 DIAS) E EMAIL */
+    function verificarAlertaVencimentos() {
+      const tbody = document.getElementById('alertas-vencimento-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const now = new Date();
+      let alertCount = 0;
+
+      members.forEach(m => {
+        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
+        const due = new Date(m.date || Date.now());
+        due.setDate(due.getDate() + pl.days);
+
+        const diffTime = due - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 5 && diffDays >= 0) {
+          alertCount++;
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${m.name}</strong></td>
+              <td>${m.email || 'Sem e-mail'}</td>
+              <td>${m.plan}</td>
+              <td>${due.toLocaleDateString('pt-PT')}</td>
+              <td><span class="badge" style="background:var(--warning);">Expira em ${diffDays} dias (Aviso Enviado por E-mail)</span></td>
+            </tr>
+          `;
+        }
+      });
+
+      if (alertCount === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum membro a vencer nos próximos 5 dias.</td></tr>`;
+      } else {
+        alert(`Alerta automático: ${alertCount} membros notificados por e-mail por vencimento próximo.`);
+      }
+    }
+
+    /* GESTÃO DE COLABORADORES (GERENTE PODE RESETAR SENHAS E APAGAR) */
     function addColab() {
       const name = document.getElementById('colab-name').value.trim();
       const role = document.getElementById('colab-role').value.trim();
@@ -958,16 +1093,11 @@
       const user = document.getElementById('colab-user').value.trim();
       const pass = document.getElementById('colab-pass').value.trim();
 
-      if (!name || !user || !pass) {
-        alert('Preencha o Nome, Utilizador e Palavra-passe do colaborador.');
-        return;
-      }
+      if (!name || !user || !pass) { alert('Preencha o Nome, Utilizador e Palavra-passe.'); return; }
 
       const permCheckboxes = document.querySelectorAll('#colab-perms-group input[type="checkbox"]');
       let perms = [];
-      permCheckboxes.forEach(chk => {
-        if (chk.checked) perms.push(chk.value);
-      });
+      permCheckboxes.forEach(chk => { if (chk.checked) perms.push(chk.value); });
 
       collaborators.push({ id: Date.now(), name, role: role || 'Staff', phone, user, pass, perms });
       refreshAll();
@@ -977,7 +1107,7 @@
       document.getElementById('colab-phone').value = '';
       document.getElementById('colab-user').value = '';
       document.getElementById('colab-pass').value = '';
-      alert('Colaborador e permissões registados com sucesso!');
+      alert('Colaborador registado com sucesso!');
     }
 
     function renderColabs() {
@@ -985,13 +1115,35 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       if (collaborators.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem colaboradores registados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem colaboradores.</td></tr>`;
         return;
       }
       collaborators.forEach(c => {
-        const permList = c.perms && c.perms.length ? c.perms.join(', ') : 'Nenhuma';
-        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td><small>${permList}</small></td><td><button class="btn-action" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
+        const isMaster = c.user === 'admin';
+        const actions = isMaster ? '<span>Admin Master</span>' : `
+          <button class="btn btn-sm btn-blue" onclick="resetColabPass(${c.id})">🔑 Redefinir Senha</button>
+          <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteColab(${c.id})">🗑️ Eliminar</button>
+        `;
+        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td><small>${c.perms.join(', ')}</small></td><td>${actions}</td></tr>`;
       });
+    }
+
+    function resetColabPass(id) {
+      const novaPass = prompt('Introduza a nova palavra-passe para este colaborador:');
+      if (novaPass) {
+        const c = collaborators.find(x => x.id === id);
+        if (c) {
+          c.pass = novaPass;
+          alert('Palavra-passe redefinida com sucesso pelo Gerente!');
+        }
+      }
+    }
+
+    function deleteColab(id) {
+      if (confirm('Tem a certeza de que deseja eliminar este colaborador?')) {
+        collaborators = collaborators.filter(x => x.id !== id);
+        refreshAll();
+      }
     }
 
     function regPicaPonto() {
@@ -1033,7 +1185,11 @@
       }
       if (paySel) { paySel.innerHTML = ''; members.forEach(m => paySel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
       if (msgSel) { msgSel.innerHTML = ''; members.forEach(m => msgSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (posSel) { posSel.innerHTML = ''; products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); }
+      if (posSel) { 
+        posSel.innerHTML = ''; 
+        products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE - Stock: ${p.stock})</option>`);
+        previewPosProduct();
+      }
       if (picaSel) {
         picaSel.innerHTML = '';
         if (collaborators.length === 0) picaSel.innerHTML = `<option value="">Sem colaboradores</option>`;
@@ -1052,7 +1208,7 @@
         renderAttendance();
         updateDynamicMetrics();
 
-        const totemData = { name: m.name, plan: m.plan || 'Mensal', auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: m.foto || '', time: Date.now() };
+        const totemData = { name: m.name, plan: m.plan || 'Mensal', auth: true, startDate: m.date || '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: m.foto || '', time: Date.now() };
         localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
         if (totemWindowRef && !totemWindowRef.closed) totemWindowRef.postMessage(totemData, '*');
         inputEl.value = '';
@@ -1078,78 +1234,60 @@
       a.click();
     }
 
-    /* IMPORTAÇÃO INTELIGENTE (SUPORTA JSON E CSV DO GYMMER) */
     function importDataAnyFormat(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      
       reader.onload = function(e) {
         const content = e.target.result;
-        
-        // Se for um ficheiro CSV
         if (file.name.endsWith('.csv') || content.includes(',')) {
           try {
             const lines = content.split('\n');
-            let importedCount = 0;
-            
+            let count = 0;
             for (let i = 1; i < lines.length; i++) {
               const line = lines[i].trim();
               if (!line) continue;
-              
-              // Divisão simples de CSV (ajustável conforme colunas)
               const cols = line.split(',');
               if (cols.length >= 2) {
-                const name = cols[0] ? cols[0].replace(/['"]+/g, '').trim() : 'Membro CSV';
-                const barcode = cols[1] ? cols[1].replace(/['"]+/g, '').trim() : String(Math.floor(1000 + Math.random() * 9000));
-                const phone = cols[2] ? cols[2].replace(/['"]+/g, '').trim() : '';
-                const plan = cols[3] ? cols[3].replace(/['"]+/g, '').trim() : 'Mensal Trabalhador';
-                
-                // Evitar duplicados exatos
-                if (!members.some(m => m.barcode === barcode || m.name === name)) {
-                  members.push({
-                    id: Date.now() + i,
-                    name: name,
-                    barcode: barcode,
-                    phone: phone,
-                    plan: plan,
-                    foto: '',
-                    date: new Date().toISOString().split('T')[0]
-                  });
-                  importedCount++;
-                }
+                members.push({
+                  id: Date.now() + i,
+                  name: cols[0].replace(/['"]+/g, '').trim(),
+                  barcode: cols[1].replace(/['"]+/g, '').trim(),
+                  phone: cols[2] ? cols[2].replace(/['"]+/g, '').trim() : '',
+                  plan: 'Mensal Trabalhador',
+                  foto: '',
+                  date: new Date().toISOString().split('T')[0]
+                });
+                count++;
               }
             }
             refreshAll();
-            alert(`Sucesso! ${importedCount} membros importados a partir do ficheiro CSV.`);
-          } catch(csvErr) {
-            alert('Erro ao processar o formato CSV. Verifique a estrutura das colunas.');
+            alert(`Sucesso! ${count} membros importados via CSV.`);
+          } catch(err) {
+            alert('Erro ao processar CSV.');
           }
           return;
         }
 
-        // Se for um ficheiro JSON de Backup habitual
         try {
           const data = JSON.parse(content);
-          if (data.members && Array.isArray(data.members)) members = data.members;
-          if (data.plans && Array.isArray(data.plans)) plans = data.plans;
-          if (data.payments && Array.isArray(data.payments)) payments = data.payments;
-          if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
-          if (data.salaries && Array.isArray(data.salaries)) salaries = data.salaries;
-          if (data.products && Array.isArray(data.products)) products = data.products;
-          if (data.categories && Array.isArray(data.categories)) categories = data.categories;
-          if (data.sales && Array.isArray(data.sales)) sales = data.sales;
-          if (data.attendanceLogs && Array.isArray(data.attendanceLogs)) attendanceLogs = data.attendanceLogs;
-          if (data.collaborators && Array.isArray(data.collaborators)) collaborators = data.collaborators;
-          if (data.picaPontoLogs && Array.isArray(data.picaPontoLogs)) picaPontoLogs = data.picaPontoLogs;
-          
+          if (data.members) members = data.members;
+          if (data.plans) plans = data.plans;
+          if (data.payments) payments = data.payments;
+          if (data.expenses) expenses = data.expenses;
+          if (data.salaries) salaries = data.salaries;
+          if (data.products) products = data.products;
+          if (data.categories) categories = data.categories;
+          if (data.sales) sales = data.sales;
+          if (data.attendanceLogs) attendanceLogs = data.attendanceLogs;
+          if (data.collaborators) collaborators = data.collaborators;
+          if (data.picaPontoLogs) picaPontoLogs = data.picaPontoLogs;
           refreshAll();
-          alert('Backup JSON carregado e restaurado com sucesso!');
+          alert('Backup restaurado com sucesso!');
         } catch(err) {
-          alert('O ficheiro não é um JSON válido nem um CSV reconhecido.');
+          alert('Formato de ficheiro inválido.');
         }
       };
-      
       reader.readAsText(file);
     }
 
