@@ -103,6 +103,7 @@
       width: 380px; background: #111417; color: #fff; border-radius: 12px; padding: 18px 16px;
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative;
     }
+    .invoice-card { max-width: 580px; margin: 0 auto; background: #fff; border: 2px solid #dee2e6; border-radius: 8px; padding: 25px; color: #212529; }
   </style>
 </head>
 <body>
@@ -157,7 +158,7 @@
 
       <div class="nav-group-title">Colaboradores</div>
       <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores</span></button>
-      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️️</span><span class="nav-text">Pica Ponto</span></button>
+      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
@@ -185,10 +186,6 @@
           <div class="metric-card"><span>Receita Total</span><h3 id="stat-receita">0 CVE</h3></div>
           <div class="metric-card"><span>Estimativa MRR</span><h3>93.000 CVE</h3></div>
         </div>
-        <div class="card">
-          <h2>Painel Central KOSMO</h2>
-          <p>Selecione qualquer módulo na barra lateral esquerda para aceder às ferramentas.</p>
-        </div>
       </section>
 
       <!-- 2. MEMBROS ATIVOS -->
@@ -200,13 +197,14 @@
             <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 1001"></div>
             <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Telemóvel"></div>
             <div><label>Plano</label><select id="m-plan"><option value="Musculação Mensal">Musculação Mensal</option><option value="Cardio + Musculação">Cardio + Musculação</option></select></div>
+            <div><label>Data de Início</label><input type="date" id="m-date"></div>
           </div>
           <button type="button" class="btn" onclick="addMember()">Registar Membro</button>
         </div>
         <div class="card">
-          <h2>Membros Ativos</h2>
+          <h2>Membros Registados</h2>
           <table>
-            <thead><tr><th>Código</th><th>Nome</th><th>Telemóvel</th><th>Plano</th></tr></thead>
+            <thead><tr><th>Código</th><th>Nome</th><th>Telemóvel</th><th>Plano</th><th>Início</th></tr></thead>
             <tbody id="member-table-body"></tbody>
           </table>
         </div>
@@ -230,17 +228,18 @@
       <!-- 4. PLANOS -->
       <section id="view-planos" class="view-section">
         <div class="card">
-          <h2>Gestão de Planos e Preçários</h2>
+          <h2>Gestão de Planos</h2>
           <div class="form-grid">
-            <div><label>Nome do Plano</label><input type="text" id="pl-name" placeholder="Ex: Musculação VIP"></div>
+            <div><label>Nome do Plano</label><input type="text" id="pl-name" placeholder="Ex: VIP"></div>
             <div><label>Preço (CVE)</label><input type="number" id="pl-price" placeholder="2500"></div>
+            <div><label>Duração (Dias)</label><input type="number" id="pl-days" value="30"></div>
           </div>
           <button type="button" class="btn" onclick="addPlan()">Criar Plano</button>
         </div>
         <div class="card">
           <h2>Planos Existentes</h2>
           <table>
-            <thead><tr><th>Plano</th><th>Preço</th></tr></thead>
+            <thead><tr><th>Plano</th><th>Preço</th><th>Duração</th></tr></thead>
             <tbody id="plans-table-body"></tbody>
           </table>
         </div>
@@ -255,7 +254,7 @@
             <select id="card-member-select" onchange="renderDigitalCard()"></select>
           </div>
           <div id="digital-card-container"></div>
-          <button type="button" class="btn btn-blue btn-sm" style="margin-top:15px;" onclick="window.print()">🖨️️ Imprimir Cartão</button>
+          <button type="button" class="btn btn-blue btn-sm" style="margin-top:15px;" onclick="window.print()">🖨 Imprimir Cartão</button>
         </div>
       </section>
 
@@ -266,7 +265,7 @@
           <div class="form-grid">
             <div><label>Membro</label><select id="pay-member"></select></div>
             <div><label>Valor (CVE)</label><input type="number" id="pay-amount" value="2500"></div>
-            <div><label>Referência / Mês</label><input type="text" id="pay-ref" placeholder="Ex: Mensalidade"></div>
+            <div><label>Referência / Mês</label><input type="text" id="pay-ref" placeholder="Mensalidade"></div>
           </div>
           <button type="button" class="btn btn-green" onclick="addPayment()">Registar & Faturar</button>
         </div>
@@ -284,24 +283,24 @@
         <div class="card">
           <h2>Emissão de Faturas e Recibos (NIF: 283023805)</h2>
           <table>
-            <thead><tr><th>Fatura</th><th>Data</th><th>Cliente</th><th>Valor</th><th>Ação</th></tr></thead>
+            <thead><tr><th>Fatura</th><th>Data</th><th>Cliente</th><th>Valor</th></tr></thead>
             <tbody id="invoices-table-body"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- 8. DESPESAS & CONTAS -->
+      <!-- 8. DESPESAS -->
       <section id="view-despesas" class="view-section">
         <div class="card">
-          <h2>Controlo de Custos Operacionais</h2>
+          <h2>Controlo de Custos</h2>
           <div class="form-grid">
-            <div><label>Descrição</label><input type="text" id="exp-desc" placeholder="Ex: Eletricidade / Água"></div>
+            <div><label>Descrição</label><input type="text" id="exp-desc" placeholder="Ex: Luz"></div>
             <div><label>Valor (CVE)</label><input type="number" id="exp-val" placeholder="5000"></div>
           </div>
           <button type="button" class="btn" style="background:var(--danger);" onclick="addExpense()">Registar Despesa</button>
         </div>
         <div class="card">
-          <h2>Lista de Despesas</h2>
+          <h2>Despesas Registadas</h2>
           <table>
             <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th></tr></thead>
             <tbody id="expenses-table-body"></tbody>
@@ -312,15 +311,15 @@
       <!-- 9. SALÁRIOS -->
       <section id="view-salarios" class="view-section">
         <div class="card">
-          <h2>Processamento Salarial</h2>
+          <h2>Salários</h2>
           <div class="form-grid">
-            <div><label>Colaborador</label><input type="text" id="sal-name" placeholder="Nome do funcionário"></div>
+            <div><label>Colaborador</label><input type="text" id="sal-name" placeholder="Nome"></div>
             <div><label>Valor (CVE)</label><input type="number" id="sal-val" placeholder="30000"></div>
           </div>
           <button type="button" class="btn" onclick="addSalary()">Registar Vencimento</button>
         </div>
         <div class="card">
-          <h2>Histórico de Salários</h2>
+          <h2>Vencimentos Pagos</h2>
           <table>
             <thead><tr><th>Colaborador</th><th>Valor</th></tr></thead>
             <tbody id="salaries-table-body"></tbody>
@@ -331,7 +330,7 @@
       <!-- 10. POS -->
       <section id="view-pos" class="view-section">
         <div class="card">
-          <h2>Ponto de Venda Rápida (POS)</h2>
+          <h2>POS (Ponto de Venda)</h2>
           <div class="form-grid">
             <div><label>Produto</label><select id="pos-prod"></select></div>
             <div><label>Quantidade</label><input type="number" id="pos-qty" value="1"></div>
@@ -343,16 +342,16 @@
       <!-- 11. PRODUTOS -->
       <section id="view-produtos" class="view-section">
         <div class="card">
-          <h2>Gestão de Produtos</h2>
+          <h2>Produtos</h2>
           <div class="form-grid">
-            <div><label>Nome do Artigo</label><input type="text" id="p-name" placeholder="Ex: Creatina 300g"></div>
-            <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="2500"></div>
-            <div><label>Stock Inicial</label><input type="number" id="p-stock" value="10"></div>
+            <div><label>Nome</label><input type="text" id="p-name" placeholder="Produto"></div>
+            <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="1000"></div>
+            <div><label>Stock</label><input type="number" id="p-stock" value="10"></div>
           </div>
-          <button type="button" class="btn" onclick="addProduct()">Guardar Produto</button>
+          <button type="button" class="btn" onclick="addProduct()">Guardar</button>
         </div>
         <div class="card">
-          <h2>Inventário de Produtos</h2>
+          <h2>Catálogo</h2>
           <table>
             <thead><tr><th>Produto</th><th>Preço</th><th>Stock</th></tr></thead>
             <tbody id="products-table-body"></tbody>
@@ -369,18 +368,18 @@
           <div class="metric-card"><span>Mais Popular</span><h3 id="cat-pop" style="font-size:1.1rem; margin-top:8px;">---</h3></div>
         </div>
         <div class="card">
-          <h2>Registar Nova Categoria</h2>
+          <h2>Registar Categoria</h2>
           <div class="form-grid">
-            <div><label>Nome da Categoria</label><input type="text" id="cat-name" placeholder="Ex: Proteínas"></div>
-            <div><label>Descrição</label><input type="text" id="cat-desc" placeholder="Ex: Suplementos Alimentares"></div>
-            <div><label>Nº de Produtos</label><input type="number" id="cat-produtos" value="0"></div>
+            <div><label>Nome</label><input type="text" id="cat-name" placeholder="Categoria"></div>
+            <div><label>Descrição</label><input type="text" id="cat-desc" placeholder="Detalhes"></div>
+            <div><label>Nº Produtos</label><input type="number" id="cat-produtos" value="0"></div>
           </div>
-          <button type="button" class="btn" onclick="addCategory()">+ Registar Categoria</button>
+          <button type="button" class="btn" onclick="addCategory()">Registar</button>
         </div>
         <div class="card">
           <h2>Categorias Existentes</h2>
           <table>
-            <thead><tr><th>Nome</th><th>Descrição</th><th>Nº Produtos</th><th style="text-align:center;">Ações</th></tr></thead>
+            <thead><tr><th>Nome</th><th>Descrição</th><th>Nº Produtos</th><th>Ações</th></tr></thead>
             <tbody id="categories-table-body"></tbody>
           </table>
         </div>
@@ -389,7 +388,7 @@
       <!-- 13. STOCK -->
       <section id="view-stock" class="view-section">
         <div class="card">
-          <h2>Monitorização de Armazém</h2>
+          <h2>Stock</h2>
           <table>
             <thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead>
             <tbody id="stock-table-body"></tbody>
@@ -400,7 +399,7 @@
       <!-- 14. HISTÓRICO DE VENDAS -->
       <section id="view-vendas" class="view-section">
         <div class="card">
-          <h2>Auditoria de Transações da Loja</h2>
+          <h2>Histórico de Vendas</h2>
           <table>
             <thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead>
             <tbody id="sales-table-body"></tbody>
@@ -411,53 +410,48 @@
       <!-- 15. ENVIAR MENSAGENS -->
       <section id="view-mensagens" class="view-section">
         <div class="card">
-          <h2>Envio de Mensagens via WhatsApp</h2>
+          <h2>Enviar Mensagens</h2>
           <div class="form-grid">
             <div><label>Membro</label><select id="msg-member"></select></div>
-            <div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Escreva a mensagem..."></textarea></div>
+            <div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Texto..."></textarea></div>
           </div>
           <button type="button" class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
         </div>
       </section>
 
-      <!-- 16. LEMBRETES AUTOMÁTICOS -->
-      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Automação ativa para avisos de vencimento.</p></div></section>
-
-      <!-- 17. REPORTES & MANUTENÇÃO -->
-      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Controlo de reparações de equipamentos.</p></div></section>
-
+      <!-- 16. LEMBRETES -->
+      <section id="view-lembretes" class="view-section"><div class="card"><h2>Lembretes Automáticos</h2><p>Sistema ativo.</p></div></section>
+      <!-- 17. REPORTES -->
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
       <!-- 18. CONFIGURAÇÕES -->
-      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>Ginásio KOSMO | NIF: 283023805 | Praia, Cabo Verde</p></div></section>
-
-      <!-- 19. GERIR COLABORADORES -->
-      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Controlo de acessos da equipa de staff autorizado.</p></div></section>
-
+      <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
+      <!-- 19. COLABORADORES -->
+      <section id="view-colab" class="view-section"><div class="card"><h2>Gerir Colaboradores</h2><p>Admin principal ativo.</p></div></section>
       <!-- 20. PICA PONTO -->
-      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Registo de assiduidade de funcionários.</p></div></section>
+      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><p>Assiduidade de staff.</p></div></section>
 
-      <!-- 21. RELATÓRIO: VISÃO GERAL -->
+      <!-- 21. RELATÓRIO: VISÃO GERAL (TOTALMENTE DINÂMICO) -->
       <section id="view-visao" class="view-section">
         <div class="metrics-grid">
-          <div class="metric-card"><span>Total de Membros</span><h3 id="rel-total-membros">97</h3></div>
-          <div class="metric-card"><span>Membros Ativos</span><h3 id="rel-ativos">38</h3></div>
-          <div class="metric-card"><span>Novos Este Mês</span><h3 id="rel-novos">0</h3></div>
-          <div class="metric-card"><span>Check-ins Hoje</span><h3 id="rel-checkins">0</h3></div>
+          <div class="metric-card"><span>Total de Membros</span><h3 id="rel-total">0</h3></div>
+          <div class="metric-card"><span>Membros Ativos</span><h3 id="rel-ativos">0</h3></div>
+          <div class="metric-card"><span>Check-ins Hoje</span><h3 id="rel-checkins-hoje">0</h3></div>
+          <div class="metric-card"><span>Estimativa MRR</span><h3 id="rel-mrr">0 CVE</h3></div>
         </div>
         <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px;">
           <div class="card">
             <h2>Estado dos Membros</h2>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Situação atual de todos os membros registados</p>
-            <div style="text-align:center; padding:20px;">
-              <div style="width:160px; height:160px; border-radius:50%; border:16px solid #1971c2; border-top-color:#c92a2a; border-right-color:#f59f00; margin:0 auto; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">38 Ativos</div>
+            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Situação calculada em tempo real</p>
+            <div style="text-align:center; padding:30px;">
+              <h3 id="rel-ativos-txt" style="font-size:2rem; color:var(--success);">0 Ativos</h3>
+              <p id="rel-exp-txt" style="color:var(--danger); margin-top:5px;">0 Expirados</p>
             </div>
           </div>
           <div class="card">
-            <h2>Alertas</h2>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Situações que pedem ação da equipa</p>
-            <div class="alert-card"><span>Aprovações pendentes</span><strong style="color:var(--warning);">1</strong></div>
-            <div class="alert-card"><span>A expirar em 7 dias</span><strong style="color:var(--warning);">14</strong></div>
-            <div class="alert-card"><span>A expirar este mês</span><strong style="color:#1971c2;">37</strong></div>
-            <div class="alert-card"><span>Em atraso</span><strong style="color:var(--danger);">58</strong></div>
+            <h2>Alertas Dinâmicos</h2>
+            <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Baseado no estado atual dos dados</p>
+            <div class="alert-card"><span>Membros Ativos</span><strong id="alert-ativos" style="color:var(--success);">0</strong></div>
+            <div class="alert-card"><span>Membros Expirados</span><strong id="alert-exp" style="color:var(--danger);">0</strong></div>
           </div>
         </div>
       </section>
@@ -465,63 +459,35 @@
       <!-- 22. RELATÓRIO: RETENÇÃO DE MEMBROS -->
       <section id="view-retencao" class="view-section">
         <div class="metrics-grid">
-          <div class="metric-card"><span>Taxa de Renovação</span><h3 style="color:var(--success);">79%</h3></div>
-          <div class="metric-card"><span>A Expirar em 7 Dias</span><h3>14</h3></div>
-          <div class="metric-card"><span>Em Atraso</span><h3 style="color:var(--danger);">58</h3></div>
-          <div class="metric-card"><span>Duração Média</span><h3>28 dias</h3></div>
-        </div>
-        <div class="card">
-          <h2>Renovações e Cancelamentos</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Términos de subscrição por mês — janela de renovação de 30 dias</p>
-          <div style="height:180px; background:#fafafa; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#777;">
-            Gráfico de Retenção e Cancelamentos Ativo
-          </div>
+          <div class="metric-card"><span>Total Registados</span><h3 id="ret-total">0</h3></div>
+          <div class="metric-card"><span>Ativos</span><h3 id="ret-ativos" style="color:var(--success);">0</h3></div>
+          <div class="metric-card"><span>Expirados</span><h3 id="ret-exp" style="color:var(--danger);">0</h3></div>
+          <div class="metric-card"><span>Taxa de Atividade</span><h3 id="ret-taxa">0%</h3></div>
         </div>
       </section>
 
       <!-- 23. RELATÓRIO: PERFORMANCE FINANCEIRA -->
       <section id="view-perf" class="view-section">
         <div class="metrics-grid">
-          <div class="metric-card"><span>Receita (12 Meses)</span><h3>892.300 CVE</h3></div>
-          <div class="metric-card"><span>Receita Mensal (MRR)</span><h3>93.000 CVE</h3></div>
-          <div class="metric-card"><span>Média por Membro</span><h3>2.447 CVE</h3></div>
-          <div class="metric-card"><span>Membros Ativos</span><h3>38</h3></div>
-        </div>
-        <div class="card">
-          <h2>Receita Mensal</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Mensalidades, taxas de inscrição e vendas da loja</p>
-          <div style="height:200px; background:#fafafa; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#777;">
-            Gráfico de Barras Financeiro Consolidado
-          </div>
+          <div class="metric-card"><span>Receita Total</span><h3 id="per-rec" style="color:var(--success);">0 CVE</h3></div>
+          <div class="metric-card"><span>Total Despesas</span><h3 id="per-des" style="color:var(--danger);">0 CVE</h3></div>
+          <div class="metric-card"><span>Balanço Líquido</span><h3 id="per-liq" style="color:#1971c2;">0 CVE</h3></div>
         </div>
       </section>
 
       <!-- 24. EXPORTAR DADOS -->
       <section id="view-export" class="view-section">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:15px;">
-          <div class="card">
-            <h3>Membros</h3>
-            <p style="color:#666; font-size:0.85rem; margin:10px 0;">Lista completa de membros com plano, estado e contactos.</p>
-            <button class="btn btn-green btn-sm" onclick="exportData()">📥 Exportar Membros</button>
-          </div>
-          <div class="card">
-            <h3>Membros Expirados</h3>
-            <p style="color:#666; font-size:0.85rem; margin:10px 0;">Lista de contactos para campanhas de recuperação.</p>
-            <button class="btn btn-green btn-sm" onclick="exportData()">📥 Exportar Expirados</button>
-          </div>
-          <div class="card">
-            <h3>Pagamentos e Vendas</h3>
-            <p style="color:#666; font-size:0.85rem; margin:10px 0;">Todos os movimentos recebidos — mensalidades e loja.</p>
-            <button class="btn btn-green btn-sm" onclick="exportData()">📥 Exportar Financeiro</button>
-          </div>
+        <div class="card">
+          <h2>Exportar Dados</h2>
+          <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup Completo (.JSON)</button>
         </div>
       </section>
     </main>
   </div>
 
   <script>
-    let members = [{ id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886', plan: 'Musculação Mensal' }];
-    let plans = [{ name: 'Musculação Mensal', price: 2500 }, { name: 'Cardio + Musculação', price: 3000 }];
+    let members = [{ id: 1, name: 'Silvio Cabral', barcode: '1001', phone: '9988886', plan: 'Musculação Mensal', date: '2026-01-01' }];
+    let plans = [{ name: 'Musculação Mensal', price: 2500, days: 30 }];
     let payments = [];
     let expenses = [];
     let salaries = [];
@@ -581,19 +547,46 @@
       renderSales();
       renderStock();
       populateSelects();
-      updateMetrics();
+      updateDynamicMetrics();
     }
 
-    function updateMetrics() {
-      if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
-      if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = members.length;
-      if (document.getElementById('stat-checkins')) document.getElementById('stat-checkins').innerText = attendanceLogs.length;
-      if (document.getElementById('rel-checkins')) document.getElementById('rel-checkins').innerText = attendanceLogs.length;
+    function updateDynamicMetrics() {
+      const now = new Date();
+      let ativos = 0;
+      let expirados = 0;
+
+      members.forEach(m => {
+        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
+        const due = new Date(m.date || Date.now());
+        due.setDate(due.getDate() + pl.days);
+        if (due >= now) ativos++; else expirados++;
+      });
+
       const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
-      if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
-      if (document.getElementById('perf-rec')) document.getElementById('perf-rec').innerText = totalRec + ' CVE';
       const totalDes = expenses.reduce((a,b) => a + Number(b.amount), 0) + salaries.reduce((a,b) => a + Number(b.amount), 0);
-      if (document.getElementById('perf-des')) document.getElementById('perf-des').innerText = totalDes + ' CVE';
+      const liquido = totalRec - totalDes;
+
+      if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
+      if (document.getElementById('stat-checkins')) document.getElementById('stat-checkins').innerText = attendanceLogs.length;
+      if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
+
+      if (document.getElementById('rel-total')) document.getElementById('rel-total').innerText = members.length;
+      if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = ativos;
+      if (document.getElementById('rel-checkins-hoje')) document.getElementById('rel-checkins-hoje').innerText = attendanceLogs.length;
+      if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = totalRec + ' CVE';
+      if (document.getElementById('rel-ativos-txt')) document.getElementById('rel-ativos-txt').innerText = ativos + ' Ativos';
+      if (document.getElementById('rel-exp-txt')) document.getElementById('rel-exp-txt').innerText = expirados + ' Expirados';
+      if (document.getElementById('alert-ativos')) document.getElementById('alert-ativos').innerText = ativos;
+      if (document.getElementById('alert-exp')) document.getElementById('alert-exp').innerText = expirados;
+
+      if (document.getElementById('ret-total')) document.getElementById('ret-total').innerText = members.length;
+      if (document.getElementById('ret-ativos')) document.getElementById('ret-ativos').innerText = ativos;
+      if (document.getElementById('ret-exp')) document.getElementById('ret-exp').innerText = expirados;
+      if (document.getElementById('ret-taxa')) document.getElementById('ret-taxa').innerText = members.length ? Math.round((ativos / members.length)*100) + '%' : '0%';
+
+      if (document.getElementById('per-rec')) document.getElementById('per-rec').innerText = totalRec + ' CVE';
+      if (document.getElementById('per-des')) document.getElementById('per-des').innerText = totalDes + ' CVE';
+      if (document.getElementById('per-liq')) document.getElementById('per-liq').innerText = liquido + ' CVE';
     }
 
     function addMember() {
@@ -601,8 +594,9 @@
       const barcode = document.getElementById('m-barcode').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
       const plan = document.getElementById('m-plan').value;
+      const date = document.getElementById('m-date').value || new Date().toISOString().split('T')[0];
       if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
-      members.push({ id: Date.now(), name, barcode, phone, plan });
+      members.push({ id: Date.now(), name, barcode, phone, plan, date });
       refreshAll();
       document.getElementById('m-name').value = '';
       document.getElementById('m-barcode').value = '';
@@ -615,18 +609,17 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       members.forEach(m => {
-        tbody.innerHTML += `<tr><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.phone || '---'}</td><td>${m.plan}</td></tr>`;
+        tbody.innerHTML += `<tr><td><code>${m.barcode}</code></td><td><strong>${m.name}</strong></td><td>${m.phone || '---'}</td><td>${m.plan}</td><td>${m.date}</td></tr>`;
       });
     }
 
     function addPlan() {
       const name = document.getElementById('pl-name').value.trim();
       const price = document.getElementById('pl-price').value;
+      const days = document.getElementById('pl-days').value;
       if (!name || !price) return;
-      plans.push({ name, price });
+      plans.push({ name, price, days });
       refreshAll();
-      document.getElementById('pl-name').value = '';
-      document.getElementById('pl-price').value = '';
       alert('Plano criado!');
     }
 
@@ -634,7 +627,7 @@
       const tbody = document.getElementById('plans-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
-      plans.forEach(p => { tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td></tr>`; });
+      plans.forEach(p => { tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td><td>${p.days} dias</td></tr>`; });
     }
 
     function renderDigitalCard() {
@@ -673,7 +666,7 @@
       if (invBody) invBody.innerHTML = '';
       payments.forEach(p => {
         if (tbody) tbody.innerHTML += `<tr><td>${p.date}</td><td>${p.member}</td><td>${p.ref}</td><td>${p.amount} CVE</td></tr>`;
-        if (invBody) invBody.innerHTML += `<tr><td>FAT-${p.id.toString().slice(-4)}</td><td>${p.date}</td><td>${p.member}</td><td>${p.amount} CVE</td><td><button class="btn-sm btn-blue" onclick="alert('Fatura oficial emitida com NIF 283023805')">Ver Fatura</button></td></tr>`;
+        if (invBody) invBody.innerHTML += `<tr><td>FAT-${p.id.toString().slice(-4)}</td><td>${p.date}</td><td>${p.member}</td><td>${p.amount} CVE</td></tr>`;
       });
     }
 
@@ -747,7 +740,7 @@
       categories.forEach(c => {
         if (c.produtos > 0) comProd++; else semProd++;
         if (c.produtos > popular.produtos) popular = c;
-        tbody.innerHTML += `<tr><td>🏷️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td style="text-align:center;"><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
+        tbody.innerHTML += `<tr><td>🏷️ <strong>${c.name}</strong></td><td>${c.desc||'---'}</td><td>${c.produtos}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`;
       });
       if (document.getElementById('cat-total')) document.getElementById('cat-total').innerText = categories.length;
       if (document.getElementById('cat-com')) document.getElementById('cat-com').innerText = comProd;
@@ -806,7 +799,7 @@
         const agora = new Date();
         attendanceLogs.unshift({ data: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: m.name, barcode: m.barcode, status: 'Ativo' });
         renderAttendance();
-        updateMetrics();
+        updateDynamicMetrics();
 
         const totemData = { name: m.name, plan: m.plan || 'Mensal', auth: true, startDate: '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: '', time: Date.now() };
         localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
@@ -834,7 +827,7 @@
       a.click();
     }
 
-    // ECRÃ TOTEM GIGANTE (RELÓGIO, LOGÓTIPO E SLOGAN AMPLIADOS)
+    // ECRÃ TOTEM GIGANTE
     function openTotemWindow() {
       totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
       totemWindowRef.document.write(`
