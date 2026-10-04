@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine & Portal Online)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -104,19 +104,28 @@
     .id-card-wrap::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--primary); }
     .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #dee2e6; }
     .checkbox-grid label { font-weight: normal; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+    /* ESTILOS DO CHAT E PORTAL PÚBLICO */
+    .chat-box-container { display: flex; flex-direction: column; height: 400px; border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden; }
+    .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 8px; }
+    .chat-msg { max-width: 75%; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; line-height: 1.4; word-break: break-word; }
+    .chat-msg.client { background: #e7f5ff; align-self: flex-start; border-left: 4px solid #1971c2; }
+    .chat-msg.staff { background: #fff3bf; align-self: flex-end; border-right: 4px solid #f59f00; }
+    .chat-input-area { display: flex; padding: 10px; background: #fff; border-top: 1px solid #dee2e6; gap: 8px; align-items: center; }
   </style>
 </head>
 <body>
 
-  <!-- ECRÃ DE LOGIN SEGURO -->
+  <!-- LOGIN DE ACESSO -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
       <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
-      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Admin: <strong>admin / admin123</strong><br>Ou utilize as credenciais de Colaborador</p>
+      <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Admin: <strong>admin / admin123</strong><br>Ou aceda ao <a href="javascript:void(0)" onclick="abrirPortalInscricao()" style="color:var(--primary); font-weight:bold;">Portal de Inscrição Online</a></p>
       <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" value="admin"></div>
       <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" value="admin123"></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
+      <button type="button" class="btn btn-blue" style="width: 100%; padding: 10px; margin-top: 8px;" onclick="abrirPortalInscricao()">🌐 Abrir Portal de Inscrição Online</button>
     </div>
   </div>
 
@@ -128,9 +137,10 @@
       <p>Praia, Terra Branca, 7600<br><strong>NIF: 283023805</strong></p>
     </div>
     <div class="menu-scroll">
-      <div class="nav-group-title">Membros</div>
+      <div class="nav-group-title">Membros & Online</div>
       <button type="button" class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')"><span class="icon">🏠</span><span class="nav-text">Dashboard Geral</span></button>
       <button type="button" class="nav-item" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros Ativos</span></button>
+      <button type="button" class="nav-item" id="nav-inscricoes" onclick="navigate('inscricoes')"><span class="icon">📥</span><span class="nav-text">Inscrições Online <span id="badge-inscricoes" class="badge badge-err" style="margin-left:auto; display:none;">0</span></span></button>
       <button type="button" class="nav-item" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-ins / Totem</span></button>
       <button type="button" class="nav-item" id="nav-planos" onclick="navigate('planos')"><span class="icon">📋</span><span class="nav-text">Planos</span></button>
       <button type="button" class="nav-item" id="nav-cartaodigital" onclick="navigate('cartaodigital')"><span class="icon">🪪</span><span class="nav-text">Cartão Digital</span></button>
@@ -148,8 +158,9 @@
       <button type="button" class="nav-item" id="nav-stock" onclick="navigate('stock')"><span class="icon">📊</span><span class="nav-text">Stock</span></button>
       <button type="button" class="nav-item" id="nav-vendas" onclick="navigate('vendas')"><span class="icon">📑</span><span class="nav-text">Histórico de Vendas</span></button>
 
-      <div class="nav-group-title">Comunicação</div>
-      <button type="button" class="nav-item" id="nav-mensagens" onclick="navigate('mensagens')"><span class="icon">💬</span><span class="nav-text">Enviar Mensagens</span></button>
+      <div class="nav-group-title">Comunicação & Chat</div>
+      <button type="button" class="nav-item" id="nav-mensagens" onclick="navigate('mensagens')"><span class="icon">💬</span><span class="nav-text">Enviar WhatsApp</span></button>
+      <button type="button" class="nav-item" id="nav-chat" onclick="navigate('chat')"><span class="icon">💬</span><span class="nav-text">Chat Online Clientes</span></button>
       <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes & Alertas</span></button>
 
       <div class="nav-group-title">Operações</div>
@@ -172,14 +183,20 @@
     </div>
   </aside>
 
+  <!-- ========================================================================== -->
+  <!-- CONTEÚDO PRINCIPAL                                                         -->
+  <!-- ========================================================================== -->
   <div class="main-wrapper">
     <header>
       <div class="top-title" id="page-title">Dashboard Geral</div>
-      <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Abrir Ecrã Totem Gigante</button>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button type="button" class="btn btn-green btn-sm" onclick="abrirPortalInscricao()">🌐 Abrir Link Inscrição Online</button>
+        <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Totem Gigante</button>
+      </div>
     </header>
 
     <main>
-      <!-- DASHBOARD (MRR REAL) -->
+      <!-- DASHBOARD -->
       <section id="view-dashboard" class="view-section active">
         <div class="metrics-grid">
           <div class="metric-card"><span>Membros Ativos</span><h3 id="stat-membros">0</h3></div>
@@ -189,20 +206,20 @@
         </div>
       </section>
 
-      <!-- MEMBROS (COM FOTO NÍTIDA, EMAIL, DOCS, DATA INÍCIO E EDIÇÃO) -->
+      <!-- MEMBROS (COM FOTO, NIF, EMAIL, DOCS, DATA INÍCIO E EDIÇÃO) -->
       <section id="view-membros" class="view-section">
         <div class="card">
           <h2 id="form-member-title">Registar Novo Membro</h2>
           <input type="hidden" id="m-edit-id" value="">
           <div class="form-grid">
             <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
+            <div><label>Sexo</label><select id="m-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
+            <div><label>Número de NIF</label><input type="text" id="m-nif" placeholder="NIF do Membro"></div>
             <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
             <div><label>E-mail (Notificações)</label><input type="email" id="m-email" placeholder="aluno@email.com"></div>
-            <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Telemóvel"></div>
-            <div><label>Plano</label><select id="m-plan"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
+            <div><label>Telemóvel / Telefone</label><input type="tel" id="m-phone" placeholder="Contacto"></div>
+            <div><label>Plano Disponível</label><select id="m-plan"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
             <div><label>Data de Início no Ginásio</label><input type="date" id="m-startdate"></div>
-            <div><label>Doc. Identificação</label><input type="file" id="m-doc-file" accept="image/*,.pdf"></div>
-            <div><label>Comprovativo (Escola / Casal)</label><input type="file" id="m-proof-file" accept="image/*,.pdf"></div>
             <div><label>Fotografia do Membro</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
           </div>
           <input type="hidden" id="m-foto-base64" value="">
@@ -212,8 +229,20 @@
         <div class="card">
           <h2>Membros Registados & Ficha Completa</h2>
           <table>
-            <thead><tr><th>Foto Nitidez</th><th>ID</th><th>Nome & Contacto</th><th>Plano & Início</th><th>Ações (Gerente)</th></tr></thead>
+            <thead><tr><th>Foto Nítida</th><th>ID / NIF</th><th>Nome & Contacto</th><th>Plano & Início</th><th>Ações (Gerente)</th></tr></thead>
             <tbody id="member-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- LISTA DE INSCRIÇÕES ONLINE PENDENTES -->
+      <section id="view-inscricoes" class="view-section">
+        <div class="card">
+          <h2>Inscrições Online Pendentes de Validação</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Estes registos foram submetidos através do link de inscrição online externo.</p>
+          <table>
+            <thead><tr><th>Foto</th><th>Nome / NIF</th><th>Contacto / E-mail</th><th>Plano Escolhido</th><th>Documentos Anexos</th><th>Ações</th></tr></thead>
+            <tbody id="online-inscricoes-tbody"></tbody>
           </table>
         </div>
       </section>
@@ -335,7 +364,7 @@
         </div>
       </section>
 
-      <!-- POS (COM FOTO, DESCRIÇÃO E STOCK VISÍVEL) -->
+      <!-- POS -->
       <section id="view-pos" class="view-section">
         <div class="card">
           <h2>POS (Ponto de Venda Inteligente)</h2>
@@ -347,7 +376,7 @@
             <div id="pos-prev-img" style="width:70px; height:70px; background:#ddd; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">📦</div>
             <div>
               <h4 id="pos-prev-name">Selecione um produto</h4>
-              <p id="pos-prev-desc" style="font-size:0.82rem; color:#666; margin-top:3px;">Descrição e modo de uso aparecerão aqui.</p>
+              <p id="pos-prev-desc" style="font-size:0.82rem; color:#666; margin-top:3px;">Descrição e modo de uso.</p>
               <p id="pos-prev-stock" style="font-size:0.85rem; font-weight:bold; color:var(--success); margin-top:3px;">Stock: ---</p>
             </div>
           </div>
@@ -355,7 +384,7 @@
         </div>
       </section>
 
-      <!-- PRODUTOS (COM FOTO, DESCRIÇÃO E MODO DE USO) -->
+      <!-- PRODUTOS -->
       <section id="view-produtos" class="view-section">
         <div class="card">
           <h2>Registar Produto no Catálogo</h2>
@@ -364,8 +393,8 @@
             <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="2500"></div>
             <div><label>Stock Inicial</label><input type="number" id="p-stock" value="10"></div>
             <div><label>Fotografia do Produto</label><input type="file" id="p-foto-file" accept="image/*" onchange="converterFotoProduto(event)"></div>
-            <div style="grid-column: 1 / -1;"><label>Descrição do Produto</label><textarea id="p-desc" rows="2" placeholder="Detalhes dos ingredientes ou peso..."></textarea></div>
-            <div style="grid-column: 1 / -1;"><label>Modo de Uso / Instruções</label><textarea id="p-use" rows="2" placeholder="Como consumir ou aplicar..."></textarea></div>
+            <div style="grid-column: 1 / -1;"><label>Descrição do Produto</label><textarea id="p-desc" rows="2" placeholder="Detalhes..."></textarea></div>
+            <div style="grid-column: 1 / -1;"><label>Modo de Uso / Instruções</label><textarea id="p-use" rows="2" placeholder="Como consumir..."></textarea></div>
           </div>
           <input type="hidden" id="p-foto-base64" value="">
           <button type="button" class="btn" onclick="addProduct()">Guardar Produto</button>
@@ -408,57 +437,58 @@
       <!-- STOCK -->
       <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><table><thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead><tbody id="stock-table-body"></tbody></table></div></section>
       <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><table><thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></section>
-      
-      <!-- MENSAGENS E ALERTAS DE VENCIMENTO (-5 DIAS) -->
       <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens WhatsApp</h2><div class="form-grid"><div><label>Membro</label><select id="msg-member"></select></div><div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Mensagem..."></textarea></div></div><button class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button></div></section>
       
+      <!-- CHAT ONLINE DO CLIENTE COM SUPORTE A FICHEIROS, VÍDEOS, ÁUDIOS E CLIP -->
+      <section id="view-chat" class="view-section">
+        <div class="card">
+          <h2>Chat Online com Clientes (Staff & Gerência)</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Interaja em tempo real com os membros do ginásio e troque documentos, vídeos ou áudios.</p>
+          <div class="chat-box-container">
+            <div class="chat-messages" id="chat-messages-area">
+              <div style="text-align:center; color:#777; margin-top:20px;">Bem-vindo ao Chat de Apoio KOSMO. Nenhuma mensagem recente.</div>
+            </div>
+            <div class="chat-input-area">
+              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;" title="Anexar Ficheiro / Documento / Vídeo / Áudio">📎</label>
+              <input type="file" id="chat-file-input" style="display:none;" onchange="enviarFicheiroChat(event)">
+              <input type="text" id="chat-input-text" placeholder="Escreva a sua mensagem..." onkeydown="if(event.key==='Enter') enviarMensagemChat()" style="flex:1;">
+              <button class="btn btn-sm" onclick="enviarMensagemChat()">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="view-lembretes" class="view-section">
         <div class="card">
           <h2>Alertas Automáticos de Vencimento (-5 Dias)</h2>
-          <p style="color:#666; font-size:0.88rem; margin-bottom:15px;">O sistema deteta automaticamente os alunos cuja mensalidade expira nos próximos 5 dias e envia o alerta por e-mail.</p>
-          <button class="btn btn-blue" onclick="verificarAlertaVencimentos()">🔍 Verificar Alertas de Vencimento</button>
+          <button class="btn btn-blue" onclick="verificarAlertaVencimentos()">🔍 Verificar Alertas</button>
           <table style="margin-top:15px;">
-            <thead><tr><th>Membro</th><th>E-mail</th><th>Plano</th><th>Vencimento</th><th>Estado do Alerta</th></tr></thead>
-            <tbody id="alertas-vencimento-tbody"><tr><td colspan="5" style="text-align:center; color:#777;">Clique em verificar para analisar os prazos.</td></tr></tbody>
+            <thead><tr><th>Membro</th><th>E-mail</th><th>Plano</th><th>Vencimento</th><th>Estado</th></tr></thead>
+            <tbody id="alertas-vencimento-tbody"><tr><td colspan="5" style="text-align:center; color:#777;">Clique para analisar.</td></tr></tbody>
           </table>
         </div>
       </section>
 
-      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias registadas.</p></div></section>
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configurações</h2><p>KOSMO NIF: 283023805</p></div></section>
 
-      <!-- COLABORADORES & ALTERAÇÃO DE SENHA -->
+      <!-- COLABORADORES -->
       <section id="view-colab" class="view-section">
         <div class="card">
-          <h2>Gerir Colaboradores & Alteração de Código de Acesso</h2>
+          <h2>Gerir Colaboradores & Credenciais</h2>
           <div class="form-grid">
-            <div><label>Nome do Funcionário</label><input type="text" id="colab-name" placeholder="Nome do Staff"></div>
-            <div><label>Cargo / Função</label><input type="text" id="colab-role" placeholder="Ex: Rececionista / PT"></div>
+            <div><label>Nome</label><input type="text" id="colab-name" placeholder="Nome"></div>
+            <div><label>Cargo</label><input type="text" id="colab-role" placeholder="Cargo"></div>
             <div><label>Telemóvel</label><input type="tel" id="colab-phone" placeholder="Telemóvel"></div>
-            <div><label>Nome de Utilizador (Login)</label><input type="text" id="colab-user" placeholder="utilizador.staff"></div>
-            <div><label>Palavra-passe (Login)</label><input type="password" id="colab-pass" placeholder="Palavra-passe"></div>
-          </div>
-          <div style="margin-top: 15px;">
-            <label style="font-weight:bold; color:var(--primary); margin-bottom:5px;">Permissões de Acesso aos Módulos:</label>
-            <div class="checkbox-grid" id="colab-perms-group">
-              <label><input type="checkbox" value="membros" checked> Membros</label>
-              <label><input type="checkbox" value="checkins" checked> Check-ins</label>
-              <label><input type="checkbox" value="planos" checked> Planos</label>
-              <label><input type="checkbox" value="cartaodigital" checked> Cartão Digital</label>
-              <label><input type="checkbox" value="pagamentos" checked> Pagamentos</label>
-              <label><input type="checkbox" value="faturas" checked> Faturas</label>
-              <label><input type="checkbox" value="pos" checked> POS (Vendas)</label>
-              <label><input type="checkbox" value="produtos" checked> Produtos</label>
-              <label><input type="checkbox" value="stock" checked> Stock</label>
-              <label><input type="checkbox" value="picaponto" checked> Pica Ponto</label>
-            </div>
+            <div><label>Utilizador</label><input type="text" id="colab-user" placeholder="user"></div>
+            <div><label>Palavra-passe</label><input type="password" id="colab-pass" placeholder="pass"></div>
           </div>
           <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador</button>
         </div>
         <div class="card">
-          <h2>Equipa Autorizada (Controlo do Gerente)</h2>
+          <h2>Equipa Autorizada</h2>
           <table>
-            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Acessos</th><th>Ações de Gestão (Gerente)</th></tr></thead>
+            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Ações do Gerente</th></tr></thead>
             <tbody id="colab-table-body"></tbody>
           </table>
         </div>
@@ -467,15 +497,15 @@
       <!-- PICA PONTO -->
       <section id="view-picaponto" class="view-section">
         <div class="card">
-          <h2>Registo de Assiduidade (Pica Ponto)</h2>
+          <h2>Pica Ponto</h2>
           <div class="form-grid">
             <div><label>Colaborador</label><select id="pica-colab-select"></select></div>
-            <div><label>Estado / Ação</label><select id="pica-type"><option value="Entrada">Entrada</option><option value="Saída">Saída</option></select></div>
+            <div><label>Ação</label><select id="pica-type"><option value="Entrada">Entrada</option><option value="Saída">Saída</option></select></div>
           </div>
-          <button type="button" class="btn btn-green" onclick="regPicaPonto()">Registar Ponto Agora</button>
+          <button type="button" class="btn btn-green" onclick="regPicaPonto()">Registar Ponto</button>
         </div>
         <div class="card">
-          <h2>Histórico de Picagem de Ponto</h2>
+          <h2>Histórico</h2>
           <table>
             <thead><tr><th>Data</th><th>Hora</th><th>Colaborador</th><th>Registo</th></tr></thead>
             <tbody id="pica-table-body"></tbody>
@@ -510,23 +540,71 @@
         </div>
       </section>
 
-      <!-- EXPORTAR / IMPORTAR DADOS -->
+      <!-- EXPORTAR / IMPORTAR -->
       <section id="view-export" class="view-section">
         <div class="card" style="margin-bottom: 20px;">
           <h2>Exportar Cópia de Segurança</h2>
           <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup (.JSON)</button>
         </div>
         <div class="card">
-          <h2>Carregar Backup do Computador (JSON / CSV)</h2>
+          <h2>Carregar Backup do Computador</h2>
           <input type="file" id="import-file" onchange="importDataAnyFormat(event)" style="padding: 8px; border: 1px solid #ced4da; border-radius: 5px; background: #fff; width:100%; max-width:400px;">
         </div>
       </section>
     </main>
   </div>
 
-  <!-- SCRIPT INTEGRAL COM TODAS AS NOVAS FUNÇÕES -->
+  <!-- PORTAL DE INSCRIÇÃO ONLINE PÚBLICO (ABRE EM NOVA JANELA OU MODAL) -->
+  <div id="portal-inscricao-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#111417; z-index:90000; display:none; justify-content:center; align-items:center; overflow-y:auto; padding:20px;">
+    <div style="background:#fff; width:100%; max-width:650px; border-radius:12px; padding:30px; border-top:6px solid var(--primary); box-shadow:0 15px 40px rgba(0,0,0,0.6); position:relative;">
+      <button onclick="fecharPortalInscricao()" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:1.2rem; cursor:pointer; font-weight:bold;">✖</button>
+      <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="color:var(--primary); font-size:1.5rem;">Ginásio KOSMO - Inscrição Online</h2>
+        <p style="font-size:0.85rem; color:#666;">Preencha os seus dados para submeter a ficha de subscrição ao nosso balcão.</p>
+      </div>
+      <div class="form-grid">
+        <div><label>Nome Completo *</label><input type="text" id="portal-name" placeholder="O seu nome"></div>
+        <div><label>Sexo *</label><select id="portal-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
+        <div><label>Número de NIF *</label><input type="text" id="portal-nif" placeholder="O seu NIF"></div>
+        <div><label>E-mail *</label><input type="email" id="portal-email" placeholder="seu@email.com"></div>
+        <div><label>Telemóvel / Telefone *</label><input type="tel" id="portal-phone" placeholder="9988886"></div>
+        <div><label>Plano Pretendido *</label><select id="portal-plan" onchange="togglePortalAnexos()"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
+        <div><label>Fotografia Pessoal *</label><input type="file" id="portal-foto" accept="image/*" onchange="converterFotoPortal(event)"></div>
+        <div id="portal-box-anexo" style="grid-column:1/-1; display:none; background:#fff3bf; padding:10px; border-radius:6px; border:1px solid #f59f00;">
+          <label id="portal-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Obrigatório (Escola ou Casal):</label>
+          <input type="file" id="portal-anexo-file" accept="image/*,.pdf" onchange="converterAnexoPortal(event)">
+        </div>
+      </div>
+      <input type="hidden" id="portal-foto-b64" value="">
+      <input type="hidden" id="portal-anexo-b64" value="">
+      <button type="button" class="btn" style="width:100%; margin-top:15px; padding:12px;" onclick="submeterInscricaoOnline()">Submeter Inscrição Online</button>
+      
+      <!-- CHAT ONLINE DO CLIENTE (SÓ ABRE APÓS INTRODUZIR O NOME) -->
+      <div style="margin-top:30px; border-top:2px solid #dee2e6; padding-top:20px;">
+        <h3>💬 Chat Online com a Gerência KOSMO</h3>
+        <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Insira o seu nome abaixo para iniciar a conversa e trocar ficheiros, vídeos ou áudios.</p>
+        <div id="client-chat-login" style="display:flex; gap:10px; margin-bottom:10px;">
+          <input type="text" id="client-chat-name-input" placeholder="O seu nome para conversar..." style="flex:1;">
+          <button class="btn btn-blue btn-sm" onclick="ativarChatCliente()">Entrar no Chat</button>
+        </div>
+        <div id="client-chat-box" style="display:none; flex-direction:column; height:250px; border:1px solid #dee2e6; border-radius:6px; background:#fff; overflow:hidden;">
+          <div class="chat-messages" id="client-chat-msgs" style="flex:1; padding:10px; overflow-y:auto; background:#f8f9fa; display:flex; flex-direction:column; gap:6px;"></div>
+          <div class="chat-input-area">
+            <label for="client-chat-file" style="cursor:pointer; font-size:1.2rem;" title="Anexar Documento, Vídeo ou Áudio">📎</label>
+            <input type="file" id="client-chat-file" style="display:none;" onchange="clienteEnviarFicheiro(event)">
+            <input type="text" id="client-chat-text" placeholder="Escreva a mensagem..." onkeydown="if(event.key==='Enter') clienteEnviarMsg()" style="flex:1;">
+            <button class="btn btn-sm" onclick="clienteEnviarMsg()">Enviar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT INTEGRAL -->
   <script>
     let members = [];
+    let inscricoesOnline = [];
     let plans = [
       { name: 'Mensal Trabalhador', price: 2500, days: 30 },
       { name: 'Musculação Mensal', price: 3000, days: 30 },
@@ -536,36 +614,30 @@
     let payments = [];
     let expenses = [];
     let salaries = [];
-    let products = [{ name: 'Creatina 300g', price: 2500, stock: 12, desc: 'Creatina monohidratada pura 300g', use: 'Tomar 5g por dia com água.', foto: '' }];
+    let products = [{ name: 'Creatina 300g', price: 2500, stock: 12, desc: 'Creatina monohidratada pura 300g', use: 'Tomar 5g por dia.', foto: '' }];
     let categories = [{ id: 1, name: 'Proteínas', desc: 'Suplementos', produtos: 5 }];
     let sales = [];
     let attendanceLogs = [];
-    let collaborators = [{ 
-      id: 1, 
-      name: 'Administrador KOSMO', 
-      role: 'Gerente', 
-      phone: '9988886', 
-      user: 'admin', 
-      pass: 'admin123', 
-      perms: ['all'] 
-    }];
+    let collaborators = [{ id: 1, name: 'Administrador KOSMO', role: 'Gerente', phone: '9988886', user: 'admin', pass: 'admin123', perms: ['all'] }];
     let picaPontoLogs = [];
+    let chatMessages = [];
     let totemWindowRef = null;
     let fotoTemp = '';
     let fotoProdTemp = '';
+    let portalFotoTemp = '';
+    let portalAnexoTemp = '';
+    let clienteChatAtivo = null;
     let isLogonActive = true;
     let loggedUser = null;
 
     function directLogin() {
       const u = document.getElementById('log-user').value.trim();
       const p = document.getElementById('log-pass').value.trim();
-      
       if (u === 'admin' && p === 'admin123') {
         loggedUser = { name: 'Administrador (Gerente)', role: 'Admin', perms: ['all'] };
         finalizeLogin();
         return;
       }
-
       const colab = collaborators.find(c => c.user === u && c.pass === p);
       if (colab) {
         loggedUser = colab;
@@ -580,39 +652,8 @@
       document.getElementById('login-overlay').style.display = 'none';
       const lbl = document.getElementById('logged-user-label');
       if (lbl) lbl.innerText = `Sessão: ${loggedUser.name} (${loggedUser.role})`;
-      
-      aplicarPermissoesMenu();
       navigate('dashboard');
       refreshAll();
-    }
-
-    function aplicarPermissoesMenu() {
-      if (!loggedUser) return;
-      if (loggedUser.perms.includes('all')) {
-        document.querySelectorAll('.nav-item').forEach(el => el.style.display = 'flex');
-        return;
-      }
-      
-      const mapNav = {
-        membros: 'nav-membros', checkins: 'nav-checkins', planos: 'nav-planos', cartaodigital: 'nav-cartaodigital',
-        pagamentos: 'nav-pagamentos', faturas: 'nav-faturas', despesas: 'nav-despesas', salarios: 'nav-salarios',
-        pos: 'nav-pos', produtos: 'nav-produtos', categorias: 'nav-categorias', stock: 'nav-stock', vendas: 'nav-vendas',
-        picaponto: 'nav-picaponto'
-      };
-
-      document.querySelectorAll('.nav-item').forEach(el => {
-        if (el.id === 'nav-dashboard' || el.id === 'nav-export' || el.id === 'nav-mensagens' || el.id === 'nav-lembretes') {
-          el.style.display = 'flex';
-          return;
-        }
-        let permitido = false;
-        for (let permKey in mapNav) {
-          if (el.id === mapNav[permKey] && loggedUser.perms.includes(permKey)) {
-            permitido = true;
-          }
-        }
-        el.style.display = permitido ? 'flex' : 'none';
-      });
     }
 
     function navigate(viewId) {
@@ -624,10 +665,10 @@
       if (navBtn) navBtn.classList.add('active');
 
       const titles = {
-        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
+        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', inscricoes: 'Inscrições Online Pendentes', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
         pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
         pos: 'POS Inteligente', produtos: 'Catálogo de Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
-        mensagens: 'Enviar Mensagens', lembretes: 'Lembretes & Alertas', reportes: 'Reportes & Manutenção',
+        mensagens: 'Enviar Mensagens', chat: 'Chat Online Clientes', lembretes: 'Lembretes & Alertas', reportes: 'Reportes & Manutenção',
         config: 'Configurações', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
         retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
       };
@@ -639,6 +680,7 @@
 
     function refreshAll() {
       renderMembers();
+      renderInscricoesOnline();
       renderPlans();
       renderProducts();
       renderCategories();
@@ -649,6 +691,7 @@
       renderStock();
       renderColabs();
       renderPicaPonto();
+      renderChatStaff();
       populateSelects();
       updateDynamicMetrics();
     }
@@ -685,6 +728,16 @@
       if (document.getElementById('per-rec')) document.getElementById('per-rec').innerText = totalRec + ' CVE';
       if (document.getElementById('per-des')) document.getElementById('per-des').innerText = totalDes + ' CVE';
       if (document.getElementById('per-liq')) document.getElementById('per-liq').innerText = liquido + ' CVE';
+
+      const badgeInsc = document.getElementById('badge-inscricoes');
+      if (badgeInsc) {
+        if (inscricoesOnline.length > 0) {
+          badgeInsc.innerText = inscricoesOnline.length;
+          badgeInsc.style.display = 'inline-block';
+        } else {
+          badgeInsc.style.display = 'none';
+        }
+      }
     }
 
     function converterFotoMembro(event) {
@@ -713,10 +766,12 @@
       }
     }
 
-    /* ADICIONAR OU EDITAR MEMBRO (CRUD COMPLETO) */
+    /* GESTÃO DE MEMBROS (EDITAR, APAGAR, FOTO NÍTIDA) */
     function saveMember() {
       const editId = document.getElementById('m-edit-id').value;
       const name = document.getElementById('m-name').value.trim();
+      const sexo = document.getElementById('m-sexo').value;
+      const nif = document.getElementById('m-nif').value.trim();
       const barcode = document.getElementById('m-barcode').value.trim();
       const email = document.getElementById('m-email').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
@@ -727,36 +782,24 @@
       if (!name || !barcode) { alert('Preencha o Nome e o Código do Membro.'); return; }
 
       if (editId) {
-        // Editar Membro Existente
         const m = members.find(x => x.id == editId);
         if (m) {
-          m.name = name;
-          m.barcode = barcode;
-          m.email = email;
-          m.phone = phone;
-          m.plan = plan;
-          m.date = startDate;
+          m.name = name; m.sexo = sexo; m.nif = nif; m.barcode = barcode; m.email = email; m.phone = phone; m.plan = plan; m.date = startDate;
           if (foto) m.foto = foto;
         }
         alert('Membro atualizado com sucesso!');
         cancelEditMember();
       } else {
-        // Novo Membro
-        members.push({
-          id: Date.now(),
-          name, barcode, email, phone, plan,
-          foto: foto || '',
-          date: startDate
-        });
+        members.push({ id: Date.now(), name, sexo, nif, barcode, email, phone, plan, foto: foto || '', date: startDate });
         alert('Membro registado com sucesso!');
       }
-
       refreshAll();
       clearMemberForm();
     }
 
     function clearMemberForm() {
       document.getElementById('m-name').value = '';
+      document.getElementById('m-nif').value = '';
       document.getElementById('m-barcode').value = '';
       document.getElementById('m-email').value = '';
       document.getElementById('m-phone').value = '';
@@ -771,6 +814,8 @@
       if (!m) return;
       document.getElementById('m-edit-id').value = m.id;
       document.getElementById('m-name').value = m.name;
+      document.getElementById('m-sexo').value = m.sexo || 'Masculino';
+      document.getElementById('m-nif').value = m.nif || '';
       document.getElementById('m-barcode').value = m.barcode;
       document.getElementById('m-email').value = m.email || '';
       document.getElementById('m-phone').value = m.phone || '';
@@ -793,7 +838,7 @@
     }
 
     function deleteMember(id) {
-      if (confirm('Tem a certeza de que pretende eliminar este membro do sistema?')) {
+      if (confirm('Deseja eliminar este membro?')) {
         members = members.filter(x => x.id !== id);
         refreshAll();
       }
@@ -808,12 +853,12 @@
         return;
       }
       members.forEach(m => {
-        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:48px; height:48px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">${m.name[0]}</div>`;
+        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:52px; height:52px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.2rem;">${m.name[0]}</div>`;
         tbody.innerHTML += `
           <tr>
             <td>${fotoTag}</td>
-            <td><code>${m.barcode}</code></td>
-            <td><strong>${m.name}</strong><br><small style="color:#666;">${m.email || 'Sem e-mail'} | ${m.phone || 'Sem telemóvel'}</small></td>
+            <td><code>ID: ${m.barcode}</code><br><small>NIF: ${m.nif || '---'}</small></td>
+            <td><strong>${m.name}</strong><br><small style="color:#666;">${m.email || 'Sem e-mail'} | ${m.phone || '---'}</small></td>
             <td>${m.plan}<br><small style="color:#888;">Início: ${m.date || '---'}</small></td>
             <td>
               <button class="btn btn-sm btn-blue" onclick="editMember(${m.id})">✏️ Editar</button>
@@ -822,6 +867,214 @@
           </tr>
         `;
       });
+    }
+
+    /* PORTAL DE INSCRIÇÃO ONLINE PÚBLICO */
+    function abrirPortalInscricao() {
+      document.getElementById('portal-inscricao-overlay').style.display = 'flex';
+    }
+    function fecharPortalInscricao() {
+      document.getElementById('portal-inscricao-overlay').style.display = 'none';
+    }
+    function togglePortalAnexos() {
+      const plano = document.getElementById('portal-plan').value;
+      const box = document.getElementById('portal-box-anexo');
+      const lbl = document.getElementById('portal-label-anexo');
+      if (plano === 'Plano Estudante') {
+        lbl.innerText = 'Documento Comprovativo da Escola (Obrigatório):';
+        box.style.display = 'block';
+      } else if (plano === 'Plano Casal') {
+        lbl.innerText = 'Documento Comprovativo de Casal (Obrigatório):';
+        box.style.display = 'block';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+    function converterFotoPortal(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) { portalFotoTemp = evt.target.result; document.getElementById('portal-foto-b64').value = portalFotoTemp; };
+        reader.readAsDataURL(file);
+      }
+    }
+    function converterAnexoPortal(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) { portalAnexoTemp = evt.target.result; document.getElementById('portal-anexo-b64').value = portalAnexoTemp; };
+        reader.readAsDataURL(file);
+      }
+    }
+    function submeterInscricaoOnline() {
+      const name = document.getElementById('portal-name').value.trim();
+      const sexo = document.getElementById('portal-sexo').value;
+      const nif = document.getElementById('portal-nif').value.trim();
+      const email = document.getElementById('portal-email').value.trim();
+      const phone = document.getElementById('portal-phone').value.trim();
+      const plan = document.getElementById('portal-plan').value;
+      const foto = document.getElementById('portal-foto-b64').value;
+      const anexo = document.getElementById('portal-anexo-b64').value;
+
+      if (!name || !nif || !email || !phone) { alert('Preencha todos os campos obrigatórios.'); return; }
+
+      inscricoesOnline.push({
+        id: Date.now(),
+        name, sexo, nif, email, phone, plan, foto, anexo,
+        date: new Date().toLocaleDateString('pt-PT')
+      });
+
+      alert('Inscrição submetida com sucesso! A aguardar validação pela gerência.');
+      fecharPortalInscricao();
+      refreshAll();
+    }
+
+    function renderInscricoesOnline() {
+      const tbody = document.getElementById('online-inscricoes-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      if (inscricoesOnline.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#777;">Sem inscrições online pendentes.</td></tr>`;
+        return;
+      }
+      inscricoesOnline.forEach((insc, idx) => {
+        const fotoTag = insc.foto ? `<img src="${insc.foto}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">` : '👤';
+        const anexoTag = insc.anexo ? `<a href="${insc.anexo}" target="_blank" download="comprovativo" style="color:var(--primary); font-weight:bold;">Ver Anexo</a>` : 'Nenhum';
+        tbody.innerHTML = tbody.innerHTML + `
+          <tr>
+            <td>${fotoTag}</td>
+            <td><strong>${insc.name}</strong><br><small>NIF: ${insc.nif}</small></td>
+            <td>${insc.phone}<br><small>${insc.email}</small></td>
+            <td>${insc.plan}</td>
+            <td>${anexoTag}</td>
+            <td>
+              <button class="btn btn-sm btn-green" onclick="validarInscricao(${idx})">✅ Validar / Adicionar</button>
+              <button class="btn btn-sm" style="background:var(--danger);" onclick="rejeitarInscricao(${idx})">❌ Rejeitar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function validarInscricao(idx) {
+      const insc = inscricoesOnline[idx];
+      members.push({
+        id: Date.now(),
+        name: insc.name,
+        sexo: insc.sexo,
+        nif: insc.nif,
+        barcode: String(Math.floor(100000 + Math.random() * 900000)),
+        email: insc.email,
+        phone: insc.phone,
+        plan: insc.plan,
+        foto: insc.foto,
+        date: new Date().toISOString().split('T')[0]
+      });
+      inscricoesOnline.splice(idx, 1);
+      refreshAll();
+      alert('Inscrição validada e adicionada aos Membros Ativos com sucesso!');
+    }
+
+    function rejeitarInscricao(idx) {
+      if (confirm('Deseja rejeitar esta inscrição online?')) {
+        inscricoesOnline.splice(idx, 1);
+        refreshAll();
+      }
+    }
+
+    /* CHAT ONLINE INTERATIVO COM PARTILHA DE FICHEIROS (CLIP) */
+    function ativarChatCliente() {
+      const nomeInput = document.getElementById('client-chat-name-input').value.trim();
+      if (!nomeInput) { alert('Introduza o seu nome para iniciar a conversa.'); return; }
+      clienteChatAtivo = nomeInput;
+      document.getElementById('client-chat-login').style.display = 'none';
+      document.getElementById('client-chat-box').style.display = 'flex';
+      renderChatGeral();
+    }
+
+    function clienteEnviarMsg() {
+      const txt = document.getElementById('client-chat-text').value.trim();
+      if (!txt) return;
+      chatMessages.push({ sender: 'client', name: clienteChatAtivo, type: 'text', content: txt, time: new Date().toLocaleTimeString('pt-PT') });
+      document.getElementById('client-chat-text').value = '';
+      refreshAll();
+    }
+
+    function clienteEnviarFicheiro(event) {
+      const file = event.target.files[0];
+      if (file && clienteChatAtivo) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          chatMessages.push({ sender: 'client', name: clienteChatAtivo, type: 'file', filename: file.name, content: e.target.result, time: new Date().toLocaleTimeString('pt-PT') });
+          refreshAll();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function enviarMensagemChat() {
+      const txt = document.getElementById('chat-input-text').value.trim();
+      if (!txt) return;
+      chatMessages.push({ sender: 'staff', name: loggedUser ? loggedUser.name : 'Staff KOSMO', type: 'text', content: txt, time: new Date().toLocaleTimeString('pt-PT') });
+      document.getElementById('chat-input-text').value = '';
+      refreshAll();
+    }
+
+    function enviarFicheiroStaff(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          chatMessages.push({ sender: 'staff', name: loggedUser ? loggedUser.name : 'Staff KOSMO', type: 'file', filename: file.name, content: e.target.result, time: new Date().toLocaleTimeString('pt-PT') });
+          refreshAll();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderChatGeral() {
+      // Chat do Cliente Externo
+      const clientBox = document.getElementById('client-chat-msgs');
+      if (clientBox) {
+        clientBox.innerHTML = '';
+        if (chatMessages.length === 0) {
+          clientBox.innerHTML = '<div style="text-align:center; color:#777; font-size:0.82rem;">Inicie a conversa com a equipa KOSMO.</div>';
+        } else {
+          chatMessages.forEach(msg => {
+            const isClient = msg.sender === 'client';
+            const cls = isClient ? 'client' : 'staff';
+            let conteudoHTML = msg.content;
+            if (msg.type === 'file') {
+              conteudoHTML = `📎 <a href="${msg.content}" target="_blank" download="${msg.filename}" style="color:var(--primary); font-weight:bold;">${msg.filename}</a>`;
+            }
+            clientBox.innerHTML += `<div class="chat-msg ${cls}"><strong>${msg.name}:</strong> ${conteudoHTML} <br><small style="font-size:0.65rem; color:#888;">${msg.time}</small></div>`;
+          });
+          clientBox.scrollTop = clientBox.scrollHeight;
+        }
+      }
+    }
+
+    function renderChatStaff() {
+      renderChatGeral();
+      // Secção de Chat interna do Gerente / Staff
+      const staffArea = document.getElementById('chat-messages-area');
+      if (staffArea) {
+        staffArea.innerHTML = '';
+        if (chatMessages.length === 0) {
+          staffArea.innerHTML = '<div style="text-align:center; color:#777;">Sem mensagens no chat online.</div>';
+        } else {
+          chatMessages.forEach(msg => {
+            const isClient = msg.sender === 'client';
+            const cls = isClient ? 'client' : 'staff';
+            let conteudoHTML = msg.content;
+            if (msg.type === 'file') {
+              conteudoHTML = `📎 <a href="${msg.content}" target="_blank" download="${msg.filename}" style="color:var(--primary); font-weight:bold;">${msg.filename}</a>`;
+            }
+            staffArea.innerHTML += `<div class="chat-msg ${cls}"><strong>${msg.name} (${msg.sender}):</strong> ${conteudoHTML} <br><small style="font-size:0.68rem; color:#88929b;">${msg.time}</small></div>`;
+          });
+          staffArea.scrollTop = staffArea.scrollHeight;
+        }
+      }
     }
 
     function addPlan() {
@@ -849,14 +1102,14 @@
       const name = selectEl.value;
       const m = members.find(x => x.name === name);
       if (!m) {
-        zone.innerHTML = `<p style="color:#777; padding:20px;">Nenhum membro selecionado ou registado.</p>`;
+        zone.innerHTML = `<p style="color:#777; padding:20px;">Nenhum membro selecionado.</p>`;
         return;
       }
 
       zone.innerHTML = `
         <div class="id-card-wrap">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span style="font-weight:bold; font-size:1.1rem; letter-spacing:0.5px;">KOSMO GYM CARD</span>
+            <span style="font-weight:bold; font-size:1.1rem;">KOSMO GYM CARD</span>
             <span style="font-size:0.75rem; color:#aaa;">NIF: 283023805</span>
           </div>
           <div style="display:flex; gap:16px; align-items:center; margin-bottom:16px;">
@@ -864,7 +1117,7 @@
               ${m.foto ? `<img src="${m.foto}" style="width:100%; height:100%; object-fit:cover;">` : `<span style="color:#000; font-weight:bold; font-size:2rem;">${m.name[0]}</span>`}
             </div>
             <div>
-              <h3 style="font-size:1.1rem; line-height:1.3; color:#fff; font-weight:700;">${m.name}</h3>
+              <h3 style="font-size:1.1rem; color:#fff; font-weight:700;">${m.name}</h3>
               <p style="font-size:0.85rem; color:#bbb; margin-top:4px;">ID: ${m.barcode}</p>
               <p style="font-size:0.85rem; color:#bbb;">Plano: ${m.plan}</p>
             </div>
@@ -893,7 +1146,7 @@
 
     function renderPayments() {
       const tbody = document.getElementById('payments-table-body');
-      const invBody = document.getElementById('invoices-table-body');
+      const invBody = document.getElementById('faturas-table-body') || document.getElementById('invoices-table-body');
       if (tbody) tbody.innerHTML = '';
       if (invBody) invBody.innerHTML = '';
       payments.forEach(p => {
@@ -945,16 +1198,7 @@
       if (!name || !price) return;
       products.push({ name, price, stock: Number(stock), desc, use, foto });
       refreshAll();
-
-      document.getElementById('p-name').value = '';
-      document.getElementById('p-price').value = '';
-      document.getElementById('p-stock').value = '10';
-      document.getElementById('p-desc').value = '';
-      document.getElementById('p-use').value = '';
-      document.getElementById('p-foto-base64').value = '';
-      document.getElementById('p-foto-file').value = '';
-      fotoProdTemp = '';
-      alert('Produto guardado no catálogo com sucesso!');
+      alert('Produto guardado!');
     }
 
     function renderProducts() {
@@ -963,7 +1207,7 @@
       tbody.innerHTML = '';
       products.forEach((p, idx) => {
         const fotoTag = p.foto ? `<img src="${p.foto}" style="width:36px; height:36px; object-fit:cover; border-radius:4px;">` : '📦';
-        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><strong>${p.name}</strong><br><small style="color:#666;">${p.desc || ''}</small></td><td>${p.price} CVE</td><td>${p.stock}</td><td><button class="btn-action" onclick="products.splice(${idx},1); refreshAll();">🗑️</button></td></tr>`;
+        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><strong>${p.name}</strong><br><small>${p.desc || ''}</small></td><td>${p.price} CVE</td><td>${p.stock}</td><td><button class="btn-action" onclick="products.splice(${idx},1); refreshAll();">🗑️</button></td></tr>`;
       });
     }
 
@@ -986,12 +1230,11 @@
       const qty = parseInt(document.getElementById('pos-qty').value) || 1;
       const p = products.find(x => x.name === prodName);
       if (!p) return;
-      if (p.stock < qty) { alert('Stock insuficiente para esta venda.'); return; }
-      
+      if (p.stock < qty) { alert('Stock insuficiente.'); return; }
       p.stock -= qty;
       sales.push({ date: new Date().toLocaleDateString('pt-PT'), prod: p.name, qty, total: p.price * qty });
       refreshAll();
-      alert('Venda efetuada com sucesso no POS!');
+      alert('Venda efetuada com sucesso!');
     }
 
     function renderSales() {
@@ -1018,9 +1261,6 @@
       if (!name) return;
       categories.push({ id: Date.now(), name, desc, produtos });
       refreshAll();
-      document.getElementById('cat-name').value = '';
-      document.getElementById('cat-desc').value = '';
-      document.getElementById('cat-produtos').value = '0';
       alert('Categoria registada!');
     }
 
@@ -1048,7 +1288,6 @@
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
-    /* VERIFICAÇÃO AUTOMÁTICA DE VENCIMENTO (-5 DIAS) E EMAIL */
     function verificarAlertaVencimentos() {
       const tbody = document.getElementById('alertas-vencimento-tbody');
       if (!tbody) return;
@@ -1060,9 +1299,7 @@
         const pl = plans.find(p => p.name === m.plan) || { days: 30 };
         const due = new Date(m.date || Date.now());
         due.setDate(due.getDate() + pl.days);
-
-        const diffTime = due - now;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
 
         if (diffDays <= 5 && diffDays >= 0) {
           alertCount++;
@@ -1072,20 +1309,15 @@
               <td>${m.email || 'Sem e-mail'}</td>
               <td>${m.plan}</td>
               <td>${due.toLocaleDateString('pt-PT')}</td>
-              <td><span class="badge" style="background:var(--warning);">Expira em ${diffDays} dias (Aviso Enviado por E-mail)</span></td>
+              <td><span class="badge" style="background:var(--warning);">Expira em ${diffDays} dias (E-mail enviado)</span></td>
             </tr>
           `;
         }
       });
-
-      if (alertCount === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum membro a vencer nos próximos 5 dias.</td></tr>`;
-      } else {
-        alert(`Alerta automático: ${alertCount} membros notificados por e-mail por vencimento próximo.`);
-      }
+      if (alertCount === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum membro a vencer nos próximos 5 dias.</td></tr>`;
+      else alert(`${alertCount} membros notificados por e-mail (-5 dias para vencer).`);
     }
 
-    /* GESTÃO DE COLABORADORES (GERENTE PODE RESETAR SENHAS E APAGAR) */
     function addColab() {
       const name = document.getElementById('colab-name').value.trim();
       const role = document.getElementById('colab-role').value.trim();
@@ -1093,54 +1325,36 @@
       const user = document.getElementById('colab-user').value.trim();
       const pass = document.getElementById('colab-pass').value.trim();
 
-      if (!name || !user || !pass) { alert('Preencha o Nome, Utilizador e Palavra-passe.'); return; }
-
-      const permCheckboxes = document.querySelectorAll('#colab-perms-group input[type="checkbox"]');
-      let perms = [];
-      permCheckboxes.forEach(chk => { if (chk.checked) perms.push(chk.value); });
-
-      collaborators.push({ id: Date.now(), name, role: role || 'Staff', phone, user, pass, perms });
+      if (!name || !user || !pass) { alert('Preencha os campos obrigatórios.'); return; }
+      collaborators.push({ id: Date.now(), name, role: role || 'Staff', phone, user, pass, perms: ['all'] });
       refreshAll();
-
-      document.getElementById('colab-name').value = '';
-      document.getElementById('colab-role').value = '';
-      document.getElementById('colab-phone').value = '';
-      document.getElementById('colab-user').value = '';
-      document.getElementById('colab-pass').value = '';
-      alert('Colaborador registado com sucesso!');
+      alert('Colaborador registado!');
     }
 
     function renderColabs() {
       const tbody = document.getElementById('colab-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
-      if (collaborators.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem colaboradores.</td></tr>`;
-        return;
-      }
       collaborators.forEach(c => {
         const isMaster = c.user === 'admin';
         const actions = isMaster ? '<span>Admin Master</span>' : `
           <button class="btn btn-sm btn-blue" onclick="resetColabPass(${c.id})">🔑 Redefinir Senha</button>
           <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteColab(${c.id})">🗑️ Eliminar</button>
         `;
-        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td><small>${c.perms.join(', ')}</small></td><td>${actions}</td></tr>`;
+        tbody.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td>${actions}</td></tr>`;
       });
     }
 
     function resetColabPass(id) {
-      const novaPass = prompt('Introduza a nova palavra-passe para este colaborador:');
+      const novaPass = prompt('Nova palavra-passe:');
       if (novaPass) {
         const c = collaborators.find(x => x.id === id);
-        if (c) {
-          c.pass = novaPass;
-          alert('Palavra-passe redefinida com sucesso pelo Gerente!');
-        }
+        if (c) { c.pass = novaPass; alert('Senha redefinida com sucesso.'); }
       }
     }
 
     function deleteColab(id) {
-      if (confirm('Tem a certeza de que deseja eliminar este colaborador?')) {
+      if (confirm('Eliminar colaborador?')) {
         collaborators = collaborators.filter(x => x.id !== id);
         refreshAll();
       }
@@ -1149,24 +1363,19 @@
     function regPicaPonto() {
       const colabName = document.getElementById('pica-colab-select').value;
       const picaType = document.getElementById('pica-type').value;
-      if (!colabName) { alert('Selecione um colaborador.'); return; }
+      if (!colabName) return;
       const agora = new Date();
       picaPontoLogs.unshift({ date: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: colabName, type: picaType });
       renderPicaPonto();
-      alert(`Ponto registado: ${colabName} (${picaType})`);
+      alert('Ponto registado!');
     }
 
     function renderPicaPonto() {
       const tbody = document.getElementById('pica-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
-      if (picaPontoLogs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#777;">Nenhum registo de ponto hoje.</td></tr>`;
-        return;
-      }
       picaPontoLogs.forEach(l => {
-        const badgeCol = l.type === 'Entrada' ? 'badge-ok' : 'badge-err';
-        tbody.innerHTML += `<tr><td>${l.date}</td><td>${l.time}</td><td><strong>${l.name}</strong></td><td><span class="badge ${badgeCol}">${l.type}</span></td></tr>`;
+        tbody.innerHTML += `<tr><td>${l.date}</td><td>${l.time}</td><td><strong>${l.name}</strong></td><td><span class="badge ${l.type === 'Entrada' ? 'badge-ok' : 'badge-err'}">${l.type}</span></td></tr>`;
       });
     }
 
@@ -1177,24 +1386,11 @@
       const posSel = document.getElementById('pos-prod');
       const picaSel = document.getElementById('pica-colab-select');
 
-      if (pSel) {
-        pSel.innerHTML = '';
-        if (members.length === 0) pSel.innerHTML = `<option value="">Sem membros</option>`;
-        members.forEach(m => pSel.innerHTML += `<option value="${m.name}">${m.name}</option>`);
-        renderDigitalCard();
-      }
+      if (pSel) { pSel.innerHTML = ''; members.forEach(m => pSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); renderDigitalCard(); }
       if (paySel) { paySel.innerHTML = ''; members.forEach(m => paySel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
       if (msgSel) { msgSel.innerHTML = ''; members.forEach(m => msgSel.innerHTML += `<option value="${m.name}">${m.name}</option>`); }
-      if (posSel) { 
-        posSel.innerHTML = ''; 
-        products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE - Stock: ${p.stock})</option>`);
-        previewPosProduct();
-      }
-      if (picaSel) {
-        picaSel.innerHTML = '';
-        if (collaborators.length === 0) picaSel.innerHTML = `<option value="">Sem colaboradores</option>`;
-        collaborators.forEach(c => picaSel.innerHTML += `<option value="${c.name}">${c.name} (${c.role || 'Staff'})</option>`);
-      }
+      if (posSel) { posSel.innerHTML = ''; products.forEach(p => posSel.innerHTML += `<option value="${p.name}">${p.name} (${p.price} CVE)</option>`); previewPosProduct(); }
+      if (picaSel) { picaSel.innerHTML = ''; collaborators.forEach(c => picaSel.innerHTML += `<option value="${c.name}">${c.name}</option>`); }
     }
 
     function onScan(e) {
@@ -1226,7 +1422,7 @@
     }
 
     function exportData() {
-      const data = { members, plans, payments, expenses, salaries, products, categories, sales, attendanceLogs, collaborators, picaPontoLogs };
+      const data = { members, inscricoesOnline, plans, payments, expenses, salaries, products, categories, sales, attendanceLogs, collaborators, picaPontoLogs, chatMessages };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1239,152 +1435,37 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const content = e.target.result;
-        if (file.name.endsWith('.csv') || content.includes(',')) {
-          try {
-            const lines = content.split('\n');
-            let count = 0;
-            for (let i = 1; i < lines.length; i++) {
-              const line = lines[i].trim();
-              if (!line) continue;
-              const cols = line.split(',');
-              if (cols.length >= 2) {
-                members.push({
-                  id: Date.now() + i,
-                  name: cols[0].replace(/['"]+/g, '').trim(),
-                  barcode: cols[1].replace(/['"]+/g, '').trim(),
-                  phone: cols[2] ? cols[2].replace(/['"]+/g, '').trim() : '',
-                  plan: 'Mensal Trabalhador',
-                  foto: '',
-                  date: new Date().toISOString().split('T')[0]
-                });
-                count++;
-              }
-            }
-            refreshAll();
-            alert(`Sucesso! ${count} membros importados via CSV.`);
-          } catch(err) {
-            alert('Erro ao processar CSV.');
-          }
-          return;
-        }
-
         try {
-          const data = JSON.parse(content);
+          const data = JSON.parse(e.target.result);
           if (data.members) members = data.members;
+          if (data.inscricoesOnline) inscricoesOnline = data.inscricoesOnline;
           if (data.plans) plans = data.plans;
           if (data.payments) payments = data.payments;
-          if (data.expenses) expenses = data.expenses;
-          if (data.salaries) salaries = data.salaries;
           if (data.products) products = data.products;
-          if (data.categories) categories = data.categories;
-          if (data.sales) sales = data.sales;
-          if (data.attendanceLogs) attendanceLogs = data.attendanceLogs;
           if (data.collaborators) collaborators = data.collaborators;
-          if (data.picaPontoLogs) picaPontoLogs = data.picaPontoLogs;
+          if (data.chatMessages) chatMessages = data.chatMessages;
           refreshAll();
-          alert('Backup restaurado com sucesso!');
+          alert('Dados importados com sucesso!');
         } catch(err) {
-          alert('Formato de ficheiro inválido.');
+          alert('Erro ao carregar o backup.');
         }
       };
       reader.readAsText(file);
     }
 
-    // ECRÃ TOTEM GIGANTE
     function openTotemWindow() {
       totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
       totemWindowRef.document.write(`
         <!DOCTYPE html>
         <html lang="pt">
-        <head>
-          <meta charset="UTF-8">
-          <title>Ginásio KOSMO - Ecrã Totem Gigante</title>
-          <style>
-            body { background: #0b0e11; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; text-align: center; overflow: hidden; }
-            .badge { padding: 25px 80px; border-radius: 16px; font-size: 3.5rem; font-weight: 900; color: #fff; display: inline-block; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-          </style>
-        </head>
-        <body>
-          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #222; padding-bottom:15px;">
-            <div style="font-size:1.8rem; color:#aaa; font-weight:800; letter-spacing:1px;">TERMINAL DE CHECK-IN KOSMO</div>
-            <div id="totem-relogio" style="font-size: 6.5rem; font-family: monospace; color: #ffd43b; font-weight: 900; letter-spacing: 2px;">00:00:00</div>
-          </div>
-          
-          <div id="totem-corpo" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-            <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
-            <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-            <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
-          </div>
-
-          <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
-
-          <script>
-            let resetTimer = null;
-            let wakeLock = null;
-
-            async function ativarWakeLock() {
-              if ('wakeLock' in navigator) {
-                try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
-              }
-            }
-            ativarWakeLock();
-
-            function voltarEcraInicial() {
-              document.getElementById('totem-corpo').innerHTML = \`
-                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
-                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
-              \`;
-            }
-
-            function processarCheckinTotem(d) {
-              if (resetTimer) clearTimeout(resetTimer);
-              const fotoHtml = d.foto ? '<img src="'+d.foto+'" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border:6px solid '+(d.auth?'#2b8a3e':'#c92a2a')+'; margin-bottom:20px;">' : '';
-              const bgCol = d.auth ? '#2b8a3e' : '#c92a2a';
-              const txtStatus = d.auth ? 'ACESSO PERMITIDO' : 'ACESSO NEGADO';
-              
-              document.getElementById('totem-corpo').innerHTML = \`
-                \${fotoHtml}
-                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
-                <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
-                <p style="font-size:1.5rem; color:#ddd; font-weight:500;">Início: \${d.startDate||'---'} | Vencimento: \${d.dueDate||'---'}</p>
-                <div class="badge" style="background:\${bgCol};">\${txtStatus}</div>
-              \`;
-
-              resetTimer = setTimeout(() => { voltarEcraInicial(); }, 15000);
-            }
-
-            setInterval(() => {
-              document.getElementById('totem-relogio').innerText = new Date().toLocaleTimeString('pt-PT');
-            }, 1000);
-
-            window.addEventListener('storage', (event) => {
-              if (event.key === 'kosmo_totem_scan') {
-                try { const d = JSON.parse(event.newValue); if (d) processarCheckinTotem(d); } catch(e) {}
-              }
-            });
-
-            window.addEventListener('message', (event) => {
-              if (event.data) processarCheckinTotem(event.data);
-            });
-          <\/script>
+        <head><meta charset="UTF-8"><title>Totem KOSMO</title></head>
+        <body style="background:#0b0e11; color:#fff; text-align:center; padding:50px; font-family:sans-serif;">
+          <h1 style="color:#ffd43b; font-size:4rem;">TERMINAL DE CHECK-IN</h1>
+          <p style="font-size:2rem;">Aproxime o cartão / ID...</p>
         </body>
         </html>
       `);
     }
-
-    window.onload = function() {
-      setInterval(() => {
-        if (!isLogonActive) {
-          const inp = document.getElementById('chk-input');
-          const isCheckinActive = document.getElementById('view-checkins').classList.contains('active');
-          if (inp && isCheckinActive && document.activeElement !== inp) {
-            inp.focus();
-          }
-        }
-      }, 500);
-    };
   </script>
 </body>
 </html>
