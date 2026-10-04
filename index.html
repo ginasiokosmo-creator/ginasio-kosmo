@@ -114,14 +114,14 @@
 </head>
 <body>
 
-  <!-- LOGIN DE ACESSO (CAMPOS TOTALMENTE LIMPOS) -->
+  <!-- LOGIN DE ACESSO (CAMPOS TOTALMENTE LIMPOS E VAZIOS) -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
       <h3 style="margin-bottom: 6px; color: var(--dark);">Painel de Gestão - KOSMO</h3>
       <p style="font-size: 0.78rem; color: #666; margin-bottom: 15px;">Insira as suas credenciais de acesso</p>
-      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" placeholder="Insira o utilizador..."></div>
-      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" placeholder="Insira a palavra-passe..."></div>
+      <div style="margin-bottom: 10px; text-align: left;"><label>Utilizador</label><input type="text" id="log-user" placeholder="Insira o seu utilizador..."></div>
+      <div style="margin-bottom: 15px; text-align: left;"><label>Palavra-passe</label><input type="password" id="log-pass" placeholder="Insira a sua palavra-passe..."></div>
       <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
       <button type="button" class="btn btn-blue" style="width: 100%; padding: 10px; margin-top: 8px;" onclick="abrirPortalInscricao()">🌐 Abrir Portal de Inscrição Online</button>
     </div>
@@ -168,7 +168,7 @@
 
       <div class="nav-group-title">Colaboradores</div>
       <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores</span></button>
-      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️️</span><span class="nav-text">Pica Ponto</span></button>
+      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
@@ -595,6 +595,7 @@
     </div>
   </div>
 
+  <!-- SCRIPT INTEGRAL -->
   <script>
     let members = [];
     let inscricoesOnline = [];
@@ -620,11 +621,12 @@
     let isLogonActive = true;
     let loggedUser = null;
 
-    // Se o link contiver #portal ou ?portal, abre diretamente a inscrição para clientes
+    // Se o link contiver ?portal=inscricao, esconde totalmente o login e abre o portal público
     window.addEventListener('DOMContentLoaded', () => {
-      const hash = window.location.hash;
       const params = new URLSearchParams(window.location.search);
-      if (hash === '#inscricao' || params.has('portal') || params.has('inscricao')) {
+      if (params.get('portal') === 'inscricao' || window.location.hash === '#inscricao') {
+        const loginOverlay = document.getElementById('login-overlay');
+        if (loginOverlay) loginOverlay.style.display = 'none';
         abrirPortalInscricao();
       }
     });
@@ -806,7 +808,7 @@
       if (members.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem membros.</td></tr>`; return; }
       members.forEach(m => {
         const fotoTag = m.foto ? `<img src="${m.foto}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:48px; height:48px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold;">${m.name[0]}</div>`;
-        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><code>ID: ${m.barcode}</code><br><small>NIF: ${m.nif || '---'}</small></td><td><strong>${m.name}</strong><br><small>${m.email || ''} | ${m.phone || ''}</small></td><td>${m.plan}<br><small>Início: ${m.date || '---'}</small></td><td><button class="btn btn-sm btn-blue" onclick="editMember(${m.id})">✏️ Editar</button> <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️</button></td></tr>`;
+        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><code>ID: ${m.barcode}</code><br><small>NIF: ${m.nif || '---'}</small></td><td><strong>${m.name}</strong><br><small>${m.email || ''} | ${m.phone || ''}</small></td><td>${m.plan}<br><small>Início: ${m.date || '---'}</small></td><td><button class="btn btn-sm btn-blue" onclick="editMember(${m.id})">✏️ Editar</button> <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️️</button></td></tr>`;
       });
     }
 
