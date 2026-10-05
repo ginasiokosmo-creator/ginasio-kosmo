@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Sistema Integrado de Gestão (Versão Master Definitiva)</title>
+  <title>Ginásio KOSMO - Sistema Integrado de Gestão (Versão Master Absoluta Funcional)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -187,7 +187,7 @@
 
       <div class="nav-group-title">Colaboradores & Pica-Ponto</div>
       <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Staff & Cartão Ponto</span></button>
-      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️️</span><span class="nav-text">Pica Ponto (Leitor)</span></button>
+      <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto (Manual)</span></button>
 
       <div class="nav-group-title">Relatórios</div>
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
@@ -253,12 +253,80 @@
               <h2>Ações Rápidas</h2>
               <div style="margin-top:8px;">
                 <button class="quick-action-btn" onclick="navigate('membros')">👤 Registar Membro</button>
-                <button class="quick-action-btn" onclick="navigate('picaponto')">⏱️ Pica Ponto Staff</button>
+                <button class="quick-action-btn" onclick="navigate('picaponto')">⏱️ Pica Ponto Staff (Manual)</button>
                 <button class="quick-action-btn" onclick="navigate('faturas')">📄 Emitir Faturas</button>
                 <button class="quick-action-btn" onclick="navigate('visao')">📊 Relatórios</button>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ALA DE MEMBROS -->
+      <section id="view-membros" class="view-section">
+        <div class="metrics-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:20px;">
+          <div class="metric-card"><span>Total Registados</span><h3 id="m-stat-total">0</h3></div>
+          <div class="metric-card"><span>Ativos</span><h3 id="m-stat-ativos" style="color:var(--success);">0</h3></div>
+          <div class="metric-card"><span>A Vencer (-5d)</span><h3 id="m-stat-avencer" style="color:var(--warning);">0</h3></div>
+          <div class="metric-card"><span>Expirados</span><h3 id="m-stat-expirados" style="color:var(--danger);">0</h3></div>
+          <div class="metric-card"><span>Pendentes</span><h3 id="m-stat-pendentes" style="color:#1971c2;">0</h3></div>
+          <div class="metric-card"><span>Desativados</span><h3 id="m-stat-desativados" style="color:#666;">0</h3></div>
+        </div>
+
+        <div class="card">
+          <h2 id="form-member-title">Registar Novo Membro</h2>
+          <input type="hidden" id="m-edit-id" value="">
+          <div class="form-grid">
+            <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
+            <div><label>Sexo</label><select id="m-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
+            <div><label>Número de NIF</label><input type="text" id="m-nif" placeholder="NIF do Membro"></div>
+            <div><label>Código / ID de Cliente</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
+            <div><label>E-mail</label><input type="email" id="m-email" placeholder="aluno@email.com"></div>
+            <div><label>Telemóvel / Telefone</label><input type="tel" id="m-phone" placeholder="Contacto"></div>
+            <div><label>Plano</label><select id="m-plan" onchange="toggleMemberAnexo()"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
+            <div><label>Estado da Mensalidade</label><select id="m-estado"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option><option value="Desativado">Desativado</option></select></div>
+            <div><label>Data de Início</label><input type="date" id="m-startdate"></div>
+            <div><label>Fotografia Pessoal</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
+            <div id="m-box-anexo" style="grid-column:1/-1; display:none; background:#fff3bf; padding:12px; border-radius:6px; border:1px solid #f59f00;">
+              <label id="m-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Comprovativo Obrigatório *</label>
+              <input type="file" id="m-anexo-file" accept="image/*,.pdf" onchange="converterAnexoMembro(event)">
+            </div>
+            <div style="grid-column:1/-1; margin-top:10px;">
+              <label style="font-weight:bold; color:var(--primary); margin-bottom:6px;">Contrato de Inscrição KOSMO (Preenchimento Obrigatório)</label>
+              <div class="contrato-box">
+                <strong>Contrato de Inscrição</strong><br><br>
+                Comprometo-me a cuidar de cada utensílio/material afetos a este ginásio como se fosse meu, arrumar e deixar tudo no seu respetivo lugar como a encontrei. Concordo que qualquer material danificado/destruído propositadamente ou por desconhecer a forma correta de a usar recairá sobre mim a responsabilidade de a consertar ou indemnizar por completo o seu valor. <br><br>
+                <label style="display:flex; align-items:center; gap:8px; font-weight:bold; cursor:pointer; color:var(--success);">
+                  <input type="checkbox" id="m-contrato-check" style="width:18px; height:18px;"> Li e concordo plenamente com todas as condições do Contrato de Inscrição do GINÁSIO KOSMO.
+                </label>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="m-foto-base64" value="">
+          <input type="hidden" id="m-anexo-base64" value="">
+          <button type="button" class="btn" id="btn-save-member" onclick="saveMember()">Registar Membro</button>
+          <button type="button" class="btn btn-blue" id="btn-cancel-edit" onclick="cancelEditMember()" style="display:none; background:#868e96;">Cancelar</button>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <h2>Lista de Membros Ativos & Gestão</h2>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <select id="member-filter-select" onchange="renderMembers()" style="padding:6px; font-size:0.85rem;">
+                <option value="todos">Todos os Estados</option>
+                <option value="Ativo">Ativos (Mensalidade Ativa)</option>
+                <option value="A Vencer">A Vencer (-5 dias)</option>
+                <option value="Expirados">Expirados</option>
+                <option value="Inativo">Inativos</option>
+                <option value="Desativado">Desativados</option>
+              </select>
+              <input type="text" id="member-search-input" placeholder="🔍 Pesquisar por nome, NIF ou ID..." oninput="renderMembers()" style="max-width:240px; padding:6px 10px;">
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fotografia</th><th>Código / ID & NIF</th><th>Nome & Contactos</th><th>Plano & Documentos</th><th>Ações de Gestão</th></tr></thead>
+            <tbody id="member-table-body"></tbody>
+          </table>
         </div>
       </section>
 
@@ -276,20 +344,35 @@
         </div>
       </section>
 
-      <!-- PICA-PONTO POR LEITOR DE CÓDIGO DE BARRAS -->
+      <!-- PICA-PONTO MANUAL PARA STAFFS -->
       <section id="view-picaponto" class="view-section">
-        <div class="card" style="text-align:center;">
-          <h2>Terminal Pica-Ponto (Leitor de Código de Barras)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Passe o cartão do colaborador no leitor ou digite o código de barras:</p>
-          <input type="text" id="pica-barcode-input" placeholder="Passe o cartão de código de barras aqui..." onkeydown="onScanPicaPonto(event)" style="max-width:400px; margin:0 auto 20px; padding:12px; font-weight:bold; font-size:1.1rem; text-align:center;">
-        </div>
-
         <div class="card">
-          <h2>Registos de Entrada e Saída do Staff</h2>
+          <h2>Registo Manual de Pica-Ponto (Staff)</h2>
+          <div class="form-grid">
+            <div><label>Selecionar Colaborador</label><select id="pica-colab-select"></select></div>
+            <div><label>Tipo de Registo</label><select id="pica-type"><option value="Entrada">Entrada</option><option value="Saída">Saída</option></select></div>
+          </div>
+          <button class="btn btn-green" style="margin-top:10px;" onclick="regPicaPontoManual()">⏱️ Registar Ponto Manualmente</button>
+        </div>
+        <div class="card">
+          <h2>Histórico de Pica-Ponto do Staff</h2>
           <table>
             <thead><tr><th>Data</th><th>Hora</th><th>Colaborador</th><th>NIF</th><th>Tipo de Registo</th><th>Ações (Editar / Eliminar)</th></tr></thead>
-            <tbody id="pica-table-body"><tr><td colspan="6" style="text-align:center; color:#777;">Sem registos de ponto hoje.</td></tr></tbody>
+            <tbody id="pica-table-body"><tr><td colspan="6" style="text-align:center; color:#777;">Sem registos de ponto.</td></tr></tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- QR CODE DE INSCRIÇÃO ONLINE -->
+      <section id="view-qrinscricao" class="view-section">
+        <div class="card" style="text-align:center;">
+          <h2>QR Code & Link para Inscrição Online</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Os clientes podem ler este QR Code com a câmara do telemóvel para abrir instantaneamente o portal de inscrição do Ginásio KOSMO.</p>
+          <div id="qrcode-container" style="display:inline-block; background:#fff; padding:15px; border-radius:8px; border:1px solid var(--border); margin-bottom:15px;"></div>
+          <p><code id="portal-url-txt" style="font-weight:bold; color:var(--primary); font-size:0.95rem;"></code></p>
+          <div style="margin-top:15px;">
+            <button class="btn btn-blue" onclick="abrirPortalInscricao()">🌐 Testar Portal de Inscrição Agora</button>
+          </div>
         </div>
       </section>
 
@@ -327,86 +410,6 @@
           <table>
             <thead><tr><th>Data / Hora</th><th>Remetente</th><th>Nome do Arquivo / Recibo</th><th>Ações (Ver, Imprimir, Baixar, Eliminar)</th></tr></thead>
             <tbody id="biblioteca-table-body"><tr><td colspan="4" style="text-align:center; color:#777;">Sem arquivos na biblioteca.</td></tr></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- FATURAS COM ENVIO POR E-MAIL E WHATSAPP -->
-      <section id="view-faturas" class="view-section">
-        <div class="card">
-          <h2>Faturas & Envios por E-mail e WhatsApp (NIF: 283023805)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Envie rapidamente as faturas de compras ou mensalidades diretamente para os contactos dos clientes.</p>
-          <table>
-            <thead><tr><th>Nº Fatura</th><th>Data</th><th>Cliente / Ref</th><th>Valor</th><th>Ações de Envio & Gestão</th></tr></thead>
-            <tbody id="invoices-table-body"><tr><td colspan="5" style="text-align:center; color:#777;">Sem faturas emitidas.</td></tr></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ALA DE MEMBROS -->
-      <section id="view-membros" class="view-section">
-        <div class="metrics-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:20px;">
-          <div class="metric-card"><span>Total Registados</span><h3 id="m-stat-total">0</h3></div>
-          <div class="metric-card"><span>Ativos</span><h3 id="m-stat-ativos" style="color:var(--success);">0</h3></div>
-          <div class="metric-card"><span>A Vencer (-5d)</span><h3 id="m-stat-avencer" style="color:var(--warning);">0</h3></div>
-          <div class="metric-card"><span>Expirados</span><h3 id="m-stat-expirados" style="color:var(--danger);">0</h3></div>
-          <div class="metric-card"><span>Pendentes</span><h3 id="m-stat-pendentes" style="color:#1971c2;">0</h3></div>
-          <div class="metric-card"><span>Desativados</span><h3 id="m-stat-desativados" style="color:#666;">0</h3></div>
-        </div>
-
-        <div class="card">
-          <h2 id="form-member-title">Registar Novo Membro</h2>
-          <input type="hidden" id="m-edit-id" value="">
-          <div class="form-grid">
-            <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
-            <div><label>Sexo</label><select id="m-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
-            <div><label>Número de NIF</label><input type="text" id="m-nif" placeholder="NIF do Membro"></div>
-            <div><label>Código / ID de Cliente</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
-            <div><label>E-mail</label><input type="email" id="m-email" placeholder="aluno@email.com"></div>
-            <div><label>Telemóvel / Telefone</label><input type="tel" id="m-phone" placeholder="Contacto"></div>
-            <div><label>Plano</label><select id="m-plan" onchange="toggleMemberAnexo()"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
-            <div><label>Estado da Mensalidade</label><select id="m-estado"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option><option value="Desativado">Desativado</option></select></div>
-            <div><label>Data de Início</label><input type="date" id="m-startdate"></div>
-            <div><label>Fotografia Pessoal</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
-            <div id="m-box-anexo" style="grid-column:1/-1; display:none; background:#fff3bf; padding:12px; border-radius:6px; border:1px solid #f59f00;">
-              <label id="m-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Comprovativo Obrigatório *</label>
-              <input type="file" id="m-anexo-file" accept="image/*,.pdf" onchange="converterAnexoMembro(event)">
-            </div>
-            <div style="grid-column:1/-1; margin-top:10px;">
-              <label style="font-weight:bold; color:var(--primary); margin-bottom:6px;">Contrato de Inscrição KOSMO (Preenchimento Obrigatório)</label>
-              <div class="contrato-box">
-                <strong>Contrato de Inscrição[cite: 8]</strong><br><br>
-                Comprometo-me a cuidar de cada utensílio/material afetos a este ginásio como se fosse meu, arrumar e deixar tudo no seu respetivo lugar como a encontrei. Concordo que qualquer material danificado/destruído propositadamente ou por desconhecer a forma correta de a usar recairá sobre mim a responsabilidade de a consertar ou indemnizar por completo o seu valor[cite: 8]. <br><br>
-                <label style="display:flex; align-items:center; gap:8px; font-weight:bold; cursor:pointer; color:var(--success);">
-                  <input type="checkbox" id="m-contrato-check" style="width:18px; height:18px;"> Li e concordo plenamente com todas as condições do Contrato de Inscrição do GINÁSIO KOSMO[cite: 8].
-                </label>
-              </div>
-            </div>
-          </div>
-          <input type="hidden" id="m-foto-base64" value="">
-          <input type="hidden" id="m-anexo-base64" value="">
-          <button type="button" class="btn" id="btn-save-member" onclick="saveMember()">Registar Membro</button>
-          <button type="button" class="btn btn-blue" id="btn-cancel-edit" onclick="cancelEditMember()" style="display:none; background:#868e96;">Cancelar</button>
-        </div>
-
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-            <h2>Lista de Membros Ativos & Gestão</h2>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <select id="member-filter-select" onchange="renderMembers()" style="padding:6px; font-size:0.85rem;">
-                <option value="todos">Todos os Estados</option>
-                <option value="Ativo">Ativos (Mensalidade Ativa)</option>
-                <option value="A Vencer">A Vencer (-5 dias)</option>
-                <option value="Expirados">Expirados</option>
-                <option value="Inativo">Inativos</option>
-                <option value="Desativado">Desativados</option>
-              </select>
-              <input type="text" id="member-search-input" placeholder="🔍 Pesquisar por nome, NIF ou ID..." oninput="renderMembers()" style="max-width:240px; padding:6px 10px;">
-            </div>
-          </div>
-          <table>
-            <thead><tr><th>Fotografia</th><th>Código / ID & NIF</th><th>Nome & Contactos</th><th>Plano & Documentos</th><th>Ações de Gestão</th></tr></thead>
-            <tbody id="member-table-body"></tbody>
           </table>
         </div>
       </section>
@@ -471,16 +474,73 @@
         </div>
       </section>
 
+      <!-- CATEGORIAS -->
+      <section id="view-categorias" class="view-section">
+        <div class="card">
+          <h2>Registar Categoria</h2>
+          <div class="form-grid">
+            <div><label>Nome da Categoria</label><input type="text" id="cat-name" placeholder="Ex: Suplementos"></div>
+            <div><label>Descrição</label><input type="text" id="cat-desc" placeholder="Descrição da categoria"></div>
+          </div>
+          <button class="btn" onclick="addCategory()">Registar Categoria</button>
+        </div>
+        <div class="card">
+          <h2>Categorias Existentes</h2>
+          <table>
+            <thead><tr><th>Nome</th><th>Descrição</th><th>Ações</th></tr></thead>
+            <tbody id="categories-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- DESPESAS -->
+      <section id="view-despesas" class="view-section">
+        <div class="card">
+          <h2>Registar Despesa</h2>
+          <div class="form-grid">
+            <div><label>Descrição da Despesa</label><input type="text" id="exp-desc" placeholder="Ex: Eletricidade, Água"></div>
+            <div><label>Valor (CVE)</label><input type="number" id="exp-val" placeholder="5000"></div>
+          </div>
+          <button class="btn" style="background:var(--danger);" onclick="addExpense()">Registar Despesa</button>
+        </div>
+        <div class="card">
+          <h2>Histórico de Despesas</h2>
+          <table>
+            <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th></tr></thead>
+            <tbody id="expenses-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SALÁRIOS -->
+      <section id="view-salarios" class="view-section">
+        <div class="card">
+          <h2>Registar Salário / Pagamento Staff</h2>
+          <div class="form-grid">
+            <div><label>Nome do Colaborador</label><input type="text" id="sal-name" placeholder="Nome do Staff"></div>
+            <div><label>Valor do Salário (CVE)</label><input type="number" id="sal-val" placeholder="40000"></div>
+          </div>
+          <button class="btn" onclick="addSalary()">Registar Salário</button>
+        </div>
+        <div class="card">
+          <h2>Histórico de Salários</h2>
+          <table>
+            <thead><tr><th>Staff</th><th>Valor</th></tr></thead>
+            <tbody id="salaries-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- CHAT & FEED ONLINE -->
       <section id="view-chat" class="view-section">
         <div class="card">
-          <h2>Chat & Feed Online com Clientes / Inscrições</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Transmita mensagens em tempo real e envie arquivos ou documentos para a biblioteca do sistema.</p>
+          <h2>Chat & Feed Online com Clientes / Inscrições (Com Arquivos, Áudio e Vídeo)</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Transmita mensagens em tempo real e envie arquivos, documentos, vídeos ou áudios para os clientes e portal online.</p>
           <div class="chat-box-container">
             <div class="chat-messages" id="chat-messages-area"><div style="text-align:center; color:#777;">Sem mensagens no feed.</div></div>
             <div class="chat-input-area">
-              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;" title="Enviar Ficheiro/Arquivo">📎</label>
-              <input type="file" id="chat-file-input" style="display:none;" onchange="enviarFicheiroChat(event)">
+              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;" title="Enviar Ficheiro/Arquivo/Áudio/Vídeo">📎</label>
+              <input type="file" id="chat-file-input" style="display:none;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" onchange="enviarFicheiroChat(event)">
               <input type="text" id="chat-input-text" placeholder="Escreva uma mensagem ou transmissão para o feed..." onkeydown="if(event.key==='Enter') enviarMensagemChat()" style="flex:1;">
               <button class="btn btn-sm" onclick="enviarMensagemChat()">Transmitir Mensagem</button>
             </div>
@@ -489,13 +549,10 @@
       </section>
 
       <section id="view-inscricoes" class="view-section"><div class="card"><h2>Inscrições Online</h2><table><thead><tr><th>Foto</th><th>Nome / NIF</th><th>Contacto</th><th>Plano</th><th>Contrato & Comprovativo</th><th>Ações</th></tr></thead><tbody id="online-inscricoes-tbody"></tbody></table></div></section>
-      <section id="view-qrinscricao" class="view-section"><div class="card" style="text-align:center;"><h2>QR Code de Inscrição Online</h2><div id="qrcode-container" style="display:inline-block; background:#fff; padding:15px; border-radius:8px; border:1px solid var(--border); margin-bottom:15px;"></div><p><code id="portal-url-txt" style="font-weight:bold; color:var(--primary);"></code></p></div></section>
       <section id="view-checkins" class="view-section"><div class="card"><h2>Check-ins</h2><input type="text" id="chk-input" placeholder="Passe o leitor..." onkeydown="onScan(event)" style="padding:10px; font-weight:bold; margin-bottom:15px;"><table><thead><tr><th>Data</th><th>Hora</th><th>Membro</th><th>Código</th><th>Estado</th></tr></thead><tbody id="today-attendance-tbody"></tbody></table></div></section>
       <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="pl-name"></div><div><label>Preço</label><input type="number" id="pl-price"></div><div><label>Dias</label><input type="number" id="pl-days" value="30"></div></div><button class="btn" onclick="addPlan()">Criar</button></div><div class="card"><table><thead><tr><th>Plano</th><th>Preço</th><th>Dias</th></tr></thead><tbody id="plans-table-body"></tbody></table></div></section>
       <section id="view-pagamentos" class="view-section"><div class="card"><h2>Pagamentos</h2><div class="form-grid"><div><label>Membro</label><select id="pay-member"></select></div><div><label>Valor</label><input type="number" id="pay-amount" value="2500"></div><div><label>Ref</label><input type="text" id="pay-ref" placeholder="Ref"></div></div><button class="btn btn-green" onclick="addPayment()">Registar</button></div><div class="card"><table><thead><tr><th>Data</th><th>Membro</th><th>Ref</th><th>Valor</th></tr></thead><tbody id="payments-table-body"></tbody></table></div></section>
-      <section id="view-despesas" class="view-section"><div class="card"><h2>Despesas</h2><div class="form-grid"><div><label>Desc</label><input type="text" id="exp-desc"></div><div><label>Valor</label><input type="number" id="exp-val"></div></div><button class="btn" style="background:var(--danger);" onclick="addExpense()">Registar</button></div><div class="card"><table><thead><tr><th>Data</th><th>Desc</th><th>Valor</th></tr></thead><tbody id="expenses-table-body"></tbody></table></div></section>
-      <section id="view-salarios" class="view-section"><div class="card"><h2>Salários</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="sal-name"></div><div><label>Valor</label><input type="number" id="sal-val"></div></div><button class="btn" onclick="addSalary()">Registar</button></div><div class="card"><table><thead><tr><th>Staff</th><th>Valor</th></tr></thead><tbody id="salaries-table-body"></tbody></table></div></section>
-      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="cat-name"></div><div><label>Desc</label><input type="text" id="cat-desc"></div></div><button class="btn" onclick="addCategory()">Registar</button></div><div class="card"><table><thead><tr><th>Nome</th><th>Desc</th><th>Ações</th></tr></thead><tbody id="categories-table-body"></tbody></table></div></section>
+      <section id="view-faturas" class="view-section"><div class="card"><h2>Faturas & Envios por E-mail e WhatsApp (NIF: 283023805)</h2><table><thead><tr><th>Nº Fatura</th><th>Data</th><th>Cliente / Ref</th><th>Valor</th><th>Ações de Envio & Gestão</th></tr></thead><tbody id="invoices-table-body"><tr><td colspan="5" style="text-align:center; color:#777;">Sem faturas emitidas.</td></tr></tbody></table></div></section>
       <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><table><thead><tr><th>Produto</th><th>Stock</th><th>Estado</th></tr></thead><tbody id="stock-table-body"></tbody></table></div></section>
       <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico Vendas</h2><table><thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></section>
       <section id="view-mensagens" class="view-section"><div class="card"><h2>WhatsApp</h2><div class="form-grid"><div><label>Membro</label><select id="msg-member"></select></div><div style="grid-column:1/-1;"><label>Texto</label><textarea id="msg-text" rows="3"></textarea></div></div><button class="btn btn-green" onclick="sendWhatsApp()">Enviar WhatsApp</button></div></section>
@@ -672,10 +729,10 @@
         <div style="grid-column:1/-1; margin-top:8px;">
           <label style="font-weight:bold; color:var(--primary); margin-bottom:4px;">Contrato de Inscrição KOSMO (Aceitação Obrigatória)</label>
           <div class="contrato-box">
-            <strong>Contrato de Inscrição[cite: 8]</strong><br><br>
-            Comprometo-me a cuidar de cada utensílio/material afetos a este ginásio como se fosse meu, arrumar e deixar tudo no seu respetivo lugar como a encontrei. Concordo que qualquer material danificado ou destruído propositadamente ou por desconhecer a forma correta de a usar recairá sobre mim a responsabilidade de o consertar ou indemnizar por completo[cite: 8].<br><br>
+            <strong>Contrato de Inscrição</strong><br><br>
+            Comprometo-me a cuidar de cada utensílio/material afetos a este ginásio como se fosse meu, arrumar e deixar tudo no seu respetivo lugar como a encontrei. Concordo que qualquer material danificado ou destruído propositadamente ou por desconhecer a forma correta de a usar recairá sobre mim a responsabilidade de o consertar ou indemnizar por completo.<br><br>
             <label style="display:flex; align-items:center; gap:8px; font-weight:bold; cursor:pointer; color:var(--success);">
-              <input type="checkbox" id="portal-contrato-check" style="width:18px; height:18px;"> Li e concordo plenamente com as condições do Contrato de Inscrição[cite: 8].
+              <input type="checkbox" id="portal-contrato-check" style="width:18px; height:18px;"> Li e concordo plenamente com as condições do Contrato de Inscrição.
             </label>
           </div>
         </div>
@@ -751,6 +808,7 @@
           if (loginOverlay) loginOverlay.style.display = 'none';
           abrirPortalInscricao();
         }
+        gerarQRCodeInscricao();
       } catch(e) {}
     });
 
@@ -794,7 +852,7 @@
     async function sincronizarCloud() {
       if (!supabaseClient) return;
       try {
-        const payload = { members, inscricoesOnline, plans, payments, products, collaborators, chatMessages, bibliotecaArquivos, sales, attendanceLogs, picaPontoLogs };
+        const payload = { members, inscricoesOnline, plans, payments, products, categories, expenses, salaries, collaborators, chatMessages, bibliotecaArquivos, sales, attendanceLogs, picaPontoLogs };
         await supabaseClient.from('kosmo_data').upsert({ id: 'main_state', payload: payload, updated_at: new Date() });
       } catch(e) {}
     }
@@ -810,6 +868,9 @@
           if (d.plans) plans = d.plans;
           if (d.payments) payments = d.payments;
           if (d.products) products = d.products;
+          if (d.categories) categories = d.categories;
+          if (d.expenses) expenses = d.expenses;
+          if (d.salaries) salaries = d.salaries;
           if (d.collaborators) collaborators = d.collaborators;
           if (d.chatMessages) chatMessages = d.chatMessages;
           if (d.bibliotecaArquivos) bibliotecaArquivos = d.bibliotecaArquivos;
@@ -870,7 +931,7 @@
           pagamentos: 'Pagamentos', faturas: 'Faturas & Envios', despesas: 'Despesas & Contas', salarios: 'Salários',
           pos: 'POS - Ponto de Venda & Carrinho', produtos: 'Catálogo de Produtos (A a Z)', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
           mensagens: 'Enviar WhatsApp', chat: 'Chat & Feed Online', biblioteca: 'Biblioteca de Arquivos & Recibos', qrinscricao: 'QR / Código de Barras Inscrição', lembretes: 'Lembretes & Alertas (-5d)',
-          reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Staff & Cartão Ponto', picaponto: 'Pica Ponto (Leitor)', visao: 'Relatórios > Visão Geral',
+          reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Staff & Cartão Ponto', picaponto: 'Pica Ponto (Manual)', visao: 'Relatórios > Visão Geral',
           retencao: 'Relatórios > Retenção de Membros', perf: 'Relatórios > Performance Financeira', export: 'Relatórios > Exportar Dados'
         };
         if (document.getElementById('page-title')) document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
@@ -894,12 +955,12 @@
         renderInscricoesOnline();
         renderPlans();
         renderProducts();
-        renderPosCatalog();
         renderCategories();
-        renderPayments();
-        renderInvoices();
         renderExpenses();
         renderSalaries();
+        renderPosCatalog();
+        renderPayments();
+        renderInvoices();
         renderSales();
         renderStock();
         renderColabs();
@@ -1111,7 +1172,7 @@
       w.document.close();
     }
 
-    // CARTÃO DIGITAL DO MEMBRO COM IMPRESSÃO CORRIGIDA
+    // CARTÃO DIGITAL DO MEMBRO COM IMPRESSÃO
     function renderDigitalCard() {
       const s = document.getElementById('card-member-select'), z = document.getElementById('digital-card-container');
       if (!s || !z) return;
@@ -1159,22 +1220,88 @@
       window.open(`https://wa.me/${m.phone}?text=${msg}`, '_blank');
     }
 
-    // REGISTO DE PICA-PONTO POR LEITOR
-    function onScanPicaPonto(e) {
-      if (e.key === 'Enter') {
-        const code = document.getElementById('pica-barcode-input').value.trim();
-        if (!code) return;
-        const staff = collaborators.find(x => x.barcode === code);
-        if (!staff) { alert('Cartão de colaborador não encontrado!'); document.getElementById('pica-barcode-input').value = ''; return; }
+    // QR CODE DE INSCRIÇÃO ONLINE
+    function gerarQRCodeInscricao() {
+      const container = document.getElementById('qrcode-container');
+      const urlTxt = document.getElementById('portal-url-txt');
+      if (!container) return;
+      container.innerHTML = '';
+      const appUrl = window.location.href.split('#')[0].split('?')[0] + '?portal=inscricao';
+      if (urlTxt) urlTxt.innerText = appUrl;
+      try { new QRCode(container, { text: appUrl, width: 180, height: 180 }); } catch(e) {}
+    }
 
-        const agora = new Date();
-        const tipo = picaPontoLogs.filter(l => l.barcode === code && l.date === agora.toLocaleDateString('pt-PT')).length % 2 === 0 ? 'Entrada' : 'Saída';
-
-        picaPontoLogs.unshift({ id: Date.now(), date: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: staff.name, nif: staff.nif, barcode: staff.barcode, type: tipo });
-        renderPicaPontoLogs();
-        alert(`Ponto registado com sucesso para ${staff.name} (${tipo})!`);
-        document.getElementById('pica-barcode-input').value = '';
+    function abrirPortalInscricao() { document.getElementById('portal-inscricao-overlay').style.display = 'flex'; }
+    function fecharPortalInscricao() { document.getElementById('portal-inscricao-overlay').style.display = 'none'; }
+    function togglePortalAnexos() {
+      const plano = document.getElementById('portal-plan').value;
+      const box = document.getElementById('portal-box-anexo');
+      const lbl = document.getElementById('portal-label-anexo');
+      if (plano === 'Plano Estudante') {
+        box.style.display = 'block';
+        lbl.innerText = 'Documento Comprovativo de Matrícula / Estudante *';
+      } else if (plano === 'Plano Casal') {
+        box.style.display = 'block';
+        lbl.innerText = 'Certidão de Casamento / Comprovativo de Casal *';
+      } else {
+        box.style.display = 'none';
       }
+    }
+    function converterFotoPortal(e) {
+      const f = e.target.files[0];
+      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('portal-foto-b64').value = evt.target.result; r.readAsDataURL(f); }
+    }
+    function converterAnexoPortal(e) {
+      const f = e.target.files[0];
+      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('portal-anexo-b64').value = evt.target.result; r.readAsDataURL(f); }
+    }
+    function submeterInscricaoOnline() {
+      const name = document.getElementById('portal-name').value.trim();
+      const nif = document.getElementById('portal-nif').value.trim();
+      const email = document.getElementById('portal-email').value.trim();
+      const phone = document.getElementById('portal-phone').value.trim();
+      const plan = document.getElementById('portal-plan').value;
+      const anexo = document.getElementById('portal-anexo-b64').value;
+      const contratoAceite = document.getElementById('portal-contrato-check').checked;
+
+      if (!name || !nif || !email) { alert('Preencha os campos obrigatórios.'); return; }
+      if (!contratoAceite) { alert('Deve aceitar obrigatoriamente os termos do Contrato de Inscrição KOSMO!'); return; }
+      if ((plan === 'Plano Estudante' || plan === 'Plano Casal') && !anexo) {
+        alert('É obrigatório adicionar o documento comprovativo!');
+        return;
+      }
+
+      inscricoesOnline.push({
+        id: Date.now(), name, sexo: document.getElementById('portal-sexo').value,
+        nif, email, phone, plan,
+        foto: document.getElementById('portal-foto-b64').value,
+        anexo: anexo,
+        contrato: true,
+        date: new Date().toLocaleDateString('pt-PT')
+      });
+      alert('Inscrição submetida com sucesso! A equipa irá validá-la em breve.');
+      fecharPortalInscricao();
+      refreshAll();
+    }
+
+    // PICA-PONTO MANUAL PARA STAFFS
+    function regPicaPontoManual() {
+      const colabName = document.getElementById('pica-colab-select').value;
+      const tipo = document.getElementById('pica-type').value;
+      if (!colabName) { alert('Selecione um colaborador.'); return; }
+      const staff = collaborators.find(c => c.name === colabName) || { nif: '---', barcode: '0000' };
+      const agora = new Date();
+      picaPontoLogs.unshift({
+        id: Date.now(),
+        date: agora.toLocaleDateString('pt-PT'),
+        time: agora.toLocaleTimeString('pt-PT'),
+        name: colabName,
+        nif: staff.nif,
+        barcode: staff.barcode,
+        type: tipo
+      });
+      renderPicaPontoLogs();
+      alert(`Ponto registado manualmente para ${colabName} (${tipo}) com sucesso!`);
     }
 
     function renderPicaPontoLogs() {
@@ -1232,7 +1359,7 @@
       });
     }
 
-    // GESTÃO DO CHAT & FEED ONLINE COM ARQUIVOS NA BIBLIOTECA
+    // CHAT & FEED ONLINE COM ARQUIVOS NA BIBLIOTECA
     function enviarMensagemChat() {
       const txt = document.getElementById('chat-input-text').value.trim();
       if (!txt) return;
@@ -1271,6 +1398,222 @@
         `;
       });
       area.scrollTop = area.scrollHeight;
+    }
+
+    // FINANÇAS E LOJA (CATEGORIAS, DESPESAS, SALÁRIOS, PRODUTOS, POS)
+    function addCategory() {
+      const name = document.getElementById('cat-name').value.trim();
+      const desc = document.getElementById('cat-desc').value.trim();
+      if (!name) { alert('Insira o nome da categoria.'); return; }
+      categories.push({ id: Date.now(), name, desc });
+      alert('Categoria registada com sucesso!');
+      document.getElementById('cat-name').value = ''; document.getElementById('cat-desc').value = '';
+      refreshAll();
+    }
+    function renderCategories() {
+      const t = document.getElementById('categories-table-body');
+      if (!t) return;
+      t.innerHTML = '';
+      if (categories.length === 0) { t.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#777;">Sem categorias.</td></tr>`; return; }
+      categories.forEach(c => t.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.desc || ''}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`);
+    }
+
+    function addExpense() {
+      const desc = document.getElementById('exp-desc').value.trim();
+      const val = Number(document.getElementById('exp-val').value);
+      if (!desc || !val) { alert('Preencha a descrição e o valor da despesa.'); return; }
+      expenses.push({ date: new Date().toLocaleDateString('pt-PT'), desc, amount: val });
+      alert('Despesa registada com sucesso!');
+      document.getElementById('exp-desc').value = ''; document.getElementById('exp-val').value = '';
+      refreshAll();
+    }
+    function renderExpenses() {
+      const t = document.getElementById('expenses-table-body');
+      if (!t) return;
+      t.innerHTML = '';
+      if (expenses.length === 0) { t.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#777;">Sem despesas registadas.</td></tr>`; return; }
+      expenses.forEach(e => t.innerHTML += `<tr><td>${e.date}</td><td>${e.desc}</td><td><strong>${e.amount} CVE</strong></td></tr>`);
+    }
+
+    function addSalary() {
+      const name = document.getElementById('sal-name').value.trim();
+      const val = Number(document.getElementById('sal-val').value);
+      if (!name || !val) { alert('Preencha o nome e o valor do salário.'); return; }
+      salaries.push({ date: new Date().toLocaleDateString('pt-PT'), name, amount: val });
+      alert('Salário registado com sucesso!');
+      document.getElementById('sal-name').value = ''; document.getElementById('sal-val').value = '';
+      refreshAll();
+    }
+    function renderSalaries() {
+      const t = document.getElementById('salaries-table-body');
+      if (!t) return;
+      t.innerHTML = '';
+      if (salaries.length === 0) { t.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#777;">Sem salários registados.</td></tr>`; return; }
+      salaries.forEach(s => t.innerHTML += `<tr><td>${s.name}</td><td><strong>${s.amount} CVE</strong></td></tr>`);
+    }
+
+    function saveProduct() {
+      const editIdx = document.getElementById('p-edit-idx').value;
+      const name = document.getElementById('p-name').value.trim();
+      const buyPrice = Number(document.getElementById('p-buyprice').value) || 0;
+      const price = Number(document.getElementById('p-price').value) || 0;
+      const stock = Number(document.getElementById('p-stock').value) || 0;
+      const desc = document.getElementById('p-desc').value;
+      const use = document.getElementById('p-use').value;
+      const foto = document.getElementById('p-foto-base64').value;
+
+      if (!name || !price) { alert('Preencha o Nome e o Preço de Venda do produto.'); return; }
+
+      if (editIdx !== '') {
+        const p = products[editIdx];
+        if (p) {
+          p.name = name; p.buyPrice = buyPrice; p.price = price; p.stock = stock; p.desc = desc; p.use = use;
+          if (foto) p.foto = foto;
+        }
+        alert('Produto atualizado com sucesso!');
+        cancelEditProduct();
+      } else {
+        products.push({ name, buyPrice, price, stock, desc, use, foto: foto || '' });
+        alert('Produto registado com sucesso!');
+      }
+      refreshAll();
+      clearProductForm();
+    }
+
+    function clearProductForm() {
+      document.getElementById('p-name').value = ''; document.getElementById('p-buyprice').value = ''; document.getElementById('p-price').value = '';
+      document.getElementById('p-stock').value = '10'; document.getElementById('p-desc').value = ''; document.getElementById('p-use').value = '';
+      document.getElementById('p-foto-base64').value = ''; document.getElementById('p-foto-file').value = '';
+    }
+
+    function editProduct(idx) {
+      const p = products[idx];
+      if (!p) return;
+      document.getElementById('p-edit-idx').value = idx;
+      document.getElementById('p-name').value = p.name;
+      document.getElementById('p-buyprice').value = p.buyPrice || 0;
+      document.getElementById('p-price').value = p.price;
+      document.getElementById('p-stock').value = p.stock;
+      document.getElementById('p-desc').value = p.desc || '';
+      document.getElementById('p-use').value = p.use || '';
+      document.getElementById('p-foto-base64').value = p.foto || '';
+      document.getElementById('form-product-title').innerText = 'Editar Produto: ' + p.name;
+      document.getElementById('btn-save-product').innerText = 'Guardar Alterações';
+      document.getElementById('btn-cancel-product').style.display = 'inline-flex';
+      navigate('produtos');
+    }
+
+    function cancelEditProduct() {
+      document.getElementById('p-edit-idx').value = '';
+      document.getElementById('form-product-title').innerText = 'Registar ou Editar Produto';
+      document.getElementById('btn-save-product').innerText = 'Guardar Produto';
+      document.getElementById('btn-cancel-product').style.display = 'none';
+      clearProductForm();
+    }
+
+    function deleteProduct(idx) {
+      if (confirm('Tem a certeza que deseja eliminar este produto?')) { products.splice(idx, 1); refreshAll(); }
+    }
+
+    function renderProducts() {
+      const tbody = document.getElementById('products-table-body');
+      const query = document.getElementById('product-search-input') ? document.getElementById('product-search-input').value.toLowerCase() : '';
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      let filtered = products.map((p, originalIdx) => ({ ...p, originalIdx })).filter(p => p.name.toLowerCase().includes(query));
+      if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum produto encontrado.</td></tr>`; return; }
+      filtered.forEach(p => {
+        const fotoTag = p.foto ? `<img src="${p.foto}" style="width:42px; height:42px; object-fit:cover; border-radius:4px;">` : '📦';
+        tbody.innerHTML += `
+          <tr>
+            <td>${fotoTag}</td>
+            <td><strong>${p.name}</strong><br><small>📝 ${p.desc || '---'}</small><br><small style="color:var(--primary);">💡 Uso: ${p.use || '---'}</small></td>
+            <td>Compra: ${p.buyPrice || 0} CVE<br><strong>Venda: ${p.price} CVE</strong></td>
+            <td>${p.stock} unid.</td>
+            <td>
+              <button class="btn btn-sm btn-blue" onclick="editProduct(${p.originalIdx})">✏️ Editar</button>
+              <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteProduct(${p.originalIdx})">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderPosCatalog() {
+      const grid = document.getElementById('pos-catalog-grid');
+      const query = document.getElementById('pos-search-input') ? document.getElementById('pos-search-input').value.toLowerCase() : '';
+      if (!grid) return;
+      grid.innerHTML = '';
+      let filtered = products.filter(p => p.name.toLowerCase().includes(query));
+      if (filtered.length === 0) { grid.innerHTML = `<p style="color:#777; grid-column:1/-1; text-align:center;">Nenhum produto encontrado.</p>`; return; }
+      filtered.forEach(p => {
+        const fotoTag = p.foto ? `<img src="${p.foto}" style="width:100%; height:100px; object-fit:cover; border-radius:6px; margin-bottom:6px;">` : `<div style="width:100%; height:100px; background:#e9ecef; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:6px;">📦</div>`;
+        grid.innerHTML += `
+          <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              ${fotoTag}
+              <h4 style="font-size:0.9rem; font-weight:bold; color:var(--dark);">${p.name}</h4>
+              <p style="font-size:0.85rem; color:var(--success); font-weight:bold; margin-top:2px;">${p.price} CVE</p>
+              <small style="color:#666;">Stock: ${p.stock}</small>
+            </div>
+            <button class="btn btn-sm btn-blue" style="width:100%; margin-top:8px;" onclick="addToCart('${p.name}')">➕ Adicionar</button>
+          </div>
+        `;
+      });
+      renderCart();
+    }
+
+    function addToCart(prodName) {
+      const p = products.find(x => x.name === prodName);
+      if (!p || p.stock <= 0) { alert('Produto sem stock disponível.'); return; }
+      const itemInCart = cartItems.find(x => x.name === prodName);
+      if (itemInCart) {
+        if (itemInCart.qty < p.stock) itemInCart.qty++;
+        else alert('Quantidade máxima em stock atingida.');
+      } else {
+        cartItems.push({ name: prodName, price: p.price, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('pos-cart-items');
+      const totalEl = document.getElementById('pos-cart-total');
+      if (!container) return;
+      if (cartItems.length === 0) { container.innerHTML = '<p style="color:#777; text-align:center;">Carrinho vazio.</p>'; if(totalEl) totalEl.innerText = '0 CVE'; return; }
+      container.innerHTML = '';
+      let total = 0;
+      cartItems.forEach((item, idx) => {
+        let subtotal = item.price * item.qty;
+        total += subtotal;
+        container.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #dee2e6; padding-bottom:6px;">
+            <div><strong>${item.name}</strong><br><small>${item.price} CVE x ${item.qty}</small></div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <strong>${subtotal} CVE</strong>
+              <button class="btn-action" onclick="cartItems.splice(${idx},1); renderCart();" style="color:var(--danger);">❌</button>
+            </div>
+          </div>
+        `;
+      });
+      if (totalEl) totalEl.innerText = total.toLocaleString() + ' CVE';
+    }
+
+    function finalizarVendaCarrinho() {
+      if (cartItems.length === 0) { alert('O carrinho está vazio.'); return; }
+      let totalVenda = 0;
+      cartItems.forEach(item => {
+        const p = products.find(x => x.name === item.name);
+        if (p) {
+          p.stock -= item.qty;
+          totalVenda += item.price * item.qty;
+          sales.push({ date: new Date().toLocaleDateString('pt-PT'), prod: item.name, qty: item.qty, total: item.price * item.qty });
+        }
+      });
+      payments.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), member: 'Venda POS Balcão', amount: totalVenda, ref: 'POS Venda Direta' });
+      cartItems = [];
+      refreshAll();
+      alert('Venda concluída e registada com sucesso no financeiro e stock!');
     }
 
     // FATURAS COM ENVIO WHATSAPP E EMAIL
