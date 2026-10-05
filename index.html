@@ -354,22 +354,38 @@
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes</h2><p>Sem avarias.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configuração Cloud</h2><div class="form-grid"><div><label>Supabase URL</label><input type="text" id="cfg-supabase-url"></div><div><label>Supabase Key</label><input type="text" id="cfg-supabase-key"></div></div><button class="btn btn-blue" onclick="salvarConfigCloud()">Conectar Cloud</button></div></section>
 
+      <!-- GERIR COLABORADORES & ATRIBUIÇÃO DE FUNÇÕES PERSONALIZADAS + ALTERAÇÃO DE SENHAS -->
       <section id="view-colab" class="view-section">
         <div class="card">
-          <h2>Gerir Colaboradores & Permissões</h2>
+          <h2>Gerir Colaboradores & Atribuição de Funções</h2>
           <div class="form-grid">
-            <div><label>Nome</label><input type="text" id="colab-name" placeholder="Nome"></div>
-            <div><label>Cargo</label><input type="text" id="colab-role" placeholder="Cargo"></div>
+            <div><label>Nome Completo</label><input type="text" id="colab-name" placeholder="Nome do Colaborador"></div>
+            <div><label>Função / Cargo (Atribuição Personalizada)</label><input type="text" id="colab-role" placeholder="Ex: Rececionista, Personal Trainer, Gestor"></div>
             <div><label>Telemóvel</label><input type="tel" id="colab-phone" placeholder="Telemóvel"></div>
-            <div><label>Utilizador</label><input type="text" id="colab-user" placeholder="user"></div>
-            <div><label>Senha</label><input type="password" id="colab-pass" placeholder="pass"></div>
+            <div><label>Utilizador (Login)</label><input type="text" id="colab-user" placeholder="utilizador"></div>
+            <div><label>Palavra-passe</label><input type="password" id="colab-pass" placeholder="palavra-passe"></div>
+          </div>
+          <div style="margin-top: 15px;">
+            <label style="font-weight:bold; color:var(--primary); margin-bottom:5px;">Atribuir Permissões Aos Módulos:</label>
+            <div class="checkbox-grid" id="colab-perms-group">
+              <label><input type="checkbox" value="membros" checked> Membros</label>
+              <label><input type="checkbox" value="checkins" checked> Check-ins</label>
+              <label><input type="checkbox" value="planos" checked> Planos</label>
+              <label><input type="checkbox" value="cartaodigital" checked> Cartão Digital</label>
+              <label><input type="checkbox" value="pagamentos" checked> Pagamentos</label>
+              <label><input type="checkbox" value="faturas" checked> Faturas</label>
+              <label><input type="checkbox" value="pos" checked> POS (Vendas)</label>
+              <label><input type="checkbox" value="produtos" checked> Produtos</label>
+              <label><input type="checkbox" value="stock" checked> Stock</label>
+              <label><input type="checkbox" value="picaponto" checked> Pica Ponto</label>
+            </div>
           </div>
           <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador</button>
         </div>
         <div class="card">
           <h2>Equipa Autorizada</h2>
           <table>
-            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Nome</th><th>Função / Cargo</th><th>Utilizador</th><th>Ações de Gestão (Alterar Senha / Eliminar)</th></tr></thead>
             <tbody id="colab-table-body"></tbody>
           </table>
         </div>
@@ -444,7 +460,7 @@
     let categories = [{ id: 1, name: 'Proteínas', desc: 'Suplementos', produtos: 5 }];
     let sales = [];
     let attendanceLogs = [];
-    let collaborators = [{ id: 1, name: 'Administrador KOSMO', role: 'Gerente', phone: '9988886', user: 'admin', pass: 'admin123', perms: ['all'] }];
+    let collaborators = [{ id: 1, name: 'Administrador KOSMO', role: 'Gerente (Master)', phone: '9988886', user: 'admin', pass: 'admin123', perms: ['all'] }];
     let picaPontoLogs = [];
     let chatMessages = [];
     let totemWindowRef = null;
@@ -645,7 +661,7 @@
     }
 
     function deleteMember(id) {
-      if (confirm('Tem a certeza que deseja eliminar este membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
+      if (confirm('Tem a certeza absoluta que deseja eliminar este membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
     }
 
     /* BOTÃO DE CHECK-IN AUTOMÁTICO (ADMIN / STAFF) */
@@ -677,7 +693,7 @@
     function renderMembers() {
       const tbody = document.getElementById('member-table-body');
       const query = document.getElementById('member-search-input') ? document.getElementById('member-search-input').value.toLowerCase() : '';
-      const filterType = document.getElementById('member-filter-select') ? document.getElementById('member-filter-select').value : 'todos';
+      const filterType = document.getElementById('member-filter-select') ? document.getElementById('member-filter-select'].value : 'todos';
       if (!tbody) return;
       tbody.innerHTML = '';
 
@@ -974,13 +990,15 @@
     }
     function renderCategories() {
       const t = document.getElementById('categories-table-body');
-      if (t) { t.innerHTML = ''; categories.forEach(c => t.innerHTML += `<tr><td>${c.name}</td><td>${c.desc || ''}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`); }
+      if (t) { t.innerHTML = ''; categories.forEach(c => t.innerHTML += `<tr><td>${c.name}</td><td>${c.desc || ''}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️️</button></td></tr>`); }
     }
     function sendWhatsApp() {
       const m = members.find(x => x.name === document.getElementById('msg-member').value), t = document.getElementById('msg-text').value;
       if (!m || !m.phone) { alert('Sem telemóvel.'); return; }
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(t)}`, '_blank');
     }
+
+    /* COLABORADORES COM FUNÇÃO PERSONALIZADA, ALTERAÇÃO DE SENHA E PERMISSÕES */
     function addColab() {
       const name = document.getElementById('colab-name').value.trim();
       const role = document.getElementById('colab-role').value.trim();
@@ -996,17 +1014,37 @@
       collaborators.push({ id: Date.now(), name, role: role || 'Staff', phone, user, pass, perms });
       refreshAll(); alert('Colaborador registado com sucesso!');
     }
+
     function renderColabs() {
       const t = document.getElementById('colab-table-body');
       if (t) {
         t.innerHTML = '';
         collaborators.forEach(c => {
           const isMaster = c.user === 'admin';
-          const actions = isMaster ? '<span>Admin Master</span>' : `<button class="btn btn-sm" style="background:var(--danger);" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">Eliminar</button>`;
+          const actions = isMaster ? '<span>Admin Master</span>' : `
+            <button class="btn btn-sm btn-blue" onclick="resetColabPass(${c.id})">🔑 Alterar Senha</button>
+            <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteColab(${c.id})">🗑️ Eliminar</button>
+          `;
           t.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td>${actions}</td></tr>`;
         });
       }
     }
+
+    function resetColabPass(id) {
+      const novaPass = prompt('Introduza a nova palavra-passe para o colaborador:');
+      if (novaPass) {
+        const c = collaborators.find(x => x.id === id);
+        if (c) { c.pass = novaPass; alert('Palavra-passe alterada com sucesso!'); }
+      }
+    }
+
+    function deleteColab(id) {
+      if (confirm('Tem a certeza que deseja eliminar este colaborador?')) {
+        collaborators = collaborators.filter(x => x.id !== id);
+        refreshAll();
+      }
+    }
+
     function regPicaPonto() {
       const n = document.getElementById('pica-colab-select').value, a = document.getElementById('pica-type').value;
       if (!n) return;
@@ -1039,76 +1077,6 @@
       const t = document.getElementById('today-attendance-tbody');
       if (t) { t.innerHTML = ''; attendanceLogs.forEach(a => t.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td><span class="badge badge-ok">Ativo</span></td></tr>`); }
     }
-
-    /* ECRÃ TOTEM GIGANTE ORIGINAL (VISÍVEL A 3-4 METROS) */
-    function openTotemWindow() {
-      totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
-      totemWindowRef.document.write(`
-        <!DOCTYPE html>
-        <html lang="pt">
-        <head>
-          <meta charset="UTF-8">
-          <title>Ginásio KOSMO - Ecrã Totem Gigante</title>
-          <style>
-            body { background: #0b0e11; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; text-align: center; overflow: hidden; }
-            .badge { padding: 25px 80px; border-radius: 16px; font-size: 3.5rem; font-weight: 900; color: #fff; display: inline-block; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-          </style>
-        </head>
-        <body>
-          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #222; padding-bottom:15px;">
-            <div style="font-size:1.8rem; color:#aaa; font-weight:800; letter-spacing:1px;">TERMINAL DE CHECK-IN KOSMO</div>
-            <div id="totem-relogio" style="font-size: 6.5rem; font-family: monospace; color: #ffd43b; font-weight: 900; letter-spacing: 2px;">00:00:00</div>
-          </div>
-          
-          <div id="totem-corpo" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-            <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
-            <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-            <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
-          </div>
-
-          <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
-
-          <script>
-            let resetTimer = null;
-            function voltarEcraInicial() {
-              document.getElementById('totem-corpo').innerHTML = \`
-                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
-                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
-                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
-              \`;
-            }
-
-            function processarCheckinTotem(d) {
-              if (resetTimer) clearTimeout(resetTimer);
-              const fotoHtml = d.foto ? '<img src="'+d.foto+'" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border:6px solid '+(d.auth?'#2b8a3e':'#c92a2a')+'; margin-bottom:20px;">' : '';
-              const bgCol = d.auth ? '#2b8a3e' : '#c92a2a';
-              document.getElementById('totem-corpo').innerHTML = \`
-                \${fotoHtml}
-                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
-                <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
-                <div class="badge" style="background:\${bgCol};">ACESSO PERMITIDO</div>
-              \`;
-              resetTimer = setTimeout(() => { voltarEcraInicial(); }, 15000);
-            }
-
-            setInterval(() => {
-              document.getElementById('totem-relogio').innerText = new Date().toLocaleTimeString('pt-PT');
-            }, 1000);
-
-            window.addEventListener('storage', (event) => {
-              if (event.key === 'kosmo_totem_scan') {
-                try { const d = JSON.parse(event.newValue); if (d) processarCheckinTotem(d); } catch(e) {}
-              }
-            });
-            window.addEventListener('message', (event) => {
-              if (event.data) processarCheckinTotem(event.data);
-            });
-          <\/script>
-        </body>
-        </html>
-      `);
-    }
-
     function exportData() {
       const data = { members, inscricoesOnline, plans, payments, products, collaborators, chatMessages };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
