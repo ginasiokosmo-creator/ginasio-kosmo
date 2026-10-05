@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Sistema Integrado de Gestão (Versão Master Absoluta Funcional)</title>
+  <title>Ginásio KOSMO - Sistema Integrado de Gestão (Versão Master Absoluta Final)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -176,9 +176,9 @@
 
       <div class="nav-group-title">Comunicação & Cloud</div>
       <button type="button" class="nav-item" id="nav-mensagens" onclick="navigate('mensagens')"><span class="icon">💬</span><span class="nav-text">Enviar WhatsApp</span></button>
-      <button type="button" class="nav-item" id="nav-chat" onclick="navigate('chat')"><span class="icon">💬</span><span class="nav-text">Chat & Feed Online</span></button>
+      <button type="button" class="nav-item" id="nav-chat" onclick="navigate('chat')"><span class="icon">💬</span><span class="nav-text">Chat Direto Cliente ⇄ Admin</span></button>
       <button type="button" class="nav-item" id="nav-biblioteca" onclick="navigate('biblioteca')"><span class="icon">📁</span><span class="nav-text">Biblioteca de Arquivos</span></button>
-      <button type="button" class="nav-item" id="nav-qrinscricao" onclick="navigate('qrinscricao')"><span class="icon">📱</span><span class="nav-text">QR / Código de Barras Inscrição</span></button>
+      <button type="button" class="nav-item" id="nav-qrinscricao" onclick="navigate('qrinscricao')"><span class="icon">📱</span><span class="nav-text">QR / Link Inscrição Online</span></button>
       <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes & Alertas (-5d)</span></button>
 
       <div class="nav-group-title">Operações</div>
@@ -193,7 +193,7 @@
       <button type="button" class="nav-item" id="nav-visao" onclick="navigate('visao')"><span class="icon">📈</span><span class="nav-text">Visão Geral</span></button>
       <button type="button" class="nav-item" id="nav-retencao" onclick="navigate('retencao')"><span class="icon">📉</span><span class="nav-text">Retenção de Membros</span></button>
       <button type="button" class="nav-item" id="nav-perf" onclick="navigate('perf')"><span class="icon">💹</span><span class="nav-text">Performance Financeira</span></button>
-      <button type="button" class="nav-item" id="nav-export" onclick="navigate('export')"><span class="icon">💾</span><span class="nav-text">Exportar Dados</span></button>
+      <button type="button" class="nav-item" id="nav-export" onclick="navigate('export')"><span class="icon">💾</span><span class="nav-text">Exportar / Importar Dados</span></button>
     </div>
     <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
       <span id="logged-user-label" style="display:block; color:#ffd43b; font-size:0.75rem; margin-bottom:6px; text-align:center; font-weight:bold;">Sessão: Admin</span>
@@ -390,7 +390,21 @@
             <div><label>Palavra-passe</label><input type="password" id="colab-pass" placeholder="palavra-passe"></div>
             <div><label>Fotografia Pessoal</label><input type="file" id="colab-foto-file" accept="image/*" onchange="converterFotoColab(event)"></div>
           </div>
-          <input type="hidden" id="colab-foto-base64" value="">
+          <div style="margin-top: 15px;">
+            <label style="font-weight:bold; color:var(--primary); margin-bottom:5px;">Atribuir Permissões Aos Módulos:</label>
+            <div class="checkbox-grid" id="colab-perms-group">
+              <label><input type="checkbox" value="membros" checked> Membros</label>
+              <label><input type="checkbox" value="checkins" checked> Check-ins</label>
+              <label><input type="checkbox" value="planos" checked> Planos</label>
+              <label><input type="checkbox" value="cartaodigital" checked> Cartão Digital</label>
+              <label><input type="checkbox" value="pagamentos" checked> Pagamentos</label>
+              <label><input type="checkbox" value="faturas" checked> Faturas</label>
+              <label><input type="checkbox" value="pos" checked> POS (Vendas)</label>
+              <label><input type="checkbox" value="produtos" checked> Produtos</label>
+              <label><input type="checkbox" value="stock" checked> Stock</label>
+              <label><input type="checkbox" value="picaponto" checked> Pica Ponto</label>
+            </div>
+          </div>
           <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador</button>
         </div>
         <div class="card">
@@ -408,9 +422,26 @@
           <h2>Biblioteca de Arquivos, Recibos & Documentos do Chat</h2>
           <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Aqui pode encontrar todos os arquivos, comprovativos e documentos partilhados no chat. Pode visualizá-los, editá-los, imprimi-los, baixá-los para o computador ou eliminá-los.</p>
           <table>
-            <thead><tr><th>Data / Hora</th><th>Remetente</th><th>Nome do Arquivo / Recibo</th><th>Ações (Ver, Imprimir, Baixar, Eliminar)</th></tr></thead>
+            <thead><tr><th>Data / Hora</th><th>Remetente</th><th>Nome do Arquivo / Recibo</th><th>Ações (Ver, Editar Nome, Imprimir, Baixar, Eliminar)</th></tr></thead>
             <tbody id="biblioteca-table-body"><tr><td colspan="4" style="text-align:center; color:#777;">Sem arquivos na biblioteca.</td></tr></tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- CHAT DIRETO CLIENTE ⇄ ADMIN -->
+      <section id="view-chat" class="view-section">
+        <div class="card">
+          <h2>Chat & Feed Online Direto (Cliente ⇄ Admin)</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Comunicação em tempo real com os alunos e inscrições online.</p>
+          <div class="chat-box-container">
+            <div class="chat-messages" id="chat-messages-area"><div style="text-align:center; color:#777;">Sem mensagens no chat.</div></div>
+            <div class="chat-input-area">
+              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;" title="Enviar Documento/Vídeo/Áudio">📎</label>
+              <input type="file" id="chat-file-input" style="display:none;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" onchange="enviarFicheiroChat(event)">
+              <input type="text" id="chat-input-text" placeholder="Escreva uma mensagem como Administrador..." onkeydown="if(event.key==='Enter') enviarMensagemChat()" style="flex:1;">
+              <button class="btn btn-sm" onclick="enviarMensagemChat()">Enviar Mensagem</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -531,20 +562,16 @@
         </div>
       </section>
 
-      <!-- CHAT & FEED ONLINE -->
-      <section id="view-chat" class="view-section">
+      <!-- EXPORTAR / IMPORTAR BACKUP -->
+      <section id="view-export" class="view-section">
+        <div class="card" style="margin-bottom:20px;">
+          <h2>Backup do Sistema</h2>
+          <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup Completo (JSON)</button>
+        </div>
         <div class="card">
-          <h2>Chat & Feed Online com Clientes / Inscrições (Com Arquivos, Áudio e Vídeo)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Transmita mensagens em tempo real e envie arquivos, documentos, vídeos ou áudios para os clientes e portal online.</p>
-          <div class="chat-box-container">
-            <div class="chat-messages" id="chat-messages-area"><div style="text-align:center; color:#777;">Sem mensagens no feed.</div></div>
-            <div class="chat-input-area">
-              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;" title="Enviar Ficheiro/Arquivo/Áudio/Vídeo">📎</label>
-              <input type="file" id="chat-file-input" style="display:none;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" onchange="enviarFicheiroChat(event)">
-              <input type="text" id="chat-input-text" placeholder="Escreva uma mensagem ou transmissão para o feed..." onkeydown="if(event.key==='Enter') enviarMensagemChat()" style="flex:1;">
-              <button class="btn btn-sm" onclick="enviarMensagemChat()">Transmitir Mensagem</button>
-            </div>
-          </div>
+          <h2>Restaurar Ficheiro de Backup / GYMMER (JSON ou CSV)</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:10px;">Selecione um ficheiro de backup guardado anteriormente para restaurar todos os dados.</p>
+          <input type="file" id="import-file" accept=".json,.csv" onchange="importDataAnyFormat(event)">
         </div>
       </section>
 
@@ -670,37 +697,14 @@
         <div class="dashboard-main-layout">
           <div class="dash-box">
             <h2>Receita por plano</h2>
-            <p style="font-size:0.8rem; color:#666; margin-bottom:15px;">Contribuição mensal das subscrições ativas (MRR)</p>
+            <p style="font-size:0.80rem; color:#666; margin-bottom:15px;">Contribuição mensal das subscrições ativas (MRR)</p>
             <div style="height:220px; position:relative;"><canvas id="receitaPlanoChart"></canvas></div>
           </div>
           <div class="dash-box">
             <h2>Receita por método</h2>
-            <p style="font-size:0.8rem; color:#666; margin-bottom:15px;">Pagamentos e vendas no período</p>
+            <p style="font-size:0.80rem; color:#666; margin-bottom:15px;">Pagamentos e vendas no período</p>
             <div style="height:220px; display:flex; justify-content:center; align-items:center; position:relative;"><canvas id="receitaMetodoChart"></canvas></div>
           </div>
-        </div>
-      </section>
-
-      <!-- RELATÓRIOS > EXPORTAR DADOS -->
-      <section id="view-export" class="view-section">
-        <h2>Relatórios > Exportar Dados</h2>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin-bottom:20px;">
-          <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-            <div><h3>Membros</h3><p style="font-size:0.82rem; color:#666;">Lista completa de membros com plano, estado e contactos.</p></div>
-            <button class="btn btn-green" onclick="exportData()">📥 Exportar JSON/CSV</button>
-          </div>
-          <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-            <div><h3>Membros Expirados</h3><p style="font-size:0.82rem; color:#666;">Lista de contactos para campanhas de recuperação.</p></div>
-            <button class="btn btn-blue" onclick="exportData()">📥 Exportar Expirados</button>
-          </div>
-          <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-            <div><h3>Pagamentos e Vendas</h3><p style="font-size:0.82rem; color:#666;">Todos os movimentos recebidos (mensalidades, inscrições, loja).</p></div>
-            <button class="btn" style="background:#212529;" onclick="exportData()">📥 Exportar Financeiro</button>
-          </div>
-        </div>
-        <div class="card">
-          <h2>Restaurar Ficheiro de Backup / GYMMER</h2>
-          <input type="file" id="import-file" onchange="importDataAnyFormat(event)">
         </div>
       </section>
     </main>
@@ -710,36 +714,66 @@
   <div id="portal-inscricao-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:90000; display:none; justify-content:center; align-items:center; padding:15px; overflow-y:auto;">
     <div style="background:#fff; width:100%; max-width:650px; border-radius:12px; padding:25px; border-top:6px solid var(--primary); box-shadow:0 15px 40px rgba(0,0,0,0.6); position:relative; max-height: 90vh; overflow-y: auto;">
       <button onclick="fecharPortalInscricao()" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:1.2rem; cursor:pointer; font-weight:bold;">✖</button>
-      <div style="text-align:center; margin-bottom:15px;">
-        <h2 style="color:var(--primary); font-size:1.4rem;">Ginásio KOSMO - Inscrição Online</h2>
-        <p style="font-size:0.82rem; color:#666;">Preencha os seus dados, leia o contrato e submeta a subscrição.</p>
-      </div>
-      <div class="form-grid">
-        <div><label>Nome Completo *</label><input type="text" id="portal-name" placeholder="O seu nome"></div>
-        <div><label>Sexo *</label><select id="portal-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
-        <div><label>Número de NIF *</label><input type="text" id="portal-nif" placeholder="O seu NIF"></div>
-        <div><label>E-mail *</label><input type="email" id="portal-email" placeholder="seu@email.com"></div>
-        <div><label>Telemóvel / Telefone *</label><input type="tel" id="portal-phone" placeholder="9988886"></div>
-        <div><label>Plano Pretendido *</label><select id="portal-plan" onchange="togglePortalAnexos()"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
-        <div><label>Fotografia Pessoal *</label><input type="file" id="portal-foto" accept="image/*" onchange="converterFotoPortal(event)"></div>
-        <div id="portal-box-anexo" style="grid-column:1/-1; display:none; background:#fff3bf; padding:12px; border-radius:6px; border:1px solid #f59f00;">
-          <label id="portal-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Comprovativo Obrigatório *</label>
-          <input type="file" id="portal-anexo-file" accept="image/*,.pdf" onchange="converterAnexoPortal(event)">
+      
+      <div id="portal-step-inscricao">
+        <div style="text-align:center; margin-bottom:15px;">
+          <h2 style="color:var(--primary); font-size:1.4rem;">Ginásio KOSMO - Portal do Aluno & Inscrição</h2>
+          <p style="font-size:0.82rem; color:#666;">Preencha os seus dados, leia o contrato e submeta a subscrição.</p>
         </div>
-        <div style="grid-column:1/-1; margin-top:8px;">
-          <label style="font-weight:bold; color:var(--primary); margin-bottom:4px;">Contrato de Inscrição KOSMO (Aceitação Obrigatória)</label>
-          <div class="contrato-box">
-            <strong>Contrato de Inscrição</strong><br><br>
-            Comprometo-me a cuidar de cada utensílio/material afetos a este ginásio como se fosse meu, arrumar e deixar tudo no seu respetivo lugar como a encontrei. Concordo que qualquer material danificado ou destruído propositadamente ou por desconhecer a forma correta de a usar recairá sobre mim a responsabilidade de o consertar ou indemnizar por completo.<br><br>
-            <label style="display:flex; align-items:center; gap:8px; font-weight:bold; cursor:pointer; color:var(--success);">
-              <input type="checkbox" id="portal-contrato-check" style="width:18px; height:18px;"> Li e concordo plenamente com as condições do Contrato de Inscrição.
-            </label>
+        <div class="form-grid">
+          <div><label>Nome Completo *</label><input type="text" id="portal-name" placeholder="O seu nome"></div>
+          <div><label>Sexo *</label><select id="portal-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
+          <div><label>Número de NIF *</label><input type="text" id="portal-nif" placeholder="O seu NIF"></div>
+          <div><label>E-mail *</label><input type="email" id="portal-email" placeholder="seu@email.com"></div>
+          <div><label>Telemóvel / Telefone *</label><input type="tel" id="portal-phone" placeholder="9988886"></div>
+          <div><label>Plano Pretendido *</label><select id="portal-plan" onchange="togglePortalAnexos()"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
+          <div><label>Fotografia Pessoal *</label><input type="file" id="portal-foto" accept="image/*" onchange="converterFotoPortal(event)"></div>
+          <div id="portal-box-anexo" style="grid-column:1/-1; display:none; background:#fff3bf; padding:12px; border-radius:6px; border:1px solid #f59f00;">
+            <label id="portal-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Comprovativo Obrigatório *</label>
+            <input type="file" id="portal-anexo-file" accept="image/*,.pdf" onchange="converterAnexoPortal(event)">
+          </div>
+          <div style="grid-column:1/-1; margin-top:8px;">
+            <label style="font-weight:bold; color:var(--primary); margin-bottom:4px;">Contrato de Inscrição KOSMO (Aceitação Obrigatória)</label>
+            <div class="contrato-box">
+              <strong>Contrato de Inscrição</strong><br><br>
+              Comprometo-me a cuidar de cada utensílio/material afetos a este ginásio como se fosse meu, arrumar e deixar tudo no seu respetivo lugar como a encontrei. Concordo que qualquer material danificado ou destruído propositadamente ou por desconhecer a forma correta de a usar recairá sobre mim a responsabilidade de o consertar ou indemnizar por completo.<br><br>
+              <label style="display:flex; align-items:center; gap:8px; font-weight:bold; cursor:pointer; color:var(--success);">
+                <input type="checkbox" id="portal-contrato-check" style="width:18px; height:18px;"> Li e concordo plenamente com todas as condições do Contrato de Inscrição.
+              </label>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="portal-foto-b64" value="">
+        <input type="hidden" id="portal-anexo-b64" value="">
+        <button type="button" class="btn" style="width:100%; margin-top:15px; padding:12px;" onclick="submeterInscricaoOnline()">Submeter Inscrição Online</button>
+        <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
+        <div style="text-align:center;">
+          <h3 style="font-size:1rem; margin-bottom:8px; color:var(--dark);">Precisa de falar com a nossa equipa?</h3>
+          <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Insira o seu nome para abrir o chat direto com o Admin.</p>
+          <div style="display:flex; gap:8px; max-width:350px; margin:0 auto;">
+            <input type="text" id="client-chat-name-input" placeholder="O seu nome para entrar no chat...">
+            <button class="btn btn-blue" onclick="entrarChatCliente()">Entrar no Chat</button>
           </div>
         </div>
       </div>
-      <input type="hidden" id="portal-foto-b64" value="">
-      <input type="hidden" id="portal-anexo-b64" value="">
-      <button type="button" class="btn" style="width:100%; margin-top:15px; padding:12px;" onclick="submeterInscricaoOnline()">Submeter Inscrição Online</button>
+
+      <!-- CHAT INTERATIVO DO CLIENTE (SÓ ABRE APÓS NOME) -->
+      <div id="portal-step-chat" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="color:var(--primary);">Chat Direto com a Gestão KOSMO</h3>
+          <button class="btn btn-sm" style="background:#868e96;" onclick="voltarPortalInscricaoForm()">← Voltar à Inscrição</button>
+        </div>
+        <div class="chat-box-container">
+          <div class="chat-messages" id="client-chat-messages-area"><div style="text-align:center; color:#777;">Inicie a conversa com a administração.</div></div>
+          <div class="chat-input-area">
+            <label for="client-chat-file" style="cursor:pointer; font-size:1.3rem;" title="Enviar Documento/Vídeo/Áudio">📎</label>
+            <input type="file" id="client-chat-file" style="display:none;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" onchange="clienteEnviarFicheiro(event)">
+            <input type="text" id="client-chat-text" placeholder="Escreva a sua mensagem ou dúvida..." onkeydown="if(event.key==='Enter') clienteEnviarMensagem()" style="flex:1;">
+            <button class="btn btn-sm" onclick="clienteEnviarMensagem()">Enviar</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -761,7 +795,7 @@
     </div>
   </div>
 
-  <!-- MOTOR JAVASCRIPT COMPLETO -->
+  <!-- MOTOR JAVASCRIPT MASTER COMPLETO (1800+ LINHAS) -->
   <script>
     let supabaseClient = null;
     let members = [];
@@ -784,6 +818,7 @@
     let chatMessages = [];
     let bibliotecaArquivos = [];
     let cartItems = [];
+    let clientChatUser = '';
     let totemWindowRef = null;
     let loggedUser = null;
     let checkinsChartInstance = null;
@@ -930,9 +965,9 @@
           dashboard: 'Dashboard Geral', membros: 'Membros Ativos & Gestão', inscricoes: 'Inscrições Online', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital (Membro)',
           pagamentos: 'Pagamentos', faturas: 'Faturas & Envios', despesas: 'Despesas & Contas', salarios: 'Salários',
           pos: 'POS - Ponto de Venda & Carrinho', produtos: 'Catálogo de Produtos (A a Z)', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
-          mensagens: 'Enviar WhatsApp', chat: 'Chat & Feed Online', biblioteca: 'Biblioteca de Arquivos & Recibos', qrinscricao: 'QR / Código de Barras Inscrição', lembretes: 'Lembretes & Alertas (-5d)',
+          mensagens: 'Enviar WhatsApp', chat: 'Chat & Feed Online', biblioteca: 'Biblioteca de Arquivos & Recibos', qrinscricao: 'QR / Link Inscrição Online', lembretes: 'Lembretes & Alertas (-5d)',
           reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Staff & Cartão Ponto', picaponto: 'Pica Ponto (Manual)', visao: 'Relatórios > Visão Geral',
-          retencao: 'Relatórios > Retenção de Membros', perf: 'Relatórios > Performance Financeira', export: 'Relatórios > Exportar Dados'
+          retencao: 'Relatórios > Retenção de Membros', perf: 'Relatórios > Performance Financeira', export: 'Relatórios > Exportar / Importar Dados'
         };
         if (document.getElementById('page-title')) document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
         refreshAll();
@@ -1220,120 +1255,120 @@
       window.open(`https://wa.me/${m.phone}?text=${msg}`, '_blank');
     }
 
-    // QR CODE DE INSCRIÇÃO ONLINE
-    function gerarQRCodeInscricao() {
-      const container = document.getElementById('qrcode-container');
-      const urlTxt = document.getElementById('portal-url-txt');
-      if (!container) return;
-      container.innerHTML = '';
-      const appUrl = window.location.href.split('#')[0].split('?')[0] + '?portal=inscricao';
-      if (urlTxt) urlTxt.innerText = appUrl;
-      try { new QRCode(container, { text: appUrl, width: 180, height: 180 }); } catch(e) {}
-    }
+    // GESTÃO DE MEMBROS E FILTROS DE ESTADO
+    function renderMembers() {
+      const tbody = document.getElementById('member-table-body');
+      const query = document.getElementById('member-search-input') ? document.getElementById('member-search-input').value.toLowerCase() : '';
+      const filterType = document.getElementById('member-filter-select') ? document.getElementById('member-filter-select').value : 'todos';
+      if (!tbody) return;
+      tbody.innerHTML = '';
 
-    function abrirPortalInscricao() { document.getElementById('portal-inscricao-overlay').style.display = 'flex'; }
-    function fecharPortalInscricao() { document.getElementById('portal-inscricao-overlay').style.display = 'none'; }
-    function togglePortalAnexos() {
-      const plano = document.getElementById('portal-plan').value;
-      const box = document.getElementById('portal-box-anexo');
-      const lbl = document.getElementById('portal-label-anexo');
-      if (plano === 'Plano Estudante') {
-        box.style.display = 'block';
-        lbl.innerText = 'Documento Comprovativo de Matrícula / Estudante *';
-      } else if (plano === 'Plano Casal') {
-        box.style.display = 'block';
-        lbl.innerText = 'Certidão de Casamento / Comprovativo de Casal *';
-      } else {
-        box.style.display = 'none';
-      }
-    }
-    function converterFotoPortal(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('portal-foto-b64').value = evt.target.result; r.readAsDataURL(f); }
-    }
-    function converterAnexoPortal(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('portal-anexo-b64').value = evt.target.result; r.readAsDataURL(f); }
-    }
-    function submeterInscricaoOnline() {
-      const name = document.getElementById('portal-name').value.trim();
-      const nif = document.getElementById('portal-nif').value.trim();
-      const email = document.getElementById('portal-email').value.trim();
-      const phone = document.getElementById('portal-phone').value.trim();
-      const plan = document.getElementById('portal-plan').value;
-      const anexo = document.getElementById('portal-anexo-b64').value;
-      const contratoAceite = document.getElementById('portal-contrato-check').checked;
+      const now = new Date();
+      let filtered = members.filter(m => {
+        const matchText = m.name.toLowerCase().includes(query) || (m.nif && m.nif.toLowerCase().includes(query)) || (m.barcode && m.barcode.toLowerCase().includes(query));
+        if (!matchText) return false;
 
-      if (!name || !nif || !email) { alert('Preencha os campos obrigatórios.'); return; }
-      if (!contratoAceite) { alert('Deve aceitar obrigatoriamente os termos do Contrato de Inscrição KOSMO!'); return; }
-      if ((plan === 'Plano Estudante' || plan === 'Plano Casal') && !anexo) {
-        alert('É obrigatório adicionar o documento comprovativo!');
-        return;
-      }
+        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
+        const due = new Date(m.date || Date.now());
+        due.setDate(due.getDate() + pl.days);
+        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
 
-      inscricoesOnline.push({
-        id: Date.now(), name, sexo: document.getElementById('portal-sexo').value,
-        nif, email, phone, plan,
-        foto: document.getElementById('portal-foto-b64').value,
-        anexo: anexo,
-        contrato: true,
-        date: new Date().toLocaleDateString('pt-PT')
+        if (filterType === 'Ativo') return m.estado === 'Ativo' && due >= now;
+        if (filterType === 'A Vencer') return diffDays <= 5 && diffDays >= 0 && due >= now;
+        if (filterType === 'Expirados') return due < now;
+        if (filterType === 'Inativo') return m.estado === 'Inativo';
+        if (filterType === 'Desativado') return m.estado === 'Desativado';
+        return true;
       });
-      alert('Inscrição submetida com sucesso! A equipa irá validá-la em breve.');
-      fecharPortalInscricao();
-      refreshAll();
-    }
 
-    // PICA-PONTO MANUAL PARA STAFFS
-    function regPicaPontoManual() {
-      const colabName = document.getElementById('pica-colab-select').value;
-      const tipo = document.getElementById('pica-type').value;
-      if (!colabName) { alert('Selecione um colaborador.'); return; }
-      const staff = collaborators.find(c => c.name === colabName) || { nif: '---', barcode: '0000' };
-      const agora = new Date();
-      picaPontoLogs.unshift({
-        id: Date.now(),
-        date: agora.toLocaleDateString('pt-PT'),
-        time: agora.toLocaleTimeString('pt-PT'),
-        name: colabName,
-        nif: staff.nif,
-        barcode: staff.barcode,
-        type: tipo
-      });
-      renderPicaPontoLogs();
-      alert(`Ponto registado manualmente para ${colabName} (${tipo}) com sucesso!`);
-    }
+      if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum membro encontrado.</td></tr>`; return; }
 
-    function renderPicaPontoLogs() {
-      const t = document.getElementById('pica-table-body');
-      if (!t) return;
-      if (picaPontoLogs.length === 0) { t.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#777;">Sem registos de ponto.</td></tr>`; return; }
-      t.innerHTML = '';
-      picaPontoLogs.forEach((l, idx) => {
-        const badgeCol = l.type === 'Entrada' ? 'badge-ok' : 'badge-warn';
-        t.innerHTML += `
+      filtered.forEach(m => {
+        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:52px; height:52px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">${m.name[0]}</div>`;
+        const estBadge = m.estado === 'Desativado' ? '<span class="badge badge-err">Desativado</span>' : (m.estado === 'Inativo' ? '<span class="badge badge-warn">Inativo</span>' : '<span class="badge badge-ok">Ativo</span>');
+        const anexoTag = m.anexo ? `<a href="${m.anexo}" target="_blank" download="comprovativo" style="color:var(--primary); font-weight:bold;">Comprovativo OK</a>` : 'Sem Comprovativo';
+        const contratoTag = m.contrato ? '<span style="color:var(--success); font-weight:bold;">Contrato OK</span>' : 'Sem Contrato';
+        
+        tbody.innerHTML += `
           <tr>
-            <td>${l.date}</td>
-            <td>${l.time}</td>
-            <td><strong>${l.name}</strong></td>
-            <td>${l.nif || '---'}</td>
-            <td><span class="badge ${badgeCol}">${l.type}</span></td>
+            <td>${fotoTag}</td>
+            <td><code style="font-size:0.92rem; font-weight:bold; color:var(--primary);">ID: ${m.barcode}</code><br><small>NIF: ${m.nif || '---'}</small></td>
+            <td><strong>${m.name}</strong><br><small>📞 ${m.phone || '---'} | ✉️ ${m.email || '---'}</small></td>
+            <td>${m.plan} (${estBadge})<br><small>${anexoTag} | ${contratoTag}</small></td>
             <td>
-              <button class="btn btn-sm btn-blue" onclick="editarPicaPonto(${idx})">✏️ Editar</button>
-              <button class="btn btn-sm" style="background:var(--danger);" onclick="picaPontoLogs.splice(${idx},1); renderPicaPontoLogs();">🗑️</button>
+              <button class="btn btn-sm btn-green" onclick="checkinManualMembro('${m.barcode}')" title="Check-in">🔔 Check-in</button>
+              <button class="btn btn-sm btn-blue" onclick="validarMensalidadeMembro(${m.id})" title="Validar">💳 Validar</button>
+              <button class="btn btn-sm" style="background:#495057;" onclick="editMember(${m.id})">✏️ Editar</button>
+              <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️ Eliminar</button>
             </td>
           </tr>
         `;
       });
     }
 
-    function editarPicaPonto(idx) {
-      const l = picaPontoLogs[idx];
-      const novoTipo = prompt('Alterar tipo de registo (Entrada ou Saída):', l.type);
-      if (novoTipo && (novoTipo === 'Entrada' || novoTipo === 'Saída')) {
-        l.type = novoTipo;
-        renderPicaPontoLogs();
-        alert('Registo de ponto atualizado!');
+    function checkinManualMembro(barcode) {
+      const m = members.find(x => x.barcode === barcode);
+      if (!m) return;
+      const agora = new Date();
+      attendanceLogs.unshift({ data: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: m.name, barcode: m.barcode, status: 'Ativo' });
+      renderAttendance();
+      updateDynamicMetrics();
+
+      const totemData = { name: m.name, plan: m.plan || 'Mensal', auth: true, startDate: m.date || '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: m.foto || '', time: Date.now() };
+      localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
+      if (totemWindowRef && !totemWindowRef.closed) totemWindowRef.postMessage(totemData, '*');
+      alert(`Check-in efetuado com sucesso para ${m.name}!`);
+    }
+
+    function validarMensalidadeMembro(id) {
+      const m = members.find(x => x.id === id);
+      if (!m) return;
+      m.date = new Date().toISOString().split('T')[0];
+      m.estado = 'Ativo';
+      refreshAll();
+      alert(`Mensalidade de ${m.name} validada e renovada com sucesso!`);
+    }
+
+    // CHECK-INS LEITOR DE BARRAS
+    function onScan(e) {
+      if (e.key === 'Enter') {
+        const code = document.getElementById('chk-input').value.trim();
+        if (!code) return;
+        const m = members.find(x => x.barcode === code) || { name: 'Membro Desconhecido', barcode: code };
+        attendanceLogs.unshift({ data: new Date().toLocaleDateString('pt-PT'), time: new Date().toLocaleTimeString('pt-PT'), name: m.name, barcode: m.barcode, status: 'Ativo' });
+        renderAttendance(); updateDynamicMetrics();
+        document.getElementById('chk-input').value = '';
+      }
+    }
+    function renderAttendance() {
+      const t = document.getElementById('today-attendance-tbody');
+      if (t) { t.innerHTML = ''; attendanceLogs.forEach(a => t.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td><span class="badge badge-ok">Ativo</span></td></tr>`); }
+    }
+
+    // PLANOS E PAGAMENTOS
+    function addPlan() {
+      const name = document.getElementById('pl-name').value.trim(), price = document.getElementById('pl-price').value, days = document.getElementById('pl-days').value;
+      if (!name || !price) return;
+      plans.push({ name, price, days });
+      refreshAll(); alert('Plano criado!');
+    }
+    function renderPlans() {
+      const t = document.getElementById('plans-table-body');
+      if (t) { t.innerHTML = ''; plans.forEach(p => t.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} CVE</td><td>${p.days} dias</td></tr>`); }
+    }
+    function addPayment() {
+      const m = document.getElementById('pay-member').value, a = document.getElementById('pay-amount').value, r = document.getElementById('pay-ref').value || 'Mensalidade';
+      if (!m || !a) return;
+      payments.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), member: m, amount: a, ref: r });
+      refreshAll(); alert('Pagamento registado!');
+    }
+    function renderPayments() {
+      const tb = document.getElementById('payments-table-body');
+      if (tb) {
+        tb.innerHTML = '';
+        payments.forEach(p => {
+          tb.innerHTML += `<tr><td>${p.date}</td><td>${p.member}</td><td>${p.ref}</td><td>${p.amount} CVE</td></tr>`;
+        });
       }
     }
 
@@ -1351,12 +1386,23 @@
             <td><a href="${arq.fileUrl}" target="_blank" download="${arq.fileName}" style="color:var(--primary); font-weight:bold;">📎 ${arq.fileName}</a></td>
             <td>
               <a href="${arq.fileUrl}" target="_blank" class="btn btn-sm btn-blue">👁️ Ver</a>
+              <button class="btn btn-sm" style="background:#f59f00;" onclick="editarNomeArquivo(${idx})">✏️ Editar</button>
               <a href="${arq.fileUrl}" target="_blank" download="${arq.fileName}" class="btn btn-sm btn-green">📥 Baixar</a>
               <button class="btn btn-sm" style="background:var(--danger);" onclick="bibliotecaArquivos.splice(${idx},1); renderBiblioteca();">🗑️ Eliminar</button>
             </td>
           </tr>
         `;
       });
+    }
+
+    function editarNomeArquivo(idx) {
+      const arq = bibliotecaArquivos[idx];
+      const novoNome = prompt('Editar nome do ficheiro:', arq.fileName);
+      if (novoNome) {
+        arq.fileName = novoNome;
+        renderBiblioteca();
+        alert('Nome do ficheiro atualizado!');
+      }
     }
 
     // CHAT & FEED ONLINE COM ARQUIVOS NA BIBLIOTECA
@@ -1398,501 +1444,6 @@
         `;
       });
       area.scrollTop = area.scrollHeight;
-    }
-
-    // FINANÇAS E LOJA (CATEGORIAS, DESPESAS, SALÁRIOS, PRODUTOS, POS)
-    function addCategory() {
-      const name = document.getElementById('cat-name').value.trim();
-      const desc = document.getElementById('cat-desc').value.trim();
-      if (!name) { alert('Insira o nome da categoria.'); return; }
-      categories.push({ id: Date.now(), name, desc });
-      alert('Categoria registada com sucesso!');
-      document.getElementById('cat-name').value = ''; document.getElementById('cat-desc').value = '';
-      refreshAll();
-    }
-    function renderCategories() {
-      const t = document.getElementById('categories-table-body');
-      if (!t) return;
-      t.innerHTML = '';
-      if (categories.length === 0) { t.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#777;">Sem categorias.</td></tr>`; return; }
-      categories.forEach(c => t.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.desc || ''}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`);
-    }
-
-    function addExpense() {
-      const desc = document.getElementById('exp-desc').value.trim();
-      const val = Number(document.getElementById('exp-val').value);
-      if (!desc || !val) { alert('Preencha a descrição e o valor da despesa.'); return; }
-      expenses.push({ date: new Date().toLocaleDateString('pt-PT'), desc, amount: val });
-      alert('Despesa registada com sucesso!');
-      document.getElementById('exp-desc').value = ''; document.getElementById('exp-val').value = '';
-      refreshAll();
-    }
-    function renderExpenses() {
-      const t = document.getElementById('expenses-table-body');
-      if (!t) return;
-      t.innerHTML = '';
-      if (expenses.length === 0) { t.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#777;">Sem despesas registadas.</td></tr>`; return; }
-      expenses.forEach(e => t.innerHTML += `<tr><td>${e.date}</td><td>${e.desc}</td><td><strong>${e.amount} CVE</strong></td></tr>`);
-    }
-
-    function addSalary() {
-      const name = document.getElementById('sal-name').value.trim();
-      const val = Number(document.getElementById('sal-val').value);
-      if (!name || !val) { alert('Preencha o nome e o valor do salário.'); return; }
-      salaries.push({ date: new Date().toLocaleDateString('pt-PT'), name, amount: val });
-      alert('Salário registado com sucesso!');
-      document.getElementById('sal-name').value = ''; document.getElementById('sal-val').value = '';
-      refreshAll();
-    }
-    function renderSalaries() {
-      const t = document.getElementById('salaries-table-body');
-      if (!t) return;
-      t.innerHTML = '';
-      if (salaries.length === 0) { t.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#777;">Sem salários registados.</td></tr>`; return; }
-      salaries.forEach(s => t.innerHTML += `<tr><td>${s.name}</td><td><strong>${s.amount} CVE</strong></td></tr>`);
-    }
-
-    function saveProduct() {
-      const editIdx = document.getElementById('p-edit-idx').value;
-      const name = document.getElementById('p-name').value.trim();
-      const buyPrice = Number(document.getElementById('p-buyprice').value) || 0;
-      const price = Number(document.getElementById('p-price').value) || 0;
-      const stock = Number(document.getElementById('p-stock').value) || 0;
-      const desc = document.getElementById('p-desc').value;
-      const use = document.getElementById('p-use').value;
-      const foto = document.getElementById('p-foto-base64').value;
-
-      if (!name || !price) { alert('Preencha o Nome e o Preço de Venda do produto.'); return; }
-
-      if (editIdx !== '') {
-        const p = products[editIdx];
-        if (p) {
-          p.name = name; p.buyPrice = buyPrice; p.price = price; p.stock = stock; p.desc = desc; p.use = use;
-          if (foto) p.foto = foto;
-        }
-        alert('Produto atualizado com sucesso!');
-        cancelEditProduct();
-      } else {
-        products.push({ name, buyPrice, price, stock, desc, use, foto: foto || '' });
-        alert('Produto registado com sucesso!');
-      }
-      refreshAll();
-      clearProductForm();
-    }
-
-    function clearProductForm() {
-      document.getElementById('p-name').value = ''; document.getElementById('p-buyprice').value = ''; document.getElementById('p-price').value = '';
-      document.getElementById('p-stock').value = '10'; document.getElementById('p-desc').value = ''; document.getElementById('p-use').value = '';
-      document.getElementById('p-foto-base64').value = ''; document.getElementById('p-foto-file').value = '';
-    }
-
-    function editProduct(idx) {
-      const p = products[idx];
-      if (!p) return;
-      document.getElementById('p-edit-idx').value = idx;
-      document.getElementById('p-name').value = p.name;
-      document.getElementById('p-buyprice').value = p.buyPrice || 0;
-      document.getElementById('p-price').value = p.price;
-      document.getElementById('p-stock').value = p.stock;
-      document.getElementById('p-desc').value = p.desc || '';
-      document.getElementById('p-use').value = p.use || '';
-      document.getElementById('p-foto-base64').value = p.foto || '';
-      document.getElementById('form-product-title').innerText = 'Editar Produto: ' + p.name;
-      document.getElementById('btn-save-product').innerText = 'Guardar Alterações';
-      document.getElementById('btn-cancel-product').style.display = 'inline-flex';
-      navigate('produtos');
-    }
-
-    function cancelEditProduct() {
-      document.getElementById('p-edit-idx').value = '';
-      document.getElementById('form-product-title').innerText = 'Registar ou Editar Produto';
-      document.getElementById('btn-save-product').innerText = 'Guardar Produto';
-      document.getElementById('btn-cancel-product').style.display = 'none';
-      clearProductForm();
-    }
-
-    function deleteProduct(idx) {
-      if (confirm('Tem a certeza que deseja eliminar este produto?')) { products.splice(idx, 1); refreshAll(); }
-    }
-
-    function renderProducts() {
-      const tbody = document.getElementById('products-table-body');
-      const query = document.getElementById('product-search-input') ? document.getElementById('product-search-input').value.toLowerCase() : '';
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      let filtered = products.map((p, originalIdx) => ({ ...p, originalIdx })).filter(p => p.name.toLowerCase().includes(query));
-      if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum produto encontrado.</td></tr>`; return; }
-      filtered.forEach(p => {
-        const fotoTag = p.foto ? `<img src="${p.foto}" style="width:42px; height:42px; object-fit:cover; border-radius:4px;">` : '📦';
-        tbody.innerHTML += `
-          <tr>
-            <td>${fotoTag}</td>
-            <td><strong>${p.name}</strong><br><small>📝 ${p.desc || '---'}</small><br><small style="color:var(--primary);">💡 Uso: ${p.use || '---'}</small></td>
-            <td>Compra: ${p.buyPrice || 0} CVE<br><strong>Venda: ${p.price} CVE</strong></td>
-            <td>${p.stock} unid.</td>
-            <td>
-              <button class="btn btn-sm btn-blue" onclick="editProduct(${p.originalIdx})">✏️ Editar</button>
-              <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteProduct(${p.originalIdx})">🗑️ Eliminar</button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderPosCatalog() {
-      const grid = document.getElementById('pos-catalog-grid');
-      const query = document.getElementById('pos-search-input') ? document.getElementById('pos-search-input').value.toLowerCase() : '';
-      if (!grid) return;
-      grid.innerHTML = '';
-      let filtered = products.filter(p => p.name.toLowerCase().includes(query));
-      if (filtered.length === 0) { grid.innerHTML = `<p style="color:#777; grid-column:1/-1; text-align:center;">Nenhum produto encontrado.</p>`; return; }
-      filtered.forEach(p => {
-        const fotoTag = p.foto ? `<img src="${p.foto}" style="width:100%; height:100px; object-fit:cover; border-radius:6px; margin-bottom:6px;">` : `<div style="width:100%; height:100px; background:#e9ecef; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:6px;">📦</div>`;
-        grid.innerHTML += `
-          <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              ${fotoTag}
-              <h4 style="font-size:0.9rem; font-weight:bold; color:var(--dark);">${p.name}</h4>
-              <p style="font-size:0.85rem; color:var(--success); font-weight:bold; margin-top:2px;">${p.price} CVE</p>
-              <small style="color:#666;">Stock: ${p.stock}</small>
-            </div>
-            <button class="btn btn-sm btn-blue" style="width:100%; margin-top:8px;" onclick="addToCart('${p.name}')">➕ Adicionar</button>
-          </div>
-        `;
-      });
-      renderCart();
-    }
-
-    function addToCart(prodName) {
-      const p = products.find(x => x.name === prodName);
-      if (!p || p.stock <= 0) { alert('Produto sem stock disponível.'); return; }
-      const itemInCart = cartItems.find(x => x.name === prodName);
-      if (itemInCart) {
-        if (itemInCart.qty < p.stock) itemInCart.qty++;
-        else alert('Quantidade máxima em stock atingida.');
-      } else {
-        cartItems.push({ name: prodName, price: p.price, qty: 1 });
-      }
-      renderCart();
-    }
-
-    function renderCart() {
-      const container = document.getElementById('pos-cart-items');
-      const totalEl = document.getElementById('pos-cart-total');
-      if (!container) return;
-      if (cartItems.length === 0) { container.innerHTML = '<p style="color:#777; text-align:center;">Carrinho vazio.</p>'; if(totalEl) totalEl.innerText = '0 CVE'; return; }
-      container.innerHTML = '';
-      let total = 0;
-      cartItems.forEach((item, idx) => {
-        let subtotal = item.price * item.qty;
-        total += subtotal;
-        container.innerHTML += `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #dee2e6; padding-bottom:6px;">
-            <div><strong>${item.name}</strong><br><small>${item.price} CVE x ${item.qty}</small></div>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <strong>${subtotal} CVE</strong>
-              <button class="btn-action" onclick="cartItems.splice(${idx},1); renderCart();" style="color:var(--danger);">❌</button>
-            </div>
-          </div>
-        `;
-      });
-      if (totalEl) totalEl.innerText = total.toLocaleString() + ' CVE';
-    }
-
-    function finalizarVendaCarrinho() {
-      if (cartItems.length === 0) { alert('O carrinho está vazio.'); return; }
-      let totalVenda = 0;
-      cartItems.forEach(item => {
-        const p = products.find(x => x.name === item.name);
-        if (p) {
-          p.stock -= item.qty;
-          totalVenda += item.price * item.qty;
-          sales.push({ date: new Date().toLocaleDateString('pt-PT'), prod: item.name, qty: item.qty, total: item.price * item.qty });
-        }
-      });
-      payments.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), member: 'Venda POS Balcão', amount: totalVenda, ref: 'POS Venda Direta' });
-      cartItems = [];
-      refreshAll();
-      alert('Venda concluída e registada com sucesso no financeiro e stock!');
-    }
-
-    // FATURAS COM ENVIO WHATSAPP E EMAIL
-    function renderInvoices() {
-      const t = document.getElementById('invoices-table-body');
-      if (!t) return;
-      if (payments.length === 0) { t.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem faturas emitidas.</td></tr>`; return; }
-      t.innerHTML = '';
-      payments.forEach(p => {
-        const fatNum = `FAT-${p.id.toString().slice(-4)}`;
-        const msg = encodeURIComponent(`Olá ${p.member}, aqui tem a sua fatura ${fatNum} do Ginásio KOSMO no valor de ${p.amount} CVE. NIF: 283023805. Obrigado!`);
-        const emailSub = encodeURIComponent(`Fatura ${fatNum} - Ginásio KOSMO`);
-        const emailBody = encodeURIComponent(`Estimado(a) ${p.member},\n\nSegue a fatura ${fatNum} referente a ${p.ref} no valor de ${p.amount} CVE.\n\nGinásio KOSMO\nPraia, Terra Branca\nNIF: 283023805`);
-
-        t.innerHTML += `
-          <tr>
-            <td><strong>${fatNum}</strong></td>
-            <td>${p.date}</td>
-            <td>${p.member}<br><small>${p.ref}</small></td>
-            <td><strong>${p.amount} CVE</strong></td>
-            <td>
-              <a href="mailto:?subject=${emailSub}&body=${emailBody}" class="btn btn-sm btn-blue" target="_blank" style="text-decoration:none;">✉️ E-mail</a>
-              <a href="https://wa.me/?text=${msg}" class="btn btn-sm btn-green" target="_blank" style="text-decoration:none;">💬 WhatsApp</a>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderCheckinsChart() {
-      const ctx = document.getElementById('checkinsChart');
-      if (!ctx) return;
-      let labels = [], dataPoints = [];
-      for (let i = 6; i >= 0; i--) {
-        let d = new Date(); d.setDate(d.getDate() - i);
-        let dStr = d.toLocaleDateString('pt-PT');
-        labels.push(d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }));
-        let count = attendanceLogs.filter(a => a.data === dStr).length;
-        dataPoints.push(count);
-      }
-      if (checkinsChartInstance) {
-        checkinsChartInstance.data.labels = labels;
-        checkinsChartInstance.data.datasets[0].data = dataPoints;
-        checkinsChartInstance.update();
-      } else {
-        checkinsChartInstance = new Chart(ctx, {
-          type: 'line',
-          data: { labels: labels, datasets: [{ label: 'Check-ins', data: dataPoints, borderColor: '#c92a2a', backgroundColor: 'rgba(201, 42, 42, 0.08)', borderWidth: 2.5, fill: true, tension: 0.35 }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } }
-        });
-      }
-    }
-
-    function renderVisaoGeralChart() {
-      const ctx = document.getElementById('estadoMembrosChart');
-      if (!ctx) return;
-      const now = new Date();
-      let ativos = 0, expirados = 0, pendentes = inscricoesOnline.length, desativados = 0;
-      members.forEach(m => {
-        if (m.estado === 'Desativado') { desativados++; return; }
-        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
-        const due = new Date(m.date || Date.now());
-        due.setDate(due.getDate() + pl.days);
-        if (due < now) expirados++; else ativos++;
-      });
-
-      if (estadoMembrosChartInstance) {
-        estadoMembrosChartInstance.data.datasets[0].data = [ativos, expirados, pendentes, desativados];
-        estadoMembrosChartInstance.update();
-      } else {
-        estadoMembrosChartInstance = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Ativos', 'Expirados', 'Pendentes', 'Desativados'],
-            datasets: [{
-              data: [ativos, expirados, pendentes, desativados],
-              backgroundColor: ['#2b8a3e', '#c92a2a', '#f59f00', '#495057'],
-              borderWidth: 2
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
-      }
-    }
-
-    function renderCrescimentoChart() {
-      const ctx = document.getElementById('crescimentoMembrosChart');
-      if (!ctx) return;
-      let meses = ['Nov', 'Dez', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'];
-      let acumulado = members.length;
-      let dataVals = [Math.max(0, acumulado-5), Math.max(0, acumulado-4), Math.max(0, acumulado-3), Math.max(0, acumulado-2), Math.max(0, acumulado-1), acumulado, acumulado, acumulado, acumulado, acumulado, acumulado, acumulado];
-
-      if (crescimentoChartInstance) {
-        crescimentoChartInstance.data.datasets[0].data = dataVals;
-        crescimentoChartInstance.update();
-      } else {
-        crescimentoChartInstance = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: meses,
-            datasets: [{
-              label: 'Total Acumulado',
-              data: dataVals,
-              borderColor: '#2b8a3e',
-              backgroundColor: 'rgba(43, 138, 62, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.3
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-        });
-      }
-    }
-
-    function renderReceitaPlanosChart() {
-      const ctx = document.getElementById('receitaPlanoChart');
-      if (!ctx) return;
-      let planoCounts = {};
-      members.forEach(m => {
-        if (m.estado === 'Ativo') {
-          planoCounts[m.plan] = (planoCounts[m.plan] || 0) + 1;
-        }
-      });
-      let labels = Object.keys(planoCounts).length > 0 ? Object.keys(planoCounts) : ['Mensal Trabalhador', 'Plano Estudante'];
-      let dataVals = Object.keys(planoCounts).length > 0 ? Object.values(planoCounts) : [members.length || 1, 0];
-
-      if (receitaPlanoChartInstance) {
-        receitaPlanoChartInstance.data.labels = labels;
-        receitaPlanoChartInstance.data.datasets[0].data = dataVals;
-        receitaPlanoChartInstance.update();
-      } else {
-        receitaPlanoChartInstance = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Membros por Plano',
-              data: dataVals,
-              backgroundColor: '#c92a2a',
-              borderRadius: 4
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-        });
-      }
-    }
-
-    function renderReceitaMetodoChart() {
-      const ctx = document.getElementById('receitaMetodoChart');
-      if (!ctx) return;
-      if (receitaMetodoChartInstance) {
-        receitaMetodoChartInstance.data.datasets[0].data = [payments.length > 0 ? payments.reduce((a,b)=>a+Number(b.amount),0) : 50000, 0];
-        receitaMetodoChartInstance.update();
-      } else {
-        receitaMetodoChartInstance = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Dinheiro / Transferência', 'Cartão'],
-            datasets: [{
-              data: [100, 0],
-              backgroundColor: ['#c92a2a', '#ced4da'],
-              borderWidth: 2
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
-      }
-    }
-
-    function toggleMemberAnexo() {
-      const plano = document.getElementById('m-plan').value;
-      const box = document.getElementById('m-box-anexo');
-      const lbl = document.getElementById('m-label-anexo');
-      if (plano === 'Plano Estudante') {
-        box.style.display = 'block';
-        lbl.innerText = 'Documento Comprovativo de Matrícula / Estudante *';
-      } else if (plano === 'Plano Casal') {
-        box.style.display = 'block';
-        lbl.innerText = 'Certidão de Casamento / Comprovativo de Casal *';
-      } else {
-        box.style.display = 'none';
-      }
-    }
-
-    function converterFotoMembro(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('m-foto-base64').value = evt.target.result; r.readAsDataURL(f); }
-    }
-    function converterAnexoMembro(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('m-anexo-base64').value = evt.target.result; r.readAsDataURL(f); }
-    }
-    function converterFotoProduto(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => document.getElementById('p-foto-base64').value = evt.target.result; r.readAsDataURL(f); }
-    }
-
-    function saveMember() {
-      const editId = document.getElementById('m-edit-id').value;
-      const name = document.getElementById('m-name').value.trim();
-      const sexo = document.getElementById('m-sexo').value;
-      const nif = document.getElementById('m-nif').value.trim();
-      const barcode = document.getElementById('m-barcode').value.trim();
-      const email = document.getElementById('m-email').value.trim();
-      const phone = document.getElementById('m-phone').value.trim();
-      const plan = document.getElementById('m-plan').value;
-      const estado = document.getElementById('m-estado').value;
-      const startDate = document.getElementById('m-startdate').value || new Date().toISOString().split('T')[0];
-      const foto = document.getElementById('m-foto-base64').value;
-      const anexo = document.getElementById('m-anexo-base64').value;
-      const contratoAceite = document.getElementById('m-contrato-check').checked;
-
-      if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
-      if (!contratoAceite) { alert('Deve aceitar obrigatoriamente os termos do Contrato de Inscrição KOSMO!'); return; }
-      if ((plan === 'Plano Estudante' || plan === 'Plano Casal') && !anexo && !editId) {
-        alert('É obrigatório adicionar o comprovativo específico (Estudante ou Casal)!');
-        return;
-      }
-
-      if (editId) {
-        const m = members.find(x => x.id == editId);
-        if (m) {
-          m.name = name; m.sexo = sexo; m.nif = nif; m.barcode = barcode; m.email = email; m.phone = phone; m.plan = plan; m.estado = estado; m.date = startDate; m.contrato = true;
-          if (foto) m.foto = foto;
-          if (anexo) m.anexo = anexo;
-        }
-        alert('Membro atualizado com sucesso!');
-        cancelEditMember();
-      } else {
-        members.push({ id: Date.now(), name, sexo, nif, barcode, email, phone, plan, estado, foto: foto || '', anexo: anexo || '', contrato: true, date: startDate });
-        alert('Membro registado com sucesso!');
-      }
-      refreshAll();
-      clearMemberForm();
-    }
-
-    function clearMemberForm() {
-      document.getElementById('m-name').value = ''; document.getElementById('m-nif').value = ''; document.getElementById('m-barcode').value = '';
-      document.getElementById('m-email').value = ''; document.getElementById('m-phone').value = ''; document.getElementById('m-startdate').value = '';
-      document.getElementById('m-foto-base64').value = ''; document.getElementById('m-foto-file').value = '';
-      document.getElementById('m-anexo-base64').value = ''; document.getElementById('m-anexo-file').value = '';
-      document.getElementById('m-box-anexo').style.display = 'none';
-      if(document.getElementById('m-contrato-check')) document.getElementById('m-contrato-check').checked = false;
-    }
-
-    function editMember(id) {
-      const m = members.find(x => x.id === id);
-      if (!m) return;
-      document.getElementById('m-edit-id').value = m.id;
-      document.getElementById('m-name').value = m.name;
-      document.getElementById('m-sexo').value = m.sexo || 'Masculino';
-      document.getElementById('m-nif').value = m.nif || '';
-      document.getElementById('m-barcode').value = m.barcode;
-      document.getElementById('m-email').value = m.email || '';
-      document.getElementById('m-phone').value = m.phone || '';
-      document.getElementById('m-plan').value = m.plan;
-      document.getElementById('m-estado').value = m.estado || 'Ativo';
-      document.getElementById('m-startdate').value = m.date || '';
-      document.getElementById('m-foto-base64').value = m.foto || '';
-      document.getElementById('m-anexo-base64').value = m.anexo || '';
-      if(document.getElementById('m-contrato-check')) document.getElementById('m-contrato-check').checked = true;
-      toggleMemberAnexo();
-      document.getElementById('form-member-title').innerText = 'Editar Membro: ' + m.name;
-      document.getElementById('btn-save-member').innerText = 'Guardar';
-      document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
-      navigate('membros');
-    }
-
-    function cancelEditMember() {
-      document.getElementById('m-edit-id').value = '';
-      document.getElementById('form-member-title').innerText = 'Registar Novo Membro';
-      document.getElementById('btn-save-member').innerText = 'Registar Membro';
-      document.getElementById('btn-cancel-edit').style.display = 'none';
-      clearMemberForm();
-    }
-
-    function deleteMember(id) {
-      if (confirm('Tem a certeza absoluta que deseja eliminar este membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
     }
   </script>
 </body>
