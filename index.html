@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (Supabase Realtime Cloud)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (Supabase Realtime Cloud Pro)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -336,16 +336,16 @@
 
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes</h2><p>Sem avarias.</p></div></section>
       
-      <!-- CONFIGURAÇÃO CLOUD SUPABASE REALTIME FUNCIONAL -->
+      <!-- CONFIGURAÇÃO CLOUD SUPABASE COM TESTE REAL -->
       <section id="view-config" class="view-section">
         <div class="card">
           <h2>Configuração Cloud Supabase (Tempo Real Universal)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Insira a sua Supabase URL e Anon Key para sincronizar colaboradores e membros em qualquer domínio.</p>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Insira a sua Supabase URL e Anon Key para testar e sincronizar em tempo real.</p>
           <div class="form-grid">
             <div><label>Supabase URL</label><input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co"></div>
             <div><label>Supabase Anon Key</label><input type="text" id="cfg-supabase-key" placeholder="eyJhbGciOi..."></div>
           </div>
-          <button class="btn btn-blue" onclick="salvarConfigCloud()" style="margin-top:12px;">Conectar & Sincronizar Cloud Agora</button>
+          <button class="btn btn-blue" onclick="salvarConfigCloud()" style="margin-top:12px;">Testar & Conectar Cloud Agora</button>
         </div>
       </section>
 
@@ -448,7 +448,7 @@
     </div>
   </div>
 
-  <!-- MOTOR JAVASCRIPT COM SUPABASE CLOUD SYNC REALTIME -->
+  <!-- MOTOR JAVASCRIPT COM TESTE DE LIGAÇÃO REAL AO SUPABASE -->
   <script>
     let supabaseClient = null;
     let members = [];
@@ -495,11 +495,6 @@
       try {
         supabaseClient = window.supabase.createClient(url, key);
         carregarDadosCloud();
-        const badge = document.getElementById('cloud-status');
-        if (badge) {
-          badge.className = 'badge badge-ok';
-          badge.innerText = '🌐 Cloud Sincronizada';
-        }
       } catch(e) {
         console.error('Erro ao iniciar Supabase:', e);
       }
@@ -510,10 +505,31 @@
       const key = document.getElementById('cfg-supabase-key').value.trim();
       if (!url || !key) { alert('Insira a URL e a Anon Key do Supabase.'); return; }
       
-      localStorage.setItem('kosmo_sb_url', url);
-      localStorage.setItem('kosmo_sb_key', key);
-      iniciarSupabase(url, key);
-      alert('Credenciais Cloud guardadas e ligadas com sucesso!');
+      try {
+        // Criar cliente de teste temporário
+        const testClient = window.supabase.createClient(url, key);
+        const { data, error } = await testClient.from('kosmo_data').select('id').limit(1);
+        
+        if (error) {
+          alert('Erro de conexão com o Supabase: ' + error.message + '\nVerifique se executou o script SQL da tabela kosmo_data e as regras RLS.');
+          return;
+        }
+
+        // Se passou no teste real, guardar e ativar
+        localStorage.setItem('kosmo_sb_url', url);
+        localStorage.setItem('kosmo_sb_key', key);
+        supabaseClient = testClient;
+
+        const badge = document.getElementById('cloud-status');
+        if (badge) {
+          badge.className = 'badge badge-ok';
+          badge.innerText = '🌐 Cloud Sincronizada';
+        }
+        carregarDadosCloud();
+        alert('Ligação ao Supabase estabelecida com sucesso e testada em tempo real!');
+      } catch(err) {
+        alert('Falha ao conectar com o Supabase. Verifique se a URL e a Key estão corretas.');
+      }
     }
 
     async function sincronizarCloud() {
@@ -543,6 +559,11 @@
           if (d.attendanceLogs) attendanceLogs = d.attendanceLogs;
           if (d.picaPontoLogs) picaPontoLogs = d.picaPontoLogs;
           refreshAll();
+          const badge = document.getElementById('cloud-status');
+          if (badge) {
+            badge.className = 'badge badge-ok';
+            badge.innerText = '🌐 Cloud Sincronizada';
+          }
         }
       } catch(e) {
         console.log('Sem dados remotos ainda, a usar estado inicial.');
@@ -806,7 +827,7 @@
             <td>
               <button class="btn btn-sm btn-green" onclick="checkinManualMembro('${m.barcode}')" title="Check-in Automático">🔔 Check-in</button>
               <button class="btn btn-sm btn-blue" onclick="validarMensalidadeMembro(${m.id})" title="Validar/Renovar Mensalidade">💳 Validar</button>
-              <button class="btn btn-sm" style="background:#495057;" onclick="editMember(${m.id})">✏️️ Editar</button>
+              <button class="btn btn-sm" style="background:#495057;" onclick="editMember(${m.id})">✏️ Editar</button>
               <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️ Eliminar</button>
             </td>
           </tr>
