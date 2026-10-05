@@ -205,7 +205,7 @@
         </div>
       </section>
 
-      <!-- ALA DE MEMBROS (COM FOTO NÍTIDA NA TABELA, CÓDIGO DE CLIENTE, CHECK-IN ADMIN/STAFF E VALIDAÇÃO DE MENSALIDADE) -->
+      <!-- ALA DE MEMBROS -->
       <section id="view-membros" class="view-section">
         <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
           <div class="metric-card"><span>Total Registados</span><h3 id="m-stat-total">0</h3></div>
@@ -354,13 +354,13 @@
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes</h2><p>Sem avarias.</p></div></section>
       <section id="view-config" class="view-section"><div class="card"><h2>Configuração Cloud</h2><div class="form-grid"><div><label>Supabase URL</label><input type="text" id="cfg-supabase-url"></div><div><label>Supabase Key</label><input type="text" id="cfg-supabase-key"></div></div><button class="btn btn-blue" onclick="salvarConfigCloud()">Conectar Cloud</button></div></section>
 
-      <!-- GERIR COLABORADORES & ATRIBUIÇÃO DE FUNÇÕES PERSONALIZADAS + ALTERAÇÃO DE SENHAS -->
+      <!-- GERIR COLABORADORES & FUNÇÕES -->
       <section id="view-colab" class="view-section">
         <div class="card">
           <h2>Gerir Colaboradores & Atribuição de Funções</h2>
           <div class="form-grid">
             <div><label>Nome Completo</label><input type="text" id="colab-name" placeholder="Nome do Colaborador"></div>
-            <div><label>Função / Cargo (Atribuição Personalizada)</label><input type="text" id="colab-role" placeholder="Ex: Rececionista, Personal Trainer, Gestor"></div>
+            <div><label>Função / Cargo (Personalizado)</label><input type="text" id="colab-role" placeholder="Ex: Rececionista, Personal Trainer, Gestor"></div>
             <div><label>Telemóvel</label><input type="tel" id="colab-phone" placeholder="Telemóvel"></div>
             <div><label>Utilizador (Login)</label><input type="text" id="colab-user" placeholder="utilizador"></div>
             <div><label>Palavra-passe</label><input type="password" id="colab-pass" placeholder="palavra-passe"></div>
@@ -444,6 +444,7 @@
     </div>
   </div>
 
+  <!-- MOTOR JAVASCRIPT BLINDADO -->
   <script>
     let members = [];
     let inscricoesOnline = [];
@@ -466,33 +467,37 @@
     let totemWindowRef = null;
     let fotoTemp = '', fotoProdTemp = '', portalFotoTemp = '', portalAnexoTemp = '';
     let clienteChatAtivo = null;
-    let isLogonActive = true;
     let loggedUser = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('portal') === 'inscricao' || window.location.hash === '#inscricao') {
-        const loginOverlay = document.getElementById('login-overlay');
-        if (loginOverlay) loginOverlay.style.display = 'none';
-        abrirPortalInscricao();
-      }
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('portal') === 'inscricao' || window.location.hash === '#inscricao') {
+          const loginOverlay = document.getElementById('login-overlay');
+          if (loginOverlay) loginOverlay.style.display = 'none';
+          abrirPortalInscricao();
+        }
+      } catch(e) {}
     });
 
     function directLogin() {
-      const u = document.getElementById('log-user').value.trim();
-      const p = document.getElementById('log-pass').value.trim();
-      if (u === 'admin' && p === 'admin123') {
-        loggedUser = { name: 'Administrador (Gerente)', role: 'Admin', perms: ['all'] };
-        finalizeLogin();
-        return;
+      try {
+        const u = document.getElementById('log-user').value.trim();
+        const p = document.getElementById('log-pass').value.trim();
+        if (u === 'admin' && p === 'admin123') {
+          loggedUser = { name: 'Administrador (Gerente)', role: 'Admin', perms: ['all'] };
+          finalizeLogin();
+          return;
+        }
+        const colab = collaborators.find(c => c.user === u && c.pass === p);
+        if (colab) { loggedUser = colab; finalizeLogin(); }
+        else { alert('Utilizador ou palavra-passe incorretos.'); }
+      } catch(err) {
+        alert('Erro ao efetuar login.');
       }
-      const colab = collaborators.find(c => c.user === u && c.pass === p);
-      if (colab) { loggedUser = colab; finalizeLogin(); }
-      else { alert('Utilizador ou palavra-passe incorretos.'); }
     }
 
     function finalizeLogin() {
-      isLogonActive = false;
       document.getElementById('login-overlay').style.display = 'none';
       const lbl = document.getElementById('logged-user-label');
       if (lbl) lbl.innerText = `Sessão: ${loggedUser.name}`;
@@ -502,92 +507,97 @@
     }
 
     function navigate(viewId) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      const target = document.getElementById('view-' + viewId);
-      if (target) target.classList.add('active');
-      const navBtn = document.getElementById('nav-' + viewId);
-      if (navBtn) navBtn.classList.add('active');
+      try {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('view-' + viewId);
+        if (target) target.classList.add('active');
+        const navBtn = document.getElementById('nav-' + viewId);
+        if (navBtn) navBtn.classList.add('active');
 
-      const titles = {
-        dashboard: 'Dashboard Geral', membros: 'Membros Ativos & Gestão', inscricoes: 'Inscrições Online', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
-        pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
-        pos: 'POS Inteligente', produtos: 'Catálogo de Produtos (A a Z)', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
-        mensagens: 'Enviar WhatsApp', chat: 'Chat Online Clientes', qrinscricao: 'QR / Código de Barras Inscrição', lembretes: 'Lembretes & Alertas (-5d)',
-        reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Colaboradores & Funções', picaponto: 'Pica Ponto', visao: 'Visão Geral',
-        retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
-      };
-      if (document.getElementById('page-title')) document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
-      refreshAll();
-      if (viewId === 'qrinscricao') gerarQRCodeInscricao();
+        const titles = {
+          dashboard: 'Dashboard Geral', membros: 'Membros Ativos & Gestão', inscricoes: 'Inscrições Online', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
+          pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
+          pos: 'POS Inteligente', produtos: 'Catálogo de Produtos (A a Z)', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
+          mensagens: 'Enviar WhatsApp', chat: 'Chat Online Clientes', qrinscricao: 'QR / Código de Barras Inscrição', lembretes: 'Lembretes & Alertas (-5d)',
+          reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Colaboradores & Funções', picaponto: 'Pica Ponto', visao: 'Visão Geral',
+          retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
+        };
+        if (document.getElementById('page-title')) document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
+        refreshAll();
+        if (viewId === 'qrinscricao') gerarQRCodeInscricao();
+      } catch(e) {}
     }
 
     function refreshAll() {
-      renderMembers();
-      renderInscricoesOnline();
-      renderPlans();
-      renderProducts();
-      renderCategories();
-      renderPayments();
-      renderExpenses();
-      renderSalaries();
-      renderSales();
-      renderStock();
-      renderColabs();
-      renderPicaPonto();
-      renderChatStaff();
-      populateSelects();
-      updateDynamicMetrics();
+      try {
+        renderMembers();
+        renderInscricoesOnline();
+        renderPlans();
+        renderProducts();
+        renderCategories();
+        renderPayments();
+        renderExpenses();
+        renderSalaries();
+        renderSales();
+        renderStock();
+        renderColabs();
+        renderPicaPonto();
+        renderChatStaff();
+        populateSelects();
+        updateDynamicMetrics();
+      } catch(e) {}
     }
 
-    /* ESTATÍSTICAS E MÉTRICAS DE MEMBROS */
     function updateDynamicMetrics() {
-      const now = new Date();
-      let ativos = 0, avencer = 0, expirados = 0, desativados = 0, mrrReal = 0;
+      try {
+        const now = new Date();
+        let ativos = 0, avencer = 0, expirados = 0, desativados = 0, mrrReal = 0;
 
-      members.forEach(m => {
-        if (m.estado === 'Desativado') { desativados++; return; }
-        const pl = plans.find(p => p.name === m.plan) || { days: 30, price: 2500 };
-        const due = new Date(m.date || Date.now());
-        due.setDate(due.getDate() + pl.days);
-        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+        members.forEach(m => {
+          if (m.estado === 'Desativado') { desativados++; return; }
+          const pl = plans.find(p => p.name === m.plan) || { days: 30, price: 2500 };
+          const due = new Date(m.date || Date.now());
+          due.setDate(due.getDate() + pl.days);
+          const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
 
-        if (due < now) { expirados++; }
-        else if (diffDays <= 5 && diffDays >= 0) { avencer++; ativos++; mrrReal += Number(pl.price || 0); }
-        else { ativos++; mrrReal += Number(pl.price || 0); }
-      });
+          if (due < now) { expirados++; }
+          else if (diffDays <= 5 && diffDays >= 0) { avencer++; ativos++; mrrReal += Number(pl.price || 0); }
+          else { ativos++; mrrReal += Number(pl.price || 0); }
+        });
 
-      const pendentes = inscricoesOnline.length;
-      const totalReg = members.length;
+        const pendentes = inscricoesOnline.length;
+        const totalReg = members.length;
 
-      if (document.getElementById('m-stat-total')) document.getElementById('m-stat-total').innerText = totalReg;
-      if (document.getElementById('m-stat-ativos')) document.getElementById('m-stat-ativos').innerText = ativos;
-      if (document.getElementById('m-stat-avencer')) document.getElementById('m-stat-avencer').innerText = avencer;
-      if (document.getElementById('m-stat-expirados')) document.getElementById('m-stat-expirados').innerText = expirados;
-      if (document.getElementById('m-stat-pendentes')) document.getElementById('m-stat-pendentes').innerText = pendentes;
-      if (document.getElementById('m-stat-desativados')) document.getElementById('m-stat-desativados').innerText = desativados;
+        if (document.getElementById('m-stat-total')) document.getElementById('m-stat-total').innerText = totalReg;
+        if (document.getElementById('m-stat-ativos')) document.getElementById('m-stat-ativos').innerText = ativos;
+        if (document.getElementById('m-stat-avencer')) document.getElementById('m-stat-avencer').innerText = avencer;
+        if (document.getElementById('m-stat-expirados')) document.getElementById('m-stat-expirados').innerText = expirados;
+        if (document.getElementById('m-stat-pendentes')) document.getElementById('m-stat-pendentes').innerText = pendentes;
+        if (document.getElementById('m-stat-desativados')) document.getElementById('m-stat-desativados').innerText = desativados;
 
-      const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
-      const totalDes = expenses.reduce((a,b) => a + Number(b.amount), 0) + salaries.reduce((a,b) => a + Number(b.amount), 0);
-      const liquido = totalRec - totalDes;
+        const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
+        const totalDes = expenses.reduce((a,b) => a + Number(b.amount), 0) + salaries.reduce((a,b) => a + Number(b.amount), 0);
+        const liquido = totalRec - totalDes;
 
-      if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = ativos;
-      if (document.getElementById('stat-inscricoes-pend')) document.getElementById('stat-inscricoes-pend').innerText = pendentes;
-      if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
-      if (document.getElementById('stat-mrr-real')) document.getElementById('stat-mrr-real').innerText = mrrReal + ' CVE';
+        if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = ativos;
+        if (document.getElementById('stat-inscricoes-pend')) document.getElementById('stat-inscricoes-pend').innerText = pendentes;
+        if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
+        if (document.getElementById('stat-mrr-real')) document.getElementById('stat-mrr-real').innerText = mrrReal + ' CVE';
 
-      if (document.getElementById('rel-total')) document.getElementById('rel-total').innerText = totalReg;
-      if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = ativos;
-      if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = mrrReal + ' CVE';
-      if (document.getElementById('per-rec')) document.getElementById('per-rec').innerText = totalRec + ' CVE';
-      if (document.getElementById('per-des')) document.getElementById('per-des').innerText = totalDes + ' CVE';
-      if (document.getElementById('per-liq')) document.getElementById('per-liq').innerText = liquido + ' CVE';
+        if (document.getElementById('rel-total')) document.getElementById('rel-total').innerText = totalReg;
+        if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = ativos;
+        if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = mrrReal + ' CVE';
+        if (document.getElementById('per-rec')) document.getElementById('per-rec').innerText = totalRec + ' CVE';
+        if (document.getElementById('per-des')) document.getElementById('per-des').innerText = totalDes + ' CVE';
+        if (document.getElementById('per-liq')) document.getElementById('per-liq').innerText = liquido + ' CVE';
 
-      const badgeInsc = document.getElementById('badge-inscricoes');
-      if (badgeInsc) {
-        if (pendentes > 0) { badgeInsc.innerText = pendentes; badgeInsc.style.display = 'inline-block'; }
-        else { badgeInsc.style.display = 'none'; }
-      }
+        const badgeInsc = document.getElementById('badge-inscricoes');
+        if (badgeInsc) {
+          if (pendentes > 0) { badgeInsc.innerText = pendentes; badgeInsc.style.display = 'inline-block'; }
+          else { badgeInsc.style.display = 'none'; }
+        }
+      } catch(e) {}
     }
 
     function converterFotoMembro(e) {
@@ -664,7 +674,6 @@
       if (confirm('Tem a certeza absoluta que deseja eliminar este membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
     }
 
-    /* BOTÃO DE CHECK-IN AUTOMÁTICO (ADMIN / STAFF) */
     function checkinManualMembro(barcode) {
       const m = members.find(x => x.barcode === barcode);
       if (!m) return;
@@ -679,7 +688,6 @@
       alert(`Check-in efetuado com sucesso para ${m.name}!`);
     }
 
-    /* VALIDAR MENSALIDADE DO MEMBRO */
     function validarMensalidadeMembro(id) {
       const m = members.find(x => x.id === id);
       if (!m) return;
@@ -689,11 +697,10 @@
       alert(`Mensalidade de ${m.name} validada e renovada com sucesso!`);
     }
 
-    /* RENDERIZAÇÃO DA TABELA DE MEMBROS COM FOTO NÍDIDA, CÓDIGO DE CLIENTE E BOTÕES */
     function renderMembers() {
       const tbody = document.getElementById('member-table-body');
       const query = document.getElementById('member-search-input') ? document.getElementById('member-search-input').value.toLowerCase() : '';
-      const filterType = document.getElementById('member-filter-select') ? document.getElementById('member-filter-select'].value : 'todos';
+      const filterType = document.getElementById('member-filter-select') ? document.getElementById('member-filter-select').value : 'todos';
       if (!tbody) return;
       tbody.innerHTML = '';
 
@@ -737,7 +744,6 @@
       });
     }
 
-    /* NOTIFICAÇÕES AUTOMÁTICAS POR E-MAIL (-5 DIAS, 2 VEZES AO DIA) */
     function verificarAlertaVencimentos() {
       const tbody = document.getElementById('alertas-vencimento-tbody');
       if (!tbody) return;
@@ -772,7 +778,6 @@
       }
     }
 
-    /* ORDENAÇÃO DE PRODUTOS DE A A Z COM PESQUISA */
     function renderProducts() {
       const tbody = document.getElementById('products-table-body');
       const query = document.getElementById('product-search-input') ? document.getElementById('product-search-input').value.toLowerCase() : '';
@@ -990,7 +995,7 @@
     }
     function renderCategories() {
       const t = document.getElementById('categories-table-body');
-      if (t) { t.innerHTML = ''; categories.forEach(c => t.innerHTML += `<tr><td>${c.name}</td><td>${c.desc || ''}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️️</button></td></tr>`); }
+      if (t) { t.innerHTML = ''; categories.forEach(c => t.innerHTML += `<tr><td>${c.name}</td><td>${c.desc || ''}</td><td><button class="btn-action" onclick="categories=categories.filter(x=>x.id!==${c.id}); refreshAll();">🗑️</button></td></tr>`); }
     }
     function sendWhatsApp() {
       const m = members.find(x => x.name === document.getElementById('msg-member').value), t = document.getElementById('msg-text').value;
@@ -998,7 +1003,6 @@
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(t)}`, '_blank');
     }
 
-    /* COLABORADORES COM FUNÇÃO PERSONALIZADA, ALTERAÇÃO DE SENHA E PERMISSÕES */
     function addColab() {
       const name = document.getElementById('colab-name').value.trim();
       const role = document.getElementById('colab-role').value.trim();
@@ -1077,6 +1081,75 @@
       const t = document.getElementById('today-attendance-tbody');
       if (t) { t.innerHTML = ''; attendanceLogs.forEach(a => t.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td><span class="badge badge-ok">Ativo</span></td></tr>`); }
     }
+
+    function openTotemWindow() {
+      totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
+      totemWindowRef.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt">
+        <head>
+          <meta charset="UTF-8">
+          <title>Ginásio KOSMO - Ecrã Totem Gigante</title>
+          <style>
+            body { background: #0b0e11; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; text-align: center; overflow: hidden; }
+            .badge { padding: 25px 80px; border-radius: 16px; font-size: 3.5rem; font-weight: 900; color: #fff; display: inline-block; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+          </style>
+        </head>
+        <body>
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #222; padding-bottom:15px;">
+            <div style="font-size:1.8rem; color:#aaa; font-weight:800; letter-spacing:1px;">TERMINAL DE CHECK-IN KOSMO</div>
+            <div id="totem-relogio" style="font-size: 6.5rem; font-family: monospace; color: #ffd43b; font-weight: 900; letter-spacing: 2px;">00:00:00</div>
+          </div>
+          
+          <div id="totem-corpo" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+            <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+            <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+          </div>
+
+          <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
+
+          <script>
+            let resetTimer = null;
+            function voltarEcraInicial() {
+              document.getElementById('totem-corpo').innerHTML = \`
+                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+              \`;
+            }
+
+            function processarCheckinTotem(d) {
+              if (resetTimer) clearTimeout(resetTimer);
+              const fotoHtml = d.foto ? '<img src="'+d.foto+'" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border:6px solid '+(d.auth?'#2b8a3e':'#c92a2a')+'; margin-bottom:20px;">' : '';
+              const bgCol = d.auth ? '#2b8a3e' : '#c92a2a';
+              document.getElementById('totem-corpo').innerHTML = \`
+                \${fotoHtml}
+                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
+                <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
+                <div class="badge" style="background:\${bgCol};">ACESSO PERMITIDO</div>
+              \`;
+              resetTimer = setTimeout(() => { voltarEcraInicial(); }, 15000);
+            }
+
+            setInterval(() => {
+              document.getElementById('totem-relogio').innerText = new Date().toLocaleTimeString('pt-PT');
+            }, 1000);
+
+            window.addEventListener('storage', (event) => {
+              if (event.key === 'kosmo_totem_scan') {
+                try { const d = JSON.parse(event.newValue); if (d) processarCheckinTotem(d); } catch(e) {}
+              }
+            });
+            window.addEventListener('message', (event) => {
+              if (event.data) processarCheckinTotem(event.data);
+            });
+          <\/script>
+        </body>
+        </html>
+      `);
+    }
+
     function exportData() {
       const data = { members, inscricoesOnline, plans, payments, products, collaborators, chatMessages };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1099,7 +1172,7 @@
           refreshAll(); alert('Dados importados com sucesso!');
         } catch(err) { alert('Erro ao importar backup.'); }
       };
-      r.readAsText(f);
+      r.readAsText(file);
     }
   </script>
 </body>
