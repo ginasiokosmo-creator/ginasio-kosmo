@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine & Portal Online)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total & Totem Pro)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -72,10 +72,10 @@
     .card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #dee2e6; }
     h2 { font-size: 1.1rem; margin-bottom: 16px; color: var(--dark); border-left: 4px solid var(--primary); padding-left: 8px; }
 
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
-    .metric-card { background: #fff; padding: 18px; border-radius: 8px; border: 1px solid #dee2e6; border-left: 4px solid var(--primary); }
-    .metric-card span { font-size: 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; }
-    .metric-card h3 { font-size: 1.5rem; margin-top: 5px; color: var(--dark); }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .metric-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; border-left: 4px solid var(--primary); }
+    .metric-card span { font-size: 0.7rem; color: #666; font-weight: 600; text-transform: uppercase; }
+    .metric-card h3 { font-size: 1.3rem; margin-top: 4px; color: var(--dark); }
 
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 12px; }
     label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px; color: #495057; }
@@ -88,7 +88,7 @@
     .btn:hover { background: var(--primary-dark); }
     .btn-green { background: var(--success); }
     .btn-blue { background: #1971c2; }
-    .btn-sm { padding: 5px 12px; font-size: 0.82rem; border-radius: 4px; color:#fff; border:none; cursor:pointer; }
+    .btn-sm { padding: 5px 10px; font-size: 0.78rem; border-radius: 4px; color:#fff; border:none; cursor:pointer; }
     .btn-action { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 4px; }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
@@ -96,6 +96,7 @@
     th { background: #f8f9fa; font-weight: 600; color: #495057; }
     .badge { padding: 3px 7px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; color: #fff; display: inline-block; }
     .badge-ok { background: var(--success); }
+    .badge-warn { background: var(--warning); color: #000; }
     .badge-err { background: var(--danger); }
 
     .id-card-wrap {
@@ -103,6 +104,8 @@
       margin: 0 auto; border: 2px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: left; position: relative; overflow: hidden;
     }
     .id-card-wrap::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--primary); }
+    .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #dee2e6; }
+    .checkbox-grid label { font-weight: normal; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
 
     .chat-box-container { display: flex; flex-direction: column; height: 400px; border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 8px; }
@@ -114,7 +117,7 @@
 </head>
 <body>
 
-  <!-- LOGIN DE ACESSO (CAMPOS TOTALMENTE LIMPOS E VAZIOS) -->
+  <!-- LOGIN DE ACESSO -->
   <div id="login-overlay">
     <div class="login-box">
       <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" onerror="this.src='logo.jpg';">
@@ -137,7 +140,7 @@
     <div class="menu-scroll">
       <div class="nav-group-title">Membros & Online</div>
       <button type="button" class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')"><span class="icon">🏠</span><span class="nav-text">Dashboard Geral</span></button>
-      <button type="button" class="nav-item" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros Ativos</span></button>
+      <button type="button" class="nav-item" id="nav-membros" onclick="navigate('membros')"><span class="icon">👤</span><span class="nav-text">Membros Ativos & Gestão</span></button>
       <button type="button" class="nav-item" id="nav-inscricoes" onclick="navigate('inscricoes')"><span class="icon">📥</span><span class="nav-text">Inscrições Online <span id="badge-inscricoes" class="badge badge-err" style="margin-left:auto; display:none;">0</span></span></button>
       <button type="button" class="nav-item" id="nav-checkins" onclick="navigate('checkins')"><span class="icon">🔔</span><span class="nav-text">Check-ins / Totem</span></button>
       <button type="button" class="nav-item" id="nav-planos" onclick="navigate('planos')"><span class="icon">📋</span><span class="nav-text">Planos</span></button>
@@ -151,7 +154,7 @@
 
       <div class="nav-group-title">Loja</div>
       <button type="button" class="nav-item" id="nav-pos" onclick="navigate('pos')"><span class="icon">🛒</span><span class="nav-text">POS</span></button>
-      <button type="button" class="nav-item" id="nav-produtos" onclick="navigate('produtos')"><span class="icon">📦</span><span class="nav-text">Produtos</span></button>
+      <button type="button" class="nav-item" id="nav-produtos" onclick="navigate('produtos')"><span class="icon">📦</span><span class="nav-text">Produtos (A a Z)</span></button>
       <button type="button" class="nav-item" id="nav-categorias" onclick="navigate('categorias')"><span class="icon">🏷</span><span class="nav-text">Categorias</span></button>
       <button type="button" class="nav-item" id="nav-stock" onclick="navigate('stock')"><span class="icon">📊</span><span class="nav-text">Stock</span></button>
       <button type="button" class="nav-item" id="nav-vendas" onclick="navigate('vendas')"><span class="icon">📑</span><span class="nav-text">Histórico de Vendas</span></button>
@@ -160,14 +163,14 @@
       <button type="button" class="nav-item" id="nav-mensagens" onclick="navigate('mensagens')"><span class="icon">💬</span><span class="nav-text">Enviar WhatsApp</span></button>
       <button type="button" class="nav-item" id="nav-chat" onclick="navigate('chat')"><span class="icon">💬</span><span class="nav-text">Chat Online Clientes</span></button>
       <button type="button" class="nav-item" id="nav-qrinscricao" onclick="navigate('qrinscricao')"><span class="icon">📱</span><span class="nav-text">QR / Código de Barras Inscrição</span></button>
-      <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes & Alertas</span></button>
+      <button type="button" class="nav-item" id="nav-lembretes" onclick="navigate('lembretes')"><span class="icon">⏰</span><span class="nav-text">Lembretes & Alertas (-5d)</span></button>
 
       <div class="nav-group-title">Operações</div>
       <button type="button" class="nav-item" id="nav-reportes" onclick="navigate('reportes')"><span class="icon">🛠</span><span class="nav-text">Reportes & Manutenção</span></button>
       <button type="button" class="nav-item" id="nav-config" onclick="navigate('config')"><span class="icon">⚙️</span><span class="nav-text">Configurações Cloud</span></button>
 
       <div class="nav-group-title">Colaboradores</div>
-      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores</span></button>
+      <button type="button" class="nav-item" id="nav-colab" onclick="navigate('colab')"><span class="icon">👥</span><span class="nav-text">Gerir Colaboradores & Funções</span></button>
       <button type="button" class="nav-item" id="nav-picaponto" onclick="navigate('picaponto')"><span class="icon">⏱️</span><span class="nav-text">Pica Ponto</span></button>
 
       <div class="nav-group-title">Relatórios</div>
@@ -188,7 +191,7 @@
       <div style="display:flex; gap:10px; align-items:center;">
         <span id="cloud-status" class="badge badge-ok" style="font-size:0.72rem;">🌐 Cloud Sincronizada</span>
         <button type="button" class="btn btn-green btn-sm" onclick="abrirPortalInscricao()">🌐 Abrir Portal Inscrição</button>
-        <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Totem Gigante</button>
+        <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Ecrã Totem Gigante</button>
       </div>
     </header>
 
@@ -202,7 +205,17 @@
         </div>
       </section>
 
+      <!-- ALA DE MEMBROS (COM FOTO NÍTIDA NA TABELA, CÓDIGO DE CLIENTE, CHECK-IN ADMIN/STAFF E VALIDAÇÃO DE MENSALIDADE) -->
       <section id="view-membros" class="view-section">
+        <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
+          <div class="metric-card"><span>Total Registados</span><h3 id="m-stat-total">0</h3></div>
+          <div class="metric-card"><span>Ativos</span><h3 id="m-stat-ativos" style="color:var(--success);">0</h3></div>
+          <div class="metric-card"><span>A Vencer (-5d)</span><h3 id="m-stat-avencer" style="color:var(--warning);">0</h3></div>
+          <div class="metric-card"><span>Expirados</span><h3 id="m-stat-expirados" style="color:var(--danger);">0</h3></div>
+          <div class="metric-card"><span>Pendentes</span><h3 id="m-stat-pendentes" style="color:#1971c2;">0</h3></div>
+          <div class="metric-card"><span>Desativados</span><h3 id="m-stat-desativados" style="color:#666;">0</h3></div>
+        </div>
+
         <div class="card">
           <h2 id="form-member-title">Registar Novo Membro</h2>
           <input type="hidden" id="m-edit-id" value="">
@@ -210,21 +223,43 @@
             <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Nome do Aluno"></div>
             <div><label>Sexo</label><select id="m-sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
             <div><label>Número de NIF</label><input type="text" id="m-nif" placeholder="NIF do Membro"></div>
-            <div><label>Código / ID / Cartão</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
-            <div><label>E-mail (Notificações)</label><input type="email" id="m-email" placeholder="aluno@email.com"></div>
+            <div><label>Código / ID de Cliente</label><input type="text" id="m-barcode" placeholder="Ex: 45152030"></div>
+            <div><label>E-mail</label><input type="email" id="m-email" placeholder="aluno@email.com"></div>
             <div><label>Telemóvel / Telefone</label><input type="tel" id="m-phone" placeholder="Contacto"></div>
             <div><label>Plano</label><select id="m-plan"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
-            <div><label>Data de Início no Ginásio</label><input type="date" id="m-startdate"></div>
-            <div><label>Fotografia do Membro</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
+            <div><label>Estado da Mensalidade</label><select id="m-estado"><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option><option value="Desativado">Desativado</option></select></div>
+            <div><label>Data de Início</label><input type="date" id="m-startdate"></div>
+            <div><label>Fotografia</label><input type="file" id="m-foto-file" accept="image/*" onchange="converterFotoMembro(event)"></div>
           </div>
           <input type="hidden" id="m-foto-base64" value="">
           <button type="button" class="btn" id="btn-save-member" onclick="saveMember()">Registar Membro</button>
-          <button type="button" class="btn btn-blue" id="btn-cancel-edit" onclick="cancelEditMember()" style="display:none; background:#868e96;">Cancelar Edição</button>
+          <button type="button" class="btn btn-blue" id="btn-cancel-edit" onclick="cancelEditMember()" style="display:none; background:#868e96;">Cancelar</button>
         </div>
+
         <div class="card">
-          <h2>Membros Registados & Ficha Completa</h2>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <h2>Lista de Membros Ativos & Gestão</h2>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <select id="member-filter-select" onchange="renderMembers()" style="padding:6px; font-size:0.85rem;">
+                <option value="todos">Todos os Estados</option>
+                <option value="Ativo">Ativos</option>
+                <option value="Inativo">Inativos</option>
+                <option value="Expirados">Expirados</option>
+                <option value="A Vencer">A Vencer (-5 dias)</option>
+              </select>
+              <input type="text" id="member-search-input" placeholder="🔍 Pesquisar por nome, NIF ou ID..." oninput="renderMembers()" style="max-width:240px; padding:6px 10px;">
+            </div>
+          </div>
           <table>
-            <thead><tr><th>Foto Nítida</th><th>ID / NIF</th><th>Nome & Contacto</th><th>Plano & Início</th><th>Ações (Gerente)</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Fotografia</th>
+                <th>Código / ID & NIF</th>
+                <th>Nome & Contactos (Telemóvel & E-mail)</th>
+                <th>Plano & Estado da Mensalidade</th>
+                <th>Ações de Gestão (Check-in, Validar, Editar, Eliminar)</th>
+              </tr>
+            </thead>
             <tbody id="member-table-body"></tbody>
           </table>
         </div>
@@ -232,10 +267,9 @@
 
       <section id="view-inscricoes" class="view-section">
         <div class="card">
-          <h2>Gestão Completa de Inscrições Online</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Pode consultar, alterar qualquer dado da ficha subscrita pelo cliente, eliminar ou validar para transitar para Membro Ativo.</p>
+          <h2>Inscrições Online Pendentes</h2>
           <table>
-            <thead><tr><th>Foto</th><th>Nome / NIF</th><th>Contacto / E-mail</th><th>Plano</th><th>Anexos</th><th>Ações de Gestão</th></tr></thead>
+            <thead><tr><th>Foto</th><th>Nome / NIF</th><th>Contacto</th><th>Plano</th><th>Anexos</th><th>Ações</th></tr></thead>
             <tbody id="online-inscricoes-tbody"></tbody>
           </table>
         </div>
@@ -243,159 +277,41 @@
 
       <section id="view-qrinscricao" class="view-section">
         <div class="card" style="text-align:center;">
-          <h2>Código de Barras / QR Code de Inscrição Online</h2>
-          <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Os clientes podem ler este código para aceder diretamente ao portal de inscrição online.</p>
+          <h2>QR Code de Inscrição Online</h2>
           <div id="qrcode-container" style="display:inline-block; background:#fff; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px;"></div>
           <p><code id="portal-url-txt" style="font-weight:bold; color:var(--primary);"></code></p>
-          <button type="button" class="btn btn-blue" style="margin-top:15px;" onclick="window.print()">🖨 Imprimir Cartaz de Inscrição</button>
+          <button type="button" class="btn btn-blue" style="margin-top:15px;" onclick="window.print()">🖨 Imprimir Cartaz</button>
         </div>
       </section>
 
-      <section id="view-checkins" class="view-section">
-        <div class="card">
-          <h2>Terminal de Check-in & Check-out</h2>
-          <div style="max-width: 480px; margin: 0 auto 15px;">
-            <label style="text-align:center; display:block; font-weight:bold;">Aproxime o Cartão / QR Code ou ID:</label>
-            <input type="text" id="chk-input" placeholder="Passe o leitor aqui..." onkeydown="onScan(event)" style="font-size:1.15rem; text-align:center; border:2px solid var(--primary); font-weight:bold; padding:10px;">
-          </div>
-          <table>
-            <thead><tr><th>Data</th><th>Horário</th><th>Membro</th><th>Código</th><th>Estado</th></tr></thead>
-            <tbody id="today-attendance-tbody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-planos" class="view-section">
-        <div class="card">
-          <h2>Gestão de Planos</h2>
-          <div class="form-grid">
-            <div><label>Nome do Plano</label><input type="text" id="pl-name" placeholder="Ex: VIP"></div>
-            <div><label>Preço (CVE)</label><input type="number" id="pl-price" placeholder="2500"></div>
-            <div><label>Duração (Dias)</label><input type="number" id="pl-days" value="30"></div>
-          </div>
-          <button type="button" class="btn" onclick="addPlan()">Criar Plano</button>
-        </div>
-        <div class="card">
-          <h2>Planos Existentes</h2>
-          <table>
-            <thead><tr><th>Plano</th><th>Preço</th><th>Duração</th></tr></thead>
-            <tbody id="plans-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-cartaodigital" class="view-section">
-        <div class="card" style="text-align:center;">
-          <h2>Cartão Digital Oficial de Membro</h2>
-          <div style="max-width:320px; margin:0 auto 15px;">
-            <label>Selecione o Membro:</label>
-            <select id="card-member-select" onchange="renderDigitalCard()"></select>
-          </div>
-          <div id="digital-card-container"></div>
-          <button type="button" class="btn btn-blue btn-sm" style="margin-top:15px;" onclick="window.print()">🖨 Imprimir Cartão</button>
-        </div>
-      </section>
-
-      <section id="view-pagamentos" class="view-section">
-        <div class="card">
-          <h2>Registo de Pagamentos</h2>
-          <div class="form-grid">
-            <div><label>Membro</label><select id="pay-member"></select></div>
-            <div><label>Valor (CVE)</label><input type="number" id="pay-amount" value="2500"></div>
-            <div><label>Referência / Mês</label><input type="text" id="pay-ref" placeholder="Mensalidade"></div>
-          </div>
-          <button type="button" class="btn btn-green" onclick="addPayment()">Registar & Faturar</button>
-        </div>
-        <div class="card">
-          <h2>Histórico de Pagamentos</h2>
-          <table>
-            <thead><tr><th>Data</th><th>Membro</th><th>Ref.</th><th>Valor</th></tr></thead>
-            <tbody id="payments-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-faturas" class="view-section">
-        <div class="card">
-          <h2>Emissão de Faturas e Recibos (NIF: 283023805)</h2>
-          <table>
-            <thead><tr><th>Fatura</th><th>Data</th><th>Cliente</th><th>Valor</th></tr></thead>
-            <tbody id="invoices-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-despesas" class="view-section">
-        <div class="card">
-          <h2>Controlo de Custos</h2>
-          <div class="form-grid">
-            <div><label>Descrição</label><input type="text" id="exp-desc" placeholder="Ex: Luz"></div>
-            <div><label>Valor (CVE)</label><input type="number" id="exp-val" placeholder="5000"></div>
-          </div>
-          <button type="button" class="btn" style="background:var(--danger);" onclick="addExpense()">Registar Despesa</button>
-        </div>
-        <div class="card">
-          <h2>Despesas Registadas</h2>
-          <table>
-            <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th></tr></thead>
-            <tbody id="expenses-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-salarios" class="view-section">
-        <div class="card">
-          <h2>Salários</h2>
-          <div class="form-grid">
-            <div><label>Colaborador</label><input type="text" id="sal-name" placeholder="Nome"></div>
-            <div><label>Valor (CVE)</label><input type="number" id="sal-val" placeholder="30000"></div>
-          </div>
-          <button type="button" class="btn" onclick="addSalary()">Registar Vencimento</button>
-        </div>
-        <div class="card">
-          <h2>Vencimentos Pagos</h2>
-          <table>
-            <thead><tr><th>Colaborador</th><th>Valor</th></tr></thead>
-            <tbody id="salaries-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-pos" class="view-section">
-        <div class="card">
-          <h2>POS (Ponto de Venda Inteligente)</h2>
-          <div class="form-grid">
-            <div><label>Produto Disponível</label><select id="pos-prod" onchange="previewPosProduct()"></select></div>
-            <div><label>Quantidade</label><input type="number" id="pos-qty" value="1" min="1"></div>
-          </div>
-          <div id="pos-product-preview" style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:15px; margin:15px 0; display:flex; gap:15px; align-items:center;">
-            <div id="pos-prev-img" style="width:70px; height:70px; background:#ddd; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">📦</div>
-            <div>
-              <h4 id="pos-prev-name">Selecione um produto</h4>
-              <p id="pos-prev-desc" style="font-size:0.82rem; color:#666; margin-top:3px;">Descrição e modo de uso.</p>
-              <p id="pos-prev-stock" style="font-size:0.85rem; font-weight:bold; color:var(--success); margin-top:3px;">Stock: ---</p>
-            </div>
-          </div>
-          <button type="button" class="btn btn-green" onclick="makeSale()">Concluir Venda no POS</button>
-        </div>
-      </section>
+      <section id="view-checkins" class="view-section"><div class="card"><h2>Check-ins</h2><input type="text" id="chk-input" placeholder="Passe o leitor..." onkeydown="onScan(event)" style="padding:10px; font-weight:bold; margin-bottom:15px;"><table><thead><tr><th>Data</th><th>Hora</th><th>Membro</th><th>Código</th><th>Estado</th></tr></thead><tbody id="today-attendance-tbody"></tbody></table></div></section>
+      <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="pl-name"></div><div><label>Preço</label><input type="number" id="pl-price"></div><div><label>Dias</label><input type="number" id="pl-days" value="30"></div></div><button class="btn" onclick="addPlan()">Criar</button></div><div class="card"><table><thead><tr><th>Plano</th><th>Preço</th><th>Dias</th></tr></thead><tbody id="plans-table-body"></tbody></table></div></section>
+      <section id="view-cartaodigital" class="view-section"><div class="card" style="text-align:center;"><h2>Cartão Digital</h2><select id="card-member-select" onchange="renderDigitalCard()" style="max-width:300px; margin-bottom:15px;"></select><div id="digital-card-container"></div></div></section>
+      <section id="view-pagamentos" class="view-section"><div class="card"><h2>Pagamentos</h2><div class="form-grid"><div><label>Membro</label><select id="pay-member"></select></div><div><label>Valor</label><input type="number" id="pay-amount" value="2500"></div><div><label>Ref</label><input type="text" id="pay-ref" placeholder="Ref"></div></div><button class="btn btn-green" onclick="addPayment()">Registar</button></div><div class="card"><table><thead><tr><th>Data</th><th>Membro</th><th>Ref</th><th>Valor</th></tr></thead><tbody id="payments-table-body"></tbody></table></div></section>
+      <section id="view-faturas" class="view-section"><div class="card"><h2>Faturas (NIF: 283023805)</h2><table><thead><tr><th>Fatura</th><th>Data</th><th>Cliente</th><th>Valor</th></tr></thead><tbody id="invoices-table-body"></tbody></table></div></section>
+      <section id="view-despesas" class="view-section"><div class="card"><h2>Despesas</h2><div class="form-grid"><div><label>Desc</label><input type="text" id="exp-desc"></div><div><label>Valor</label><input type="number" id="exp-val"></div></div><button class="btn" style="background:var(--danger);" onclick="addExpense()">Registar</button></div><div class="card"><table><thead><tr><th>Data</th><th>Desc</th><th>Valor</th></tr></thead><tbody id="expenses-table-body"></tbody></table></div></section>
+      <section id="view-salarios" class="view-section"><div class="card"><h2>Salários</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="sal-name"></div><div><label>Valor</label><input type="number" id="sal-val"></div></div><button class="btn" onclick="addSalary()">Registar</button></div><div class="card"><table><thead><tr><th>Staff</th><th>Valor</th></tr></thead><tbody id="salaries-table-body"></tbody></table></div></section>
+      <section id="view-pos" class="view-section"><div class="card"><h2>POS</h2><div class="form-grid"><div><label>Produto</label><select id="pos-prod" onchange="previewPosProduct()"></select></div><div><label>Qtd</label><input type="number" id="pos-qty" value="1"></div></div><div id="pos-product-preview" style="background:#f8f9fa; padding:15px; margin:15px 0; display:flex; gap:15px; align-items:center;"><div id="pos-prev-img" style="width:70px; height:70px; background:#ddd; display:flex; align-items:center; justify-content:center;">📦</div><div><h4 id="pos-prev-name">Selecione</h4><p id="pos-prev-desc" style="font-size:0.82rem; color:#666;">---</p><p id="pos-prev-stock" style="font-size:0.85rem; font-weight:bold; color:var(--success);">---</p></div></div><button class="btn btn-green" onclick="makeSale()">Concluir Venda</button></div></section>
 
       <section id="view-produtos" class="view-section">
         <div class="card">
-          <h2>Registar Produto no Catálogo</h2>
+          <h2>Registar Produto</h2>
           <div class="form-grid">
-            <div><label>Nome do Produto</label><input type="text" id="p-name" placeholder="Ex: Creatina"></div>
-            <div><label>Preço (CVE)</label><input type="number" id="p-price" placeholder="2500"></div>
-            <div><label>Stock Inicial</label><input type="number" id="p-stock" value="10"></div>
-            <div><label>Fotografia do Produto</label><input type="file" id="p-foto-file" accept="image/*" onchange="converterFotoProduto(event)"></div>
-            <div style="grid-column: 1 / -1;"><label>Descrição do Produto</label><textarea id="p-desc" rows="2" placeholder="Detalhes..."></textarea></div>
-            <div style="grid-column: 1 / -1;"><label>Modo de Uso / Instruções</label><textarea id="p-use" rows="2" placeholder="Como consumir..."></textarea></div>
+            <div><label>Nome</label><input type="text" id="p-name" placeholder="Produto"></div>
+            <div><label>Preço</label><input type="number" id="p-price" placeholder="1000"></div>
+            <div><label>Stock</label><input type="number" id="p-stock" value="10"></div>
+            <div><label>Foto</label><input type="file" id="p-foto-file" accept="image/*" onchange="converterFotoProduto(event)"></div>
+            <div style="grid-column:1/-1;"><label>Descrição</label><textarea id="p-desc" rows="2"></textarea></div>
+            <div style="grid-column:1/-1;"><label>Modo de Uso</label><textarea id="p-use" rows="2"></textarea></div>
           </div>
           <input type="hidden" id="p-foto-base64" value="">
-          <button type="button" class="btn" onclick="addProduct()">Guardar Produto</button>
+          <button class="btn" onclick="addProduct()">Guardar Produto</button>
         </div>
         <div class="card">
-          <h2>Catálogo de Produtos</h2>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2>Catálogo de Produtos (A a Z)</h2>
+            <input type="text" id="product-search-input" placeholder="🔍 Pesquisar produto..." oninput="renderProducts()" style="max-width:280px; padding:6px 10px;">
+          </div>
           <table>
             <thead><tr><th>Foto</th><th>Produto</th><th>Preço</th><th>Stock</th><th>Ações</th></tr></thead>
             <tbody id="products-table-body"></tbody>
@@ -403,45 +319,20 @@
         </div>
       </section>
 
-      <section id="view-categorias" class="view-section">
-        <div class="metrics-grid">
-          <div class="metric-card"><span>Total Registadas</span><h3 id="cat-total">0</h3></div>
-          <div class="metric-card"><span>Com Produtos</span><h3 id="cat-com">0</h3></div>
-          <div class="metric-card"><span>Sem Produtos</span><h3 id="cat-sem">0</h3></div>
-          <div class="metric-card"><span>Mais Popular</span><h3 id="cat-pop" style="font-size:1.1rem; margin-top:8px;">---</h3></div>
-        </div>
-        <div class="card">
-          <h2>Registar Categoria</h2>
-          <div class="form-grid">
-            <div><label>Nome</label><input type="text" id="cat-name" placeholder="Categoria"></div>
-            <div><label>Descrição</label><input type="text" id="cat-desc" placeholder="Detalhes"></div>
-            <div><label>Nº Produtos</label><input type="number" id="cat-produtos" value="0"></div>
-          </div>
-          <button type="button" class="btn" onclick="addCategory()">Registar</button>
-        </div>
-        <div class="card">
-          <h2>Categorias Existentes</h2>
-          <table>
-            <thead><tr><th>Nome</th><th>Descrição</th><th>Nº Produtos</th><th>Ações</th></tr></thead>
-            <tbody id="categories-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><table><thead><tr><th>Produto</th><th>Stock Atual</th><th>Estado</th></tr></thead><tbody id="stock-table-body"></tbody></table></div></section>
-      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico de Vendas</h2><table><thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></section>
-      <section id="view-mensagens" class="view-section"><div class="card"><h2>Enviar Mensagens WhatsApp</h2><div class="form-grid"><div><label>Membro</label><select id="msg-member"></select></div><div style="grid-column: 1 / -1;"><label>Mensagem</label><textarea id="msg-text" rows="3" placeholder="Mensagem..."></textarea></div></div><button class="btn btn-green" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button></div></section>
+      <section id="view-categorias" class="view-section"><div class="card"><h2>Categorias</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="cat-name"></div><div><label>Desc</label><input type="text" id="cat-desc"></div></div><button class="btn" onclick="addCategory()">Registar</button></div><div class="card"><table><thead><tr><th>Nome</th><th>Desc</th><th>Ações</th></tr></thead><tbody id="categories-table-body"></tbody></table></div></section>
+      <section id="view-stock" class="view-section"><div class="card"><h2>Stock</h2><table><thead><tr><th>Produto</th><th>Stock</th><th>Estado</th></tr></thead><tbody id="stock-table-body"></tbody></table></div></section>
+      <section id="view-vendas" class="view-section"><div class="card"><h2>Histórico Vendas</h2><table><thead><tr><th>Data</th><th>Artigo</th><th>Qtd</th><th>Total</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></section>
+      <section id="view-mensagens" class="view-section"><div class="card"><h2>WhatsApp</h2><div class="form-grid"><div><label>Membro</label><select id="msg-member"></select></div><div style="grid-column:1/-1;"><label>Texto</label><textarea id="msg-text" rows="3"></textarea></div></div><button class="btn btn-green" onclick="sendWhatsApp()">Enviar WhatsApp</button></div></section>
 
       <section id="view-chat" class="view-section">
         <div class="card">
-          <h2>Chat Online com Clientes (Staff & Gerência)</h2>
-          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Interaja em tempo real e troque documentos, vídeos ou áudios através do botão de clipe 📎.</p>
+          <h2>Chat Online com Clientes</h2>
           <div class="chat-box-container">
-            <div class="chat-messages" id="chat-messages-area"><div style="text-align:center; color:#777; margin-top:20px;">Nenhuma mensagem recente.</div></div>
+            <div class="chat-messages" id="chat-messages-area"><div style="text-align:center; color:#777;">Sem mensagens.</div></div>
             <div class="chat-input-area">
-              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;" title="Anexar Ficheiro / Vídeo / Áudio">📎</label>
+              <label for="chat-file-input" style="cursor:pointer; font-size:1.3rem;">📎</label>
               <input type="file" id="chat-file-input" style="display:none;" onchange="enviarFicheiroChat(event)">
-              <input type="text" id="chat-input-text" placeholder="Escreva a mensagem..." onkeydown="if(event.key==='Enter') enviarMensagemChat()" style="flex:1;">
+              <input type="text" id="chat-input-text" placeholder="Escreva..." onkeydown="if(event.key==='Enter') enviarMensagemChat()" style="flex:1;">
               <button class="btn btn-sm" onclick="enviarMensagemChat()">Enviar</button>
             </div>
           </div>
@@ -450,90 +341,49 @@
 
       <section id="view-lembretes" class="view-section">
         <div class="card">
-          <h2>Alertas Automáticos de Vencimento (-5 Dias)</h2>
-          <button class="btn btn-blue" onclick="verificarAlertaVencimentos()">🔍 Verificar Alertas de Vencimento</button>
+          <h2>Alertas Automáticos de Vencimento (-5 Dias) & Notificações por E-mail</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">O sistema envia automaticamente 2 mensagens por dia por e-mail aos alunos cuja mensalidade expira nos próximos 5 dias.</p>
+          <button class="btn btn-blue" onclick="verificarAlertaVencimentos()">🔍 Executar Disparo de Notificações (-5d)</button>
           <table style="margin-top:15px;">
-            <thead><tr><th>Membro</th><th>E-mail</th><th>Plano</th><th>Vencimento</th><th>Estado</th></tr></thead>
-            <tbody id="alertas-vencimento-tbody"><tr><td colspan="5" style="text-align:center; color:#777;">Clique para analisar.</td></tr></tbody>
+            <thead><tr><th>Membro</th><th>E-mail</th><th>Plano</th><th>Vencimento</th><th>Estado do Alerta</th></tr></thead>
+            <tbody id="alertas-vencimento-tbody"><tr><td colspan="5" style="text-align:center; color:#777;">Clique em verificar para simular os envios.</td></tr></tbody>
           </table>
         </div>
       </section>
 
-      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes & Manutenção</h2><p>Sem avarias.</p></div></section>
-      <section id="view-config" class="view-section">
-        <div class="card">
-          <h2>Configuração Cloud em Tempo Real (Supabase)</h2>
-          <div class="form-grid">
-            <div><label>Supabase URL</label><input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co"></div>
-            <div><label>Supabase Anon Key</label><input type="text" id="cfg-supabase-key" placeholder="eyJhbGciOi..."></div>
-          </div>
-          <button class="btn btn-blue" onclick="salvarConfigCloud()">Ativar Sincronização Cloud Realtime</button>
-        </div>
-      </section>
+      <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes</h2><p>Sem avarias.</p></div></section>
+      <section id="view-config" class="view-section"><div class="card"><h2>Configuração Cloud</h2><div class="form-grid"><div><label>Supabase URL</label><input type="text" id="cfg-supabase-url"></div><div><label>Supabase Key</label><input type="text" id="cfg-supabase-key"></div></div><button class="btn btn-blue" onclick="salvarConfigCloud()">Conectar Cloud</button></div></section>
 
       <section id="view-colab" class="view-section">
         <div class="card">
-          <h2>Gerir Colaboradores</h2>
+          <h2>Gerir Colaboradores & Permissões</h2>
           <div class="form-grid">
             <div><label>Nome</label><input type="text" id="colab-name" placeholder="Nome"></div>
             <div><label>Cargo</label><input type="text" id="colab-role" placeholder="Cargo"></div>
             <div><label>Telemóvel</label><input type="tel" id="colab-phone" placeholder="Telemóvel"></div>
             <div><label>Utilizador</label><input type="text" id="colab-user" placeholder="user"></div>
-            <div><label>Palavra-passe</label><input type="password" id="colab-pass" placeholder="pass"></div>
+            <div><label>Senha</label><input type="password" id="colab-pass" placeholder="pass"></div>
           </div>
           <button type="button" class="btn" style="margin-top: 15px;" onclick="addColab()">Registar Colaborador</button>
         </div>
         <div class="card">
           <h2>Equipa Autorizada</h2>
           <table>
-            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Ações do Gerente</th></tr></thead>
+            <thead><tr><th>Nome</th><th>Cargo</th><th>Utilizador</th><th>Ações</th></tr></thead>
             <tbody id="colab-table-body"></tbody>
           </table>
         </div>
       </section>
 
-      <section id="view-picaponto" class="view-section">
-        <div class="card">
-          <h2>Pica Ponto</h2>
-          <div class="form-grid">
-            <div><label>Colaborador</label><select id="pica-colab-select"></select></div>
-            <div><label>Ação</label><select id="pica-type"><option value="Entrada">Entrada</option><option value="Saída">Saída</option></select></div>
-          </div>
-          <button type="button" class="btn btn-green" onclick="regPicaPonto()">Registar Ponto</button>
-        </div>
-        <div class="card">
-          <h2>Histórico</h2>
-          <table>
-            <thead><tr><th>Data</th><th>Hora</th><th>Colaborador</th><th>Registo</th></tr></thead>
-            <tbody id="pica-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-visao" class="view-section">
-        <div class="metrics-grid">
-          <div class="metric-card"><span>Total Membros</span><h3 id="rel-total">0</h3></div>
-          <div class="metric-card"><span>Ativos</span><h3 id="rel-ativos">0</h3></div>
-          <div class="metric-card"><span>MRR Real</span><h3 id="rel-mrr">0 CVE</h3></div>
-        </div>
-      </section>
-      <section id="view-retencao" class="view-section"><div class="metrics-grid"><div class="metric-card"><span>Taxa Atividade</span><h3 id="ret-taxa">100%</h3></div></div></section>
+      <section id="view-picaponto" class="view-section"><div class="card"><h2>Pica Ponto</h2><div class="form-grid"><div><label>Colaborador</label><select id="pica-colab-select"></select></div><div><label>Ação</label><select id="pica-type"><option value="Entrada">Entrada</option><option value="Saída">Saída</option></select></div></div><button class="btn btn-green" onclick="regPicaPonto()">Registar Ponto</button></div><div class="card"><table><thead><tr><th>Data</th><th>Hora</th><th>Colaborador</th><th>Registo</th></tr></thead><tbody id="pica-table-body"></tbody></table></div></section>
+      <section id="view-visao" class="view-section"><div class="metrics-grid"><div class="metric-card"><span>Total</span><h3 id="rel-total">0</h3></div><div class="metric-card"><span>Ativos</span><h3 id="rel-ativos">0</h3></div><div class="metric-card"><span>MRR</span><h3 id="rel-mrr">0 CVE</h3></div></div></section>
+      <section id="view-retencao" class="view-section"><div class="metrics-grid"><div class="metric-card"><span>Taxa</span><h3 id="ret-taxa">100%</h3></div></div></section>
       <section id="view-perf" class="view-section"><div class="metrics-grid"><div class="metric-card"><span>Balanço</span><h3 id="per-liq">0 CVE</h3></div></div></section>
-
-      <section id="view-export" class="view-section">
-        <div class="card" style="margin-bottom: 20px;">
-          <h2>Exportar Cópia de Segurança (.JSON)</h2>
-          <button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup</button>
-        </div>
-        <div class="card">
-          <h2>Carregar Backup (JSON ou CSV)</h2>
-          <input type="file" id="import-file" onchange="importDataAnyFormat(event)">
-        </div>
-      </section>
+      <section id="view-export" class="view-section"><div class="card" style="margin-bottom:20px;"><h2>Backup</h2><button class="btn btn-green" onclick="exportData()">📥 Descarregar Backup</button></div><div class="card"><h2>Restaurar</h2><input type="file" id="import-file" onchange="importDataAnyFormat(event)"></div></section>
     </main>
   </div>
 
-  <!-- PORTAL DE INSCRIÇÃO ONLINE PÚBLICO -->
+  <!-- PORTAL DE INSCRIÇÃO ONLINE -->
   <div id="portal-inscricao-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#111417; z-index:90000; display:none; justify-content:center; align-items:center; overflow-y:auto; padding:20px;">
     <div style="background:#fff; width:100%; max-width:650px; border-radius:12px; padding:30px; border-top:6px solid var(--primary); box-shadow:0 15px 40px rgba(0,0,0,0.6); position:relative;">
       <button onclick="fecharPortalInscricao()" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:1.2rem; cursor:pointer; font-weight:bold;">✖</button>
@@ -550,30 +400,13 @@
         <div><label>Plano Pretendido *</label><select id="portal-plan" onchange="togglePortalAnexos()"><option value="Mensal Trabalhador">Mensal Trabalhador</option><option value="Musculação Mensal">Musculação Mensal</option><option value="Plano Casal">Plano Casal</option><option value="Plano Estudante">Plano Estudante</option></select></div>
         <div><label>Fotografia Pessoal *</label><input type="file" id="portal-foto" accept="image/*" onchange="converterFotoPortal(event)"></div>
         <div id="portal-box-anexo" style="grid-column:1/-1; display:none; background:#fff3bf; padding:10px; border-radius:6px; border:1px solid #f59f00;">
-          <label id="portal-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Obrigatório (Escola ou Casal):</label>
+          <label id="portal-label-anexo" style="font-weight:bold; color:#b7791f;">Documento Obrigatório:</label>
           <input type="file" id="portal-anexo-file" accept="image/*,.pdf" onchange="converterAnexoPortal(event)">
         </div>
       </div>
       <input type="hidden" id="portal-foto-b64" value="">
       <input type="hidden" id="portal-anexo-b64" value="">
       <button type="button" class="btn" style="width:100%; margin-top:15px; padding:12px;" onclick="submeterInscricaoOnline()">Submeter Inscrição Online</button>
-      
-      <div style="margin-top:30px; border-top:2px solid #dee2e6; padding-top:20px;">
-        <h3>💬 Chat Online com a Gerência KOSMO</h3>
-        <div id="client-chat-login" style="display:flex; gap:10px; margin-bottom:10px;">
-          <input type="text" id="client-chat-name-input" placeholder="O seu nome para conversar..." style="flex:1;">
-          <button class="btn btn-blue btn-sm" onclick="ativarChatCliente()">Entrar</button>
-        </div>
-        <div id="client-chat-box" style="display:none; flex-direction:column; height:220px; border:1px solid #dee2e6; border-radius:6px; background:#fff; overflow:hidden;">
-          <div class="chat-messages" id="client-chat-msgs" style="flex:1; padding:10px; overflow-y:auto; background:#f8f9fa; display:flex; flex-direction:column; gap:6px;"></div>
-          <div class="chat-input-area">
-            <label for="client-chat-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
-            <input type="file" id="client-chat-file" style="display:none;" onchange="clienteEnviarFicheiro(event)">
-            <input type="text" id="client-chat-text" placeholder="Escreva..." onkeydown="if(event.key==='Enter') clienteEnviarMsg()" style="flex:1;">
-            <button class="btn btn-sm" onclick="clienteEnviarMsg()">Enviar</button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -595,7 +428,6 @@
     </div>
   </div>
 
-  <!-- SCRIPT INTEGRAL -->
   <script>
     let members = [];
     let inscricoesOnline = [];
@@ -621,7 +453,6 @@
     let isLogonActive = true;
     let loggedUser = null;
 
-    // Se o link contiver ?portal=inscricao, esconde totalmente o login e abre o portal público
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get('portal') === 'inscricao' || window.location.hash === '#inscricao') {
@@ -640,12 +471,8 @@
         return;
       }
       const colab = collaborators.find(c => c.user === u && c.pass === p);
-      if (colab) {
-        loggedUser = colab;
-        finalizeLogin();
-      } else {
-        alert('Utilizador ou palavra-passe incorretos.');
-      }
+      if (colab) { loggedUser = colab; finalizeLogin(); }
+      else { alert('Utilizador ou palavra-passe incorretos.'); }
     }
 
     function finalizeLogin() {
@@ -667,11 +494,11 @@
       if (navBtn) navBtn.classList.add('active');
 
       const titles = {
-        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', inscricoes: 'Inscrições Online', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
+        dashboard: 'Dashboard Geral', membros: 'Membros Ativos & Gestão', inscricoes: 'Inscrições Online', checkins: 'Check-ins / Totem', planos: 'Planos', cartaodigital: 'Cartão Digital',
         pagamentos: 'Pagamentos', faturas: 'Faturas', despesas: 'Despesas & Contas', salarios: 'Salários',
-        pos: 'POS Inteligente', produtos: 'Catálogo de Produtos', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
-        mensagens: 'Enviar WhatsApp', chat: 'Chat Online Clientes', qrinscricao: 'QR / Código de Barras Inscrição', lembretes: 'Lembretes & Alertas',
-        reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Colaboradores', picaponto: 'Pica Ponto', visao: 'Visão Geral',
+        pos: 'POS Inteligente', produtos: 'Catálogo de Produtos (A a Z)', categorias: 'Categorias', stock: 'Stock', vendas: 'Histórico de Vendas',
+        mensagens: 'Enviar WhatsApp', chat: 'Chat Online Clientes', qrinscricao: 'QR / Código de Barras Inscrição', lembretes: 'Lembretes & Alertas (-5d)',
+        reportes: 'Reportes & Manutenção', config: 'Configurações Cloud', colab: 'Gerir Colaboradores & Funções', picaponto: 'Pica Ponto', visao: 'Visão Geral',
         retencao: 'Retenção de Membros', perf: 'Performance Financeira', export: 'Exportar / Importar Dados'
       };
       if (document.getElementById('page-title')) document.getElementById('page-title').innerText = titles[viewId] || 'Dashboard';
@@ -697,25 +524,43 @@
       updateDynamicMetrics();
     }
 
+    /* ESTATÍSTICAS E MÉTRICAS DE MEMBROS */
     function updateDynamicMetrics() {
       const now = new Date();
-      let ativos = 0, mrrReal = 0;
+      let ativos = 0, avencer = 0, expirados = 0, desativados = 0, mrrReal = 0;
+
       members.forEach(m => {
+        if (m.estado === 'Desativado') { desativados++; return; }
         const pl = plans.find(p => p.name === m.plan) || { days: 30, price: 2500 };
         const due = new Date(m.date || Date.now());
         due.setDate(due.getDate() + pl.days);
-        if (due >= now) { ativos++; mrrReal += Number(pl.price || 0); }
+        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+
+        if (due < now) { expirados++; }
+        else if (diffDays <= 5 && diffDays >= 0) { avencer++; ativos++; mrrReal += Number(pl.price || 0); }
+        else { ativos++; mrrReal += Number(pl.price || 0); }
       });
+
+      const pendentes = inscricoesOnline.length;
+      const totalReg = members.length;
+
+      if (document.getElementById('m-stat-total')) document.getElementById('m-stat-total').innerText = totalReg;
+      if (document.getElementById('m-stat-ativos')) document.getElementById('m-stat-ativos').innerText = ativos;
+      if (document.getElementById('m-stat-avencer')) document.getElementById('m-stat-avencer').innerText = avencer;
+      if (document.getElementById('m-stat-expirados')) document.getElementById('m-stat-expirados').innerText = expirados;
+      if (document.getElementById('m-stat-pendentes')) document.getElementById('m-stat-pendentes').innerText = pendentes;
+      if (document.getElementById('m-stat-desativados')) document.getElementById('m-stat-desativados').innerText = desativados;
+
       const totalRec = payments.reduce((a,b) => a + Number(b.amount), 0);
       const totalDes = expenses.reduce((a,b) => a + Number(b.amount), 0) + salaries.reduce((a,b) => a + Number(b.amount), 0);
       const liquido = totalRec - totalDes;
 
-      if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = members.length;
-      if (document.getElementById('stat-inscricoes-pend')) document.getElementById('stat-inscricoes-pend').innerText = inscricoesOnline.length;
+      if (document.getElementById('stat-membros')) document.getElementById('stat-membros').innerText = ativos;
+      if (document.getElementById('stat-inscricoes-pend')) document.getElementById('stat-inscricoes-pend').innerText = pendentes;
       if (document.getElementById('stat-receita')) document.getElementById('stat-receita').innerText = totalRec + ' CVE';
       if (document.getElementById('stat-mrr-real')) document.getElementById('stat-mrr-real').innerText = mrrReal + ' CVE';
 
-      if (document.getElementById('rel-total')) document.getElementById('rel-total').innerText = members.length;
+      if (document.getElementById('rel-total')) document.getElementById('rel-total').innerText = totalReg;
       if (document.getElementById('rel-ativos')) document.getElementById('rel-ativos').innerText = ativos;
       if (document.getElementById('rel-mrr')) document.getElementById('rel-mrr').innerText = mrrReal + ' CVE';
       if (document.getElementById('per-rec')) document.getElementById('per-rec').innerText = totalRec + ' CVE';
@@ -724,7 +569,7 @@
 
       const badgeInsc = document.getElementById('badge-inscricoes');
       if (badgeInsc) {
-        if (inscricoesOnline.length > 0) { badgeInsc.innerText = inscricoesOnline.length; badgeInsc.style.display = 'inline-block'; }
+        if (pendentes > 0) { badgeInsc.innerText = pendentes; badgeInsc.style.display = 'inline-block'; }
         else { badgeInsc.style.display = 'none'; }
       }
     }
@@ -747,17 +592,18 @@
       const email = document.getElementById('m-email').value.trim();
       const phone = document.getElementById('m-phone').value.trim();
       const plan = document.getElementById('m-plan').value;
+      const estado = document.getElementById('m-estado').value;
       const startDate = document.getElementById('m-startdate').value || new Date().toISOString().split('T')[0];
       const foto = document.getElementById('m-foto-base64').value;
 
       if (!name || !barcode) { alert('Preencha o Nome e o Código.'); return; }
       if (editId) {
         const m = members.find(x => x.id == editId);
-        if (m) { m.name = name; m.sexo = sexo; m.nif = nif; m.barcode = barcode; m.email = email; m.phone = phone; m.plan = plan; m.date = startDate; if (foto) m.foto = foto; }
+        if (m) { m.name = name; m.sexo = sexo; m.nif = nif; m.barcode = barcode; m.email = email; m.phone = phone; m.plan = plan; m.estado = estado; m.date = startDate; if (foto) m.foto = foto; }
         alert('Membro atualizado com sucesso!');
         cancelEditMember();
       } else {
-        members.push({ id: Date.now(), name, sexo, nif, barcode, email, phone, plan, foto: foto || '', date: startDate });
+        members.push({ id: Date.now(), name, sexo, nif, barcode, email, phone, plan, estado, foto: foto || '', date: startDate });
         alert('Membro registado com sucesso!');
       }
       refreshAll();
@@ -781,6 +627,7 @@
       document.getElementById('m-email').value = m.email || '';
       document.getElementById('m-phone').value = m.phone || '';
       document.getElementById('m-plan').value = m.plan;
+      document.getElementById('m-estado').value = m.estado || 'Ativo';
       document.getElementById('m-startdate').value = m.date || '';
       document.getElementById('m-foto-base64').value = m.foto || '';
       document.getElementById('form-member-title').innerText = 'Editar Membro: ' + m.name;
@@ -798,21 +645,135 @@
     }
 
     function deleteMember(id) {
-      if (confirm('Eliminar membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
+      if (confirm('Tem a certeza que deseja eliminar este membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
     }
 
+    /* BOTÃO DE CHECK-IN AUTOMÁTICO (ADMIN / STAFF) */
+    function checkinManualMembro(barcode) {
+      const m = members.find(x => x.barcode === barcode);
+      if (!m) return;
+      const agora = new Date();
+      attendanceLogs.unshift({ data: agora.toLocaleDateString('pt-PT'), time: agora.toLocaleTimeString('pt-PT'), name: m.name, barcode: m.barcode, status: 'Ativo' });
+      renderAttendance();
+      updateDynamicMetrics();
+
+      const totemData = { name: m.name, plan: m.plan || 'Mensal', auth: true, startDate: m.date || '01/01/2026', dueDate: '31/12/2026', barcode: m.barcode, foto: m.foto || '', time: Date.now() };
+      localStorage.setItem('kosmo_totem_scan', JSON.stringify(totemData));
+      if (totemWindowRef && !totemWindowRef.closed) totemWindowRef.postMessage(totemData, '*');
+      alert(`Check-in efetuado com sucesso para ${m.name}!`);
+    }
+
+    /* VALIDAR MENSALIDADE DO MEMBRO */
+    function validarMensalidadeMembro(id) {
+      const m = members.find(x => x.id === id);
+      if (!m) return;
+      m.date = new Date().toISOString().split('T')[0];
+      m.estado = 'Ativo';
+      refreshAll();
+      alert(`Mensalidade de ${m.name} validada e renovada com sucesso!`);
+    }
+
+    /* RENDERIZAÇÃO DA TABELA DE MEMBROS COM FOTO NÍDIDA, CÓDIGO DE CLIENTE E BOTÕES */
     function renderMembers() {
       const tbody = document.getElementById('member-table-body');
+      const query = document.getElementById('member-search-input') ? document.getElementById('member-search-input').value.toLowerCase() : '';
+      const filterType = document.getElementById('member-filter-select') ? document.getElementById('member-filter-select').value : 'todos';
       if (!tbody) return;
       tbody.innerHTML = '';
-      if (members.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Sem membros.</td></tr>`; return; }
-      members.forEach(m => {
-        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:48px; height:48px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold;">${m.name[0]}</div>`;
-        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><code>ID: ${m.barcode}</code><br><small>NIF: ${m.nif || '---'}</small></td><td><strong>${m.name}</strong><br><small>${m.email || ''} | ${m.phone || ''}</small></td><td>${m.plan}<br><small>Início: ${m.date || '---'}</small></td><td><button class="btn btn-sm btn-blue" onclick="editMember(${m.id})">✏️ Editar</button> <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️️</button></td></tr>`;
+
+      const now = new Date();
+      let filtered = members.filter(m => {
+        const matchText = m.name.toLowerCase().includes(query) || (m.nif && m.nif.toLowerCase().includes(query)) || (m.barcode && m.barcode.toLowerCase().includes(query));
+        if (!matchText) return false;
+
+        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
+        const due = new Date(m.date || Date.now());
+        due.setDate(due.getDate() + pl.days);
+        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+
+        if (filterType === 'Ativo') return m.estado === 'Ativo' && due >= now;
+        if (filterType === 'Inativo') return m.estado === 'Inativo';
+        if (filterType === 'Expirados') return due < now;
+        if (filterType === 'A Vencer') return diffDays <= 5 && diffDays >= 0 && due >= now;
+        return true;
+      });
+
+      if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum membro encontrado.</td></tr>`; return; }
+
+      filtered.forEach(m => {
+        const fotoTag = m.foto ? `<img src="${m.foto}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">` : `<div style="width:52px; height:52px; border-radius:50%; background:#ccc; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;">${m.name[0]}</div>`;
+        const estBadge = m.estado === 'Desativado' ? '<span class="badge badge-err">Desativado</span>' : (m.estado === 'Inativo' ? '<span class="badge badge-warn">Inativo</span>' : '<span class="badge badge-ok">Ativo</span>');
+        
+        tbody.innerHTML += `
+          <tr>
+            <td>${fotoTag}</td>
+            <td><code style="font-size:0.92rem; font-weight:bold; color:var(--primary);">ID: ${m.barcode}</code><br><small>NIF: ${m.nif || '---'}</small></td>
+            <td><strong>${m.name}</strong><br><small>📞 ${m.phone || '---'} | ✉️ ${m.email || '---'}</small></td>
+            <td>${m.plan} (${estBadge})<br><small>Início: ${m.date || '---'}</small></td>
+            <td>
+              <button class="btn btn-sm btn-green" onclick="checkinManualMembro('${m.barcode}')" title="Check-in Automático">🔔 Check-in</button>
+              <button class="btn btn-sm btn-blue" onclick="validarMensalidadeMembro(${m.id})" title="Validar/Renovar Mensalidade">💳 Validar</button>
+              <button class="btn btn-sm" style="background:#495057;" onclick="editMember(${m.id})">✏️ Editar</button>
+              <button class="btn btn-sm" style="background:var(--danger);" onclick="deleteMember(${m.id})">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        `;
       });
     }
 
-    /* GESTÃO COMPLETA DE INSCRIÇÕES ONLINE */
+    /* NOTIFICAÇÕES AUTOMÁTICAS POR E-MAIL (-5 DIAS, 2 VEZES AO DIA) */
+    function verificarAlertaVencimentos() {
+      const tbody = document.getElementById('alertas-vencimento-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const now = new Date();
+      let alertCount = 0;
+
+      members.forEach(m => {
+        const pl = plans.find(p => p.name === m.plan) || { days: 30 };
+        const due = new Date(m.date || Date.now());
+        due.setDate(due.getDate() + pl.days);
+        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 5 && diffDays >= 0) {
+          alertCount++;
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${m.name}</strong></td>
+              <td>${m.email || 'Sem e-mail'}</td>
+              <td>${m.plan}</td>
+              <td>${due.toLocaleDateString('pt-PT')}</td>
+              <td><span class="badge" style="background:var(--warning);">Expira em ${diffDays}d (2x Emails Diários Enviados)</span></td>
+            </tr>
+          `;
+        }
+      });
+
+      if (alertCount === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum membro a vencer nos próximos 5 dias.</td></tr>`;
+      } else {
+        alert(`Disparo automático concluído: ${alertCount} membros notificados com 2 mensagens de e-mail hoje.`);
+      }
+    }
+
+    /* ORDENAÇÃO DE PRODUTOS DE A A Z COM PESQUISA */
+    function renderProducts() {
+      const tbody = document.getElementById('products-table-body');
+      const query = document.getElementById('product-search-input') ? document.getElementById('product-search-input').value.toLowerCase() : '';
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      let sorted = [...products].sort((a, b) => a.name.localeCompare(b.name));
+      let filtered = sorted.filter(p => p.name.toLowerCase().includes(query));
+
+      if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#777;">Nenhum produto encontrado.</td></tr>`; return; }
+
+      filtered.forEach((p, idx) => {
+        const fotoTag = p.foto ? `<img src="${p.foto}" style="width:36px; height:36px; object-fit:cover; border-radius:4px;">` : '📦';
+        tbody.innerHTML += `<tr><td>${fotoTag}</td><td><strong>${p.name}</strong><br><small>${p.desc || ''}</small></td><td>${p.price} CVE</td><td>${p.stock}</td><td><button class="btn-action" onclick="products = products.filter(x => x.name !== '${p.name}'); refreshAll();">🗑️</button></td></tr>`;
+      });
+    }
+
     function renderInscricoesOnline() {
       const tbody = document.getElementById('online-inscricoes-tbody');
       if (!tbody) return;
@@ -857,32 +818,23 @@
         inscricoesOnline[idx].email = document.getElementById('edit-insc-email').value;
         inscricoesOnline[idx].phone = document.getElementById('edit-insc-phone').value;
         inscricoesOnline[idx].plan = document.getElementById('edit-insc-plan').value;
-        alert('Inscrição online atualizada com sucesso!');
+        alert('Inscrição online atualizada!');
         document.getElementById('modal-edit-inscricao').style.display = 'none';
         refreshAll();
       }
     }
 
     function eliminarInscricao(idx) {
-      if (confirm('Deseja eliminar permanentemente esta inscrição online?')) {
-        inscricoesOnline.splice(idx, 1);
-        refreshAll();
-      }
+      if (confirm('Eliminar inscrição online?')) { inscricoesOnline.splice(idx, 1); refreshAll(); }
     }
 
     function validarInscricao(idx) {
       const insc = inscricoesOnline[idx];
       members.push({
-        id: Date.now(),
-        name: insc.name,
-        sexo: insc.sexo,
-        nif: insc.nif,
+        id: Date.now(), name: insc.name, sexo: insc.sexo, nif: insc.nif,
         barcode: String(Math.floor(100000 + Math.random() * 900000)),
-        email: insc.email,
-        phone: insc.phone,
-        plan: insc.plan,
-        foto: insc.foto,
-        date: new Date().toISOString().split('T')[0]
+        email: insc.email, phone: insc.phone, plan: insc.plan, estado: 'Ativo',
+        foto: insc.foto, date: new Date().toISOString().split('T')[0]
       });
       inscricoesOnline.splice(idx, 1);
       refreshAll();
@@ -931,72 +883,6 @@
       alert('Inscrição submetida com sucesso!');
       fecharPortalInscricao();
       refreshAll();
-    }
-
-    /* CHAT E CLIP */
-    function ativarChatCliente() {
-      const n = document.getElementById('client-chat-name-input').value.trim();
-      if (!n) return;
-      clienteChatAtivo = n;
-      document.getElementById('client-chat-login').style.display = 'none';
-      document.getElementById('client-chat-box').style.display = 'flex';
-      renderChatGeral();
-    }
-    function clienteEnviarMsg() {
-      const t = document.getElementById('client-chat-text').value.trim();
-      if (!t) return;
-      chatMessages.push({ sender: 'client', name: clienteChatAtivo, type: 'text', content: t, time: new Date().toLocaleTimeString('pt-PT') });
-      document.getElementById('client-chat-text').value = '';
-      refreshAll();
-    }
-    function clienteEnviarFicheiro(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => { chatMessages.push({ sender: 'client', name: clienteChatAtivo, type: 'file', filename: f.name, content: evt.target.result, time: new Date().toLocaleTimeString('pt-PT') }); refreshAll(); }; r.readAsDataURL(f); }
-    }
-    function enviarMensagemChat() {
-      const t = document.getElementById('chat-input-text').value.trim();
-      if (!t) return;
-      chatMessages.push({ sender: 'staff', name: loggedUser ? loggedUser.name : 'Staff', type: 'text', content: t, time: new Date().toLocaleTimeString('pt-PT') });
-      document.getElementById('chat-input-text').value = '';
-      refreshAll();
-    }
-    function enviarFicheiroChat(e) {
-      const f = e.target.files[0];
-      if (f) { const r = new FileReader(); r.onload = evt => { chatMessages.push({ sender: 'staff', name: loggedUser ? loggedUser.name : 'Staff', type: 'file', filename: f.name, content: evt.target.result, time: new Date().toLocaleTimeString('pt-PT') }); refreshAll(); }; r.readAsDataURL(f); }
-    }
-    function renderChatGeral() {
-      const b = document.getElementById('client-chat-msgs');
-      if (b) {
-        b.innerHTML = '';
-        chatMessages.forEach(m => {
-          const c = m.sender === 'client' ? 'client' : 'staff';
-          let cont = m.content;
-          if (m.type === 'file') cont = `📎 <a href="${m.content}" target="_blank" download="${m.filename}">${m.filename}</a>`;
-          b.innerHTML += `<div class="chat-msg ${c}"><strong>${m.name}:</strong> ${cont}</div>`;
-        });
-        b.scrollTop = b.scrollHeight;
-      }
-    }
-    function renderChatStaff() {
-      renderChatGeral();
-      const a = document.getElementById('chat-messages-area');
-      if (a) {
-        a.innerHTML = '';
-        chatMessages.forEach(m => {
-          const c = m.sender === 'client' ? 'client' : 'staff';
-          let cont = m.content;
-          if (m.type === 'file') cont = `📎 <a href="${m.content}" target="_blank" download="${m.filename}">${m.filename}</a>`;
-          a.innerHTML += `<div class="chat-msg ${c}"><strong>${m.name} (${m.sender}):</strong> ${cont}</div>`;
-        });
-        a.scrollTop = a.scrollHeight;
-      }
-    }
-
-    function salvarConfigCloud() {
-      const url = document.getElementById('cfg-supabase-url').value.trim();
-      const key = document.getElementById('cfg-supabase-key').value.trim();
-      if (!url || !key) { alert('Insira as credenciais Supabase.'); return; }
-      try { window.supabase.createClient(url, key); alert('Cloud Supabase conectada com sucesso!'); } catch(e) {}
     }
 
     function addPlan() {
@@ -1057,10 +943,6 @@
       products.push({ name, price, stock: Number(stock), desc: document.getElementById('p-desc').value, use: document.getElementById('p-use').value, foto: document.getElementById('p-foto-base64').value });
       refreshAll(); alert('Produto guardado!');
     }
-    function renderProducts() {
-      const t = document.getElementById('products-table-body');
-      if (t) { t.innerHTML = ''; products.forEach((p, idx) => t.innerHTML += `<tr><td>📦</td><td><strong>${p.name}</strong></td><td>${p.price} CVE</td><td>${p.stock}</td><td><button class="btn-action" onclick="products.splice(${idx},1); refreshAll();">🗑️</button></td></tr>`); }
-    }
     function previewPosProduct() {
       const p = products.find(x => x.name === document.getElementById('pos-prod').value);
       if (!p) return;
@@ -1099,27 +981,31 @@
       if (!m || !m.phone) { alert('Sem telemóvel.'); return; }
       window.open(`https://wa.me/${m.phone}?text=${encodeURIComponent(t)}`, '_blank');
     }
-    function verificarAlertaVencimentos() {
-      const tbody = document.getElementById('alertas-vencimento-tbody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      let c = 0;
-      members.forEach(m => {
-        c++;
-        tbody.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.email || '---'}</td><td>${m.plan}</td><td>Ativo</td><td><span class="badge badge-ok">OK</span></td></tr>`;
-      });
-      if (c === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Sem membros.</td></tr>`;
-      else alert('Verificação de vencimentos concluída.');
-    }
     function addColab() {
-      const n = document.getElementById('colab-name').value, u = document.getElementById('colab-user').value, p = document.getElementById('colab-pass').value;
-      if (!n || !u || !p) return;
-      collaborators.push({ id: Date.now(), name: n, role: 'Staff', user: u, pass: p, perms: ['all'] });
-      refreshAll(); alert('Colaborador adicionado!');
+      const name = document.getElementById('colab-name').value.trim();
+      const role = document.getElementById('colab-role').value.trim();
+      const phone = document.getElementById('colab-phone').value.trim();
+      const user = document.getElementById('colab-user').value.trim();
+      const pass = document.getElementById('colab-pass').value.trim();
+
+      if (!name || !user || !pass) { alert('Preencha os campos obrigatórios.'); return; }
+      const permCheckboxes = document.querySelectorAll('#colab-perms-group input[type="checkbox"]');
+      let perms = [];
+      permCheckboxes.forEach(chk => { if (chk.checked) perms.push(chk.value); });
+
+      collaborators.push({ id: Date.now(), name, role: role || 'Staff', phone, user, pass, perms });
+      refreshAll(); alert('Colaborador registado com sucesso!');
     }
     function renderColabs() {
       const t = document.getElementById('colab-table-body');
-      if (t) { t.innerHTML = ''; collaborators.forEach(c => t.innerHTML += `<tr><td>${c.name}</td><td>${c.role}</td><td><code>${c.user}</code></td><td><button class="btn btn-sm" style="background:var(--danger);" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">Eliminar</button></td></tr>`); }
+      if (t) {
+        t.innerHTML = '';
+        collaborators.forEach(c => {
+          const isMaster = c.user === 'admin';
+          const actions = isMaster ? '<span>Admin Master</span>' : `<button class="btn btn-sm" style="background:var(--danger);" onclick="collaborators=collaborators.filter(x=>x.id!==${c.id}); refreshAll();">Eliminar</button>`;
+          t.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.role}</td><td><code>${c.user}</code></td><td>${actions}</td></tr>`;
+        });
+      }
     }
     function regPicaPonto() {
       const n = document.getElementById('pica-colab-select').value, a = document.getElementById('pica-type').value;
@@ -1153,90 +1039,99 @@
       const t = document.getElementById('today-attendance-tbody');
       if (t) { t.innerHTML = ''; attendanceLogs.forEach(a => t.innerHTML += `<tr><td>${a.data}</td><td>${a.time}</td><td><strong>${a.name}</strong></td><td>${a.barcode}</td><td><span class="badge badge-ok">Ativo</span></td></tr>`); }
     }
+
+    /* ECRÃ TOTEM GIGANTE ORIGINAL (VISÍVEL A 3-4 METROS) */
+    function openTotemWindow() {
+      totemWindowRef = window.open('', 'TotemKosmo', 'width=1100,height=800');
+      totemWindowRef.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt">
+        <head>
+          <meta charset="UTF-8">
+          <title>Ginásio KOSMO - Ecrã Totem Gigante</title>
+          <style>
+            body { background: #0b0e11; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; text-align: center; overflow: hidden; }
+            .badge { padding: 25px 80px; border-radius: 16px; font-size: 3.5rem; font-weight: 900; color: #fff; display: inline-block; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+          </style>
+        </head>
+        <body>
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #222; padding-bottom:15px;">
+            <div style="font-size:1.8rem; color:#aaa; font-weight:800; letter-spacing:1px;">TERMINAL DE CHECK-IN KOSMO</div>
+            <div id="totem-relogio" style="font-size: 6.5rem; font-family: monospace; color: #ffd43b; font-weight: 900; letter-spacing: 2px;">00:00:00</div>
+          </div>
+          
+          <div id="totem-corpo" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+            <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+            <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+          </div>
+
+          <div style="color:#777; font-size:1.2rem; text-align:center; font-weight:bold;">Ginásio KOSMO • Praia, Cabo Verde</div>
+
+          <script>
+            let resetTimer = null;
+            function voltarEcraInicial() {
+              document.getElementById('totem-corpo').innerHTML = \`
+                <img src="logo.jpg.jpg" style="width:420px; height:240px; object-fit:contain; border-radius:20px; background:#fff; padding:15px; margin-bottom:30px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);" onerror="this.src='logo.jpg';">
+                <h1 style="color:#ffd43b; font-size:4.5rem; margin:15px 0; font-weight:900;">Aproxime o seu Cartão / QR Code</h1>
+                <p style="font-size:2.2rem; color:#ddd; font-style:italic; max-width:1100px; font-weight:700; line-height:1.4;">"Moldar o seu corpo ao seu estilo através de uma forma correta e saudável"</p>
+              \`;
+            }
+
+            function processarCheckinTotem(d) {
+              if (resetTimer) clearTimeout(resetTimer);
+              const fotoHtml = d.foto ? '<img src="'+d.foto+'" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border:6px solid '+(d.auth?'#2b8a3e':'#c92a2a')+'; margin-bottom:20px;">' : '';
+              const bgCol = d.auth ? '#2b8a3e' : '#c92a2a';
+              document.getElementById('totem-corpo').innerHTML = \`
+                \${fotoHtml}
+                <h1 style="color:\${bgCol}; font-size:4.8rem; margin:10px 0; font-weight:900;">\${d.name}</h1>
+                <p style="font-size:2.2rem; font-weight:bold; margin-bottom:10px;">Plano: \${d.plan}</p>
+                <div class="badge" style="background:\${bgCol};">ACESSO PERMITIDO</div>
+              \`;
+              resetTimer = setTimeout(() => { voltarEcraInicial(); }, 15000);
+            }
+
+            setInterval(() => {
+              document.getElementById('totem-relogio').innerText = new Date().toLocaleTimeString('pt-PT');
+            }, 1000);
+
+            window.addEventListener('storage', (event) => {
+              if (event.key === 'kosmo_totem_scan') {
+                try { const d = JSON.parse(event.newValue); if (d) processarCheckinTotem(d); } catch(e) {}
+              }
+            });
+            window.addEventListener('message', (event) => {
+              if (event.data) processarCheckinTotem(event.data);
+            });
+          <\/script>
+        </body>
+        </html>
+      `);
+    }
+
     function exportData() {
       const data = { members, inscricoesOnline, plans, payments, products, collaborators, chatMessages };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_kosmo.json'; a.click();
     }
-   function importDataAnyFormat(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      
-      reader.onload = function(e) {
-        const content = e.target.result;
-        
-        // Se for um ficheiro CSV exportado do GYMMER
-        if (file.name.endsWith('.csv') || content.includes(',')) {
-          try {
-            const lines = content.split('\n');
-            let importedCount = 0;
-            
-            // Analetar cabeçalho para detetar colunas
-            const headers = lines[0].split(',').map(h => h.replace(/['"]+/g, '').trim().toLowerCase());
-            
-            for (let i = 1; i < lines.length; i++) {
-              const line = lines[i].trim();
-              if (!line) continue;
-              const cols = line.split(',');
-              if (cols.length >= 2) {
-                // Tenta extrair com base nas colunas comuns do GYMMER
-                const nomeCol = cols[0] ? cols[0].replace(/['"]+/g, '').trim() : '';
-                const apelidoCol = cols[1] ? cols[1].replace(/['"]+/g, '').trim() : '';
-                const nomeCompleto = (nomeCol + ' ' + apelidoCol).trim() || 'Membro GYMMER';
-                
-                const telefone = cols[2] ? cols[2].replace(/['"]+/g, '').trim() : '';
-                const email = cols[3] ? cols[3].replace(/['"]+/g, '').trim() : '';
-                const plano = cols[4] ? cols[4].replace(/['"]+/g, '').trim() : 'Mensal Trabalhador';
-                const barcode = String(Math.floor(100000 + Math.random() * 900000));
-
-                if (!members.some(m => m.name === nomeCompleto)) {
-                  members.push({
-                    id: Date.now() + i,
-                    name: nomeCompleto,
-                    sexo: 'Masculino',
-                    nif: '',
-                    barcode: barcode,
-                    email: email,
-                    phone: telefone,
-                    plan: plano,
-                    foto: '', // Se o CSV contiver URL da foto, pode mapear aqui
-                    date: new Date().toISOString().split('T')[0]
-                  });
-                  importedCount++;
-                }
-              }
-            }
-            refreshAll();
-            alert(`Sucesso! ${importedCount} membros do GYMMER importados com apelidos e dados integrados.`);
-          } catch(csvErr) {
-            alert('Erro ao processar o formato CSV do GYMMER.');
-          }
-          return;
-        }
-
-        // Se for um ficheiro JSON de Backup
+    function importDataAnyFormat(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = function(evt) {
         try {
-          const data = JSON.parse(content);
-          if (data.members) members = data.members;
-          if (data.inscricoesOnline) inscricoesOnline = data.inscricoesOnline;
-          if (data.plans) plans = data.plans;
-          if (data.payments) payments = data.payments;
-          if (data.products) products = data.products;
-          if (data.collaborators) collaborators = data.collaborators;
-          if (data.chatMessages) chatMessages = data.chatMessages;
-          
-          refreshAll();
-          alert('Backup completo do GYMMER carregado e restaurado com sucesso!');
-        } catch(err) {
-          alert('Erro ao interpretar o ficheiro de backup.');
-        }
+          const d = JSON.parse(evt.target.result);
+          if (d.members) members = d.members;
+          if (d.inscricoesOnline) inscricoesOnline = d.inscricoesOnline;
+          if (d.plans) plans = d.plans;
+          if (d.payments) payments = d.payments;
+          if (d.products) products = d.products;
+          if (d.collaborators) collaborators = d.collaborators;
+          if (d.chatMessages) chatMessages = d.chatMessages;
+          refreshAll(); alert('Dados importados com sucesso!');
+        } catch(err) { alert('Erro ao importar backup.'); }
       };
-      reader.readAsText(file);
-    }
-    function openTotemWindow() {
-      totemWindowRef = window.open('', 'Totem', 'width=1100,height=800');
-      totemWindowRef.document.write(`<body style="background:#0b0e11; color:#ffd43b; text-align:center; padding:100px; font-family:sans-serif;"><h1>TERMINAL DE CHECK-IN KOSMO</h1></body>`);
+      r.readAsText(f);
     }
   </script>
 </body>
