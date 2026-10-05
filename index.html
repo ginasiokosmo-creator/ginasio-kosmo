@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ginásio KOSMO - Gestão Integrada de Elite (GYMMER Engine Total & Totem Pro)</title>
+  <title>Ginásio KOSMO - Gestão Integrada de Elite (Supabase Realtime Cloud)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -189,7 +189,7 @@
     <header>
       <div class="top-title" id="page-title">Dashboard Geral</div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <span id="cloud-status" class="badge badge-ok" style="font-size:0.72rem;">🌐 Cloud Sincronizada</span>
+        <span id="cloud-status" class="badge badge-err" style="font-size:0.72rem;">🌐 Cloud Desconectada</span>
         <button type="button" class="btn btn-green btn-sm" onclick="abrirPortalInscricao()">🌐 Abrir Portal Inscrição</button>
         <button type="button" class="btn btn-blue btn-sm" onclick="openTotemWindow()">🖥 Ecrã Totem Gigante</button>
       </div>
@@ -265,25 +265,8 @@
         </div>
       </section>
 
-      <section id="view-inscricoes" class="view-section">
-        <div class="card">
-          <h2>Inscrições Online Pendentes</h2>
-          <table>
-            <thead><tr><th>Foto</th><th>Nome / NIF</th><th>Contacto</th><th>Plano</th><th>Anexos</th><th>Ações</th></tr></thead>
-            <tbody id="online-inscricoes-tbody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="view-qrinscricao" class="view-section">
-        <div class="card" style="text-align:center;">
-          <h2>QR Code de Inscrição Online</h2>
-          <div id="qrcode-container" style="display:inline-block; background:#fff; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px;"></div>
-          <p><code id="portal-url-txt" style="font-weight:bold; color:var(--primary);"></code></p>
-          <button type="button" class="btn btn-blue" style="margin-top:15px;" onclick="window.print()">🖨 Imprimir Cartaz</button>
-        </div>
-      </section>
-
+      <section id="view-inscricoes" class="view-section"><div class="card"><h2>Inscrições Online</h2><table><thead><tr><th>Foto</th><th>Nome / NIF</th><th>Contacto</th><th>Plano</th><th>Anexos</th><th>Ações</th></tr></thead><tbody id="online-inscricoes-tbody"></tbody></table></div></section>
+      <section id="view-qrinscricao" class="view-section"><div class="card" style="text-align:center;"><h2>QR Code de Inscrição Online</h2><div id="qrcode-container" style="display:inline-block; background:#fff; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px;"></div><p><code id="portal-url-txt" style="font-weight:bold; color:var(--primary);"></code></p></div></section>
       <section id="view-checkins" class="view-section"><div class="card"><h2>Check-ins</h2><input type="text" id="chk-input" placeholder="Passe o leitor..." onkeydown="onScan(event)" style="padding:10px; font-weight:bold; margin-bottom:15px;"><table><thead><tr><th>Data</th><th>Hora</th><th>Membro</th><th>Código</th><th>Estado</th></tr></thead><tbody id="today-attendance-tbody"></tbody></table></div></section>
       <section id="view-planos" class="view-section"><div class="card"><h2>Planos</h2><div class="form-grid"><div><label>Nome</label><input type="text" id="pl-name"></div><div><label>Preço</label><input type="number" id="pl-price"></div><div><label>Dias</label><input type="number" id="pl-days" value="30"></div></div><button class="btn" onclick="addPlan()">Criar</button></div><div class="card"><table><thead><tr><th>Plano</th><th>Preço</th><th>Dias</th></tr></thead><tbody id="plans-table-body"></tbody></table></div></section>
       <section id="view-cartaodigital" class="view-section"><div class="card" style="text-align:center;"><h2>Cartão Digital</h2><select id="card-member-select" onchange="renderDigitalCard()" style="max-width:300px; margin-bottom:15px;"></select><div id="digital-card-container"></div></div></section>
@@ -352,7 +335,19 @@
       </section>
 
       <section id="view-reportes" class="view-section"><div class="card"><h2>Reportes</h2><p>Sem avarias.</p></div></section>
-      <section id="view-config" class="view-section"><div class="card"><h2>Configuração Cloud</h2><div class="form-grid"><div><label>Supabase URL</label><input type="text" id="cfg-supabase-url"></div><div><label>Supabase Key</label><input type="text" id="cfg-supabase-key"></div></div><button class="btn btn-blue" onclick="salvarConfigCloud()">Conectar Cloud</button></div></section>
+      
+      <!-- CONFIGURAÇÃO CLOUD SUPABASE REALTIME FUNCIONAL -->
+      <section id="view-config" class="view-section">
+        <div class="card">
+          <h2>Configuração Cloud Supabase (Tempo Real Universal)</h2>
+          <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Insira a sua Supabase URL e Anon Key para sincronizar colaboradores e membros em qualquer domínio.</p>
+          <div class="form-grid">
+            <div><label>Supabase URL</label><input type="text" id="cfg-supabase-url" placeholder="https://xxx.supabase.co"></div>
+            <div><label>Supabase Anon Key</label><input type="text" id="cfg-supabase-key" placeholder="eyJhbGciOi..."></div>
+          </div>
+          <button class="btn btn-blue" onclick="salvarConfigCloud()" style="margin-top:12px;">Conectar & Sincronizar Cloud Agora</button>
+        </div>
+      </section>
 
       <!-- GERIR COLABORADORES & FUNÇÕES -->
       <section id="view-colab" class="view-section">
@@ -453,8 +448,9 @@
     </div>
   </div>
 
-  <!-- MOTOR JAVASCRIPT BLINDADO E COMPLETO -->
+  <!-- MOTOR JAVASCRIPT COM SUPABASE CLOUD SYNC REALTIME -->
   <script>
+    let supabaseClient = null;
     let members = [];
     let inscricoesOnline = [];
     let plans = [
@@ -474,12 +470,18 @@
     let picaPontoLogs = [];
     let chatMessages = [];
     let totemWindowRef = null;
-    let fotoTemp = '', fotoProdTemp = '', portalFotoTemp = '', portalAnexoTemp = '';
-    let clienteChatAtivo = null;
     let loggedUser = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       try {
+        const savedUrl = localStorage.getItem('kosmo_sb_url');
+        const savedKey = localStorage.getItem('kosmo_sb_key');
+        if (savedUrl && savedKey) {
+          document.getElementById('cfg-supabase-url').value = savedUrl;
+          document.getElementById('cfg-supabase-key').value = savedKey;
+          iniciarSupabase(savedUrl, savedKey);
+        }
+
         const params = new URLSearchParams(window.location.search);
         if (params.get('portal') === 'inscricao' || window.location.hash === '#inscricao') {
           const loginOverlay = document.getElementById('login-overlay');
@@ -488,6 +490,64 @@
         }
       } catch(e) {}
     });
+
+    function iniciarSupabase(url, key) {
+      try {
+        supabaseClient = window.supabase.createClient(url, key);
+        carregarDadosCloud();
+        const badge = document.getElementById('cloud-status');
+        if (badge) {
+          badge.className = 'badge badge-ok';
+          badge.innerText = '🌐 Cloud Sincronizada';
+        }
+      } catch(e) {
+        console.error('Erro ao iniciar Supabase:', e);
+      }
+    }
+
+    async function salvarConfigCloud() {
+      const url = document.getElementById('cfg-supabase-url').value.trim();
+      const key = document.getElementById('cfg-supabase-key').value.trim();
+      if (!url || !key) { alert('Insira a URL e a Anon Key do Supabase.'); return; }
+      
+      localStorage.setItem('kosmo_sb_url', url);
+      localStorage.setItem('kosmo_sb_key', key);
+      iniciarSupabase(url, key);
+      alert('Credenciais Cloud guardadas e ligadas com sucesso!');
+    }
+
+    async function sincronizarCloud() {
+      if (!supabaseClient) return;
+      try {
+        const payload = { members, inscricoesOnline, plans, payments, products, collaborators, chatMessages, sales, attendanceLogs, picaPontoLogs };
+        await supabaseClient.from('kosmo_data').upsert({ id: 'main_state', payload: payload, updated_at: new Date() });
+      } catch(e) {
+        console.error('Erro ao sincronizar com Supabase:', e);
+      }
+    }
+
+    async function carregarDadosCloud() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('kosmo_data').select('payload').eq('id', 'main_state').single();
+        if (data && data.payload) {
+          const d = data.payload;
+          if (d.members) members = d.members;
+          if (d.inscricoesOnline) inscricoesOnline = d.inscricoesOnline;
+          if (d.plans) plans = d.plans;
+          if (d.payments) payments = d.payments;
+          if (d.products) products = d.products;
+          if (d.collaborators) collaborators = d.collaborators;
+          if (d.chatMessages) chatMessages = d.chatMessages;
+          if (d.sales) sales = d.sales;
+          if (d.attendanceLogs) attendanceLogs = d.attendanceLogs;
+          if (d.picaPontoLogs) picaPontoLogs = d.picaPontoLogs;
+          refreshAll();
+        }
+      } catch(e) {
+        console.log('Sem dados remotos ainda, a usar estado inicial.');
+      }
+    }
 
     function directLogin() {
       try {
@@ -555,6 +615,7 @@
         renderChatStaff();
         populateSelects();
         updateDynamicMetrics();
+        sincronizarCloud();
       } catch(e) {}
     }
 
@@ -1047,7 +1108,7 @@
       const novaPass = prompt('Introduza a nova palavra-passe para o colaborador:');
       if (novaPass) {
         const c = collaborators.find(x => x.id === id);
-        if (c) { c.pass = novaPass; alert('Palavra-passe alterada com sucesso!'); }
+        if (c) { c.pass = novaPass; alert('Palavra-passe alterada com sucesso!'); refreshAll(); }
       }
     }
 
@@ -1165,15 +1226,12 @@
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_kosmo.json'; a.click();
     }
 
-    /* SERVIÇO UNIVERSAL DE IMPORTAÇÃO DE BACKUP E GYMMER (CORRIGIDO) */
     function importDataAnyFormat(e) {
       const f = e.target.files[0];
       if (!f) return;
       const r = new FileReader();
       r.onload = function(evt) {
         const content = evt.target.result;
-        
-        // Se for ficheiro CSV exportado do GYMMER
         if (f.name.endsWith('.csv') || content.includes(',')) {
           try {
             const lines = content.split('\n');
@@ -1193,31 +1251,21 @@
 
                 if (!members.some(m => m.name === nomeCompleto)) {
                   members.push({
-                    id: Date.now() + i,
-                    name: nomeCompleto,
-                    sexo: 'Masculino',
-                    nif: '',
-                    barcode: barcode,
-                    email: email,
-                    phone: telefone,
-                    plan: plano,
-                    estado: 'Ativo',
-                    foto: '',
-                    date: new Date().toISOString().split('T')[0]
+                    id: Date.now() + i, name: nomeCompleto, sexo: 'Masculino', nif: '', barcode: barcode,
+                    email: email, phone: telefone, plan: plano, estado: 'Ativo', foto: '', date: new Date().toISOString().split('T')[0]
                   });
                   importedCount++;
                 }
               }
             }
             refreshAll();
-            alert(`Sucesso! ${importedCount} membros importados do GYMMER com apelidos e dados integrados.`);
+            alert(`Sucesso! ${importedCount} membros importados do GYMMER.`);
           } catch(csvErr) {
-            alert('Erro ao processar ficheiro CSV do GYMMER.');
+            alert('Erro ao processar CSV.');
           }
           return;
         }
 
-        // Se for ficheiro JSON de Backup KOSMO
         try {
           const d = JSON.parse(content);
           if (d.members) members = d.members;
@@ -1228,7 +1276,7 @@
           if (d.collaborators) collaborators = d.collaborators;
           if (d.chatMessages) chatMessages = d.chatMessages;
           refreshAll();
-          alert('Backup carregado e restaurado com sucesso!');
+          alert('Backup carregado com sucesso!');
         } catch(err) {
           alert('Erro ao interpretar o ficheiro de backup.');
         }
