@@ -917,8 +917,8 @@
     }
 
     async function salvarConfigCloud() {
-      DOMContentLoaded url = document.getElementById('cfg-supabase-url').value.trim();
-      window.addEventListener key = document.getElementById('cfg-supabase-key').value.trim();
+      const url = document.getElementById('cfg-supabase-url').value.trim();
+      const key = document.getElementById('cfg-supabase-key').value.trim();
       if (!url || !key) { alert('Insira a URL e a Anon Key do Supabase.'); return; }
       
       try {
