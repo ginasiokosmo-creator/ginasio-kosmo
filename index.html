@@ -915,6 +915,39 @@
         carregarDadosCloud();
       } catch(e) {}
     }
+async function carregarDadosCloud() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('kosmo_data').select('payload').eq('id', 'main_state').single();
+        if (data && data.payload) {
+          const d = data.payload;
+          if (d.members) members = d.members;
+          if (d.inscricoesOnline) inscricoesOnline = d.inscricoesOnline;
+          if (d.plans) plans = d.plans;
+          if (d.payments) payments = d.payments;
+          if (d.products) products = d.products;
+          if (d.categories) categories = d.categories;
+          if (d.expenses) expenses = d.expenses;
+          if (d.salaries) salaries = d.salaries;
+          if (d.collaborators) collaborators = d.collaborators;
+          if (d.chatMessages) chatMessages = d.chatMessages;
+          if (d.bibliotecaArquivos) bibliotecaArquivos = d.bibliotecaArquivos;
+          if (d.sales) sales = d.sales;
+          if (d.attendanceLogs) attendanceLogs = d.attendanceLogs;
+          if (d.picaPontoLogs) picaPontoLogs = d.picaPontoLogs;
+          
+          refreshAll();
+          
+          const badge = document.getElementById('cloud-status');
+          if (badge) {
+            badge.className = 'badge badge-ok';
+            badge.innerText = '🌐 Cloud Sincronizada';
+          }
+        }
+      } catch(e) {
+        console.log("Erro ao carregar dados da nuvem:", e);
+      }
+    }
 
     async function salvarConfigCloud() {
       const url = document.getElementById('cfg-supabase-url').value.trim();
