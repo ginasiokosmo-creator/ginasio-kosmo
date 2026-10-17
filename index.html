@@ -794,20 +794,117 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       try {
-        const savedUrl = localStorage.getItem('kosmo_sb_url');
-        const savedKey = localStorage.getItem('kosmo_sb_key');
-        if (savedUrl && savedKey) {
-          document.getElementById('cfg-supabase-url').value = savedUrl;
-          document.getElementById('cfg-supabase-key').value = savedKey;
-          iniciarSupabase(savedUrl, savedKey);
+        // Credenciais oficiais e fixas do Supabase (Ginásio Kosmo)
+        const fixedUrl = 'https://htybbtbayxreoundolac.supabase.co';
+        const fixedKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0eWJidGJheXhyZW91bmRvbGFjIypybyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkwMTczNTE5LCJleHAiOjIxMDU3NDk1MTl9.1EZ344Xl6gJjNTOO48oflTxKU2lijI7U2E8KLLimnDk';
+
+        localStorage.setItem('kosmo_sb_url', fixedUrl);
+        localStorage.setItem('kosmo_sb_key', fixedKey);
+
+        if (document.getElementById('cfg-supabase-url')) {
+            document.getElementById('cfg-supabase-url').value = fixedUrl;
+        }
+        if (document.getElementById('cfg-supabase-key')) {
+            document.getElementById('cfg-supabase-key').value = fixedKey;
         }
 
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('portal') === 'inscricao' || window.location.hash === '#inscricao') {
-          const loginOverlay = document.getElementById('login-overlay');
-          if (loginOverlay) loginOverlay.style.display = 'none';
-          abrirPortalInscricao();
+        function iniciarSupabase(url, key) {
+      try {
+        supabaseClient = window.supabase.createClient(url, key);
+        carregarDadosCloud();
+      } catch(e) {}
+    }
+
+    // --- MÓDULO DE INSCRIÇÕES ONLINE E CHAT COM O STAFF ---
+
+    async function carregarInscricoesPendentes() {
+      try {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('kosmo_pendentes')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (error) {
+          console.error("Erro ao carregar inscrições pendentes:", error);
+          return;
         }
+
+        const container = document.getElementById('lista-inscricoes-pendentes');
+        if (!container) return;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: #666;">Sem inscrições online pendentes.</td></tr>';
+          return;
+        }
+
+        let html = '';
+        data.forEach(item => {
+          html += `
+            <tr>
+              <td>${item.data || 'Recente'}</td>
+              <td><strong>${item.nome}</strong><br><small>${item.telefone || ''}</small></td>
+              <td>${item.plano || 'Padrão'}</td>
+              <td><span style="background: #f59f00; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Pendente</span></td>
+              <td>
+                <button onclick="aprovarInscricaoOnline(${item.id})" style="background: #2b8a3e; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Aprovar & Ativar</button>
+                <button onclick="abrirChatInscricao('${item.telefone}', '${item.nome}')" style="background: #1971c2; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Chat / Mensagem</button>
+              </td>
+            </tr>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        console.error("Exceção ao carregar inscrições:", err);
+      }
+    }
+
+    async function aprovarInscricaoOnline(id) {
+      try {
+        if (!supabaseClient) return;
+        const { data: pendente, error: errFetch } = await supabaseClient
+          .from('kosmo_pendentes')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (errFetch || !pendente) {
+          alert('Erro ao localizar a inscrição pendente.');
+          return;
+        }
+
+        const { error: errInsert } = await supabaseClient
+          .from('kosmo_membros')
+          .insert([{
+            name: pendente.nome,
+            phone: pendente.telefone,
+            plan: pendente.plano,
+            date: new Date().toISOString().split('T')[0],
+            nif: pendente.nif || 'EXEMPLO',
+            barcode: 'KOSMO_' + Date.now().toString().slice(-6)
+          }]);
+
+        if (errInsert) {
+          alert('Erro ao aprovar membro para a base de dados.');
+          return;
+        }
+
+        await supabaseClient.from('kosmo_pendentes').delete().eq('id', id);
+
+        alert('✅ Inscrição aprovada com sucesso! O membro foi adicionado ao sistema.');
+        carregarInscricoesPendentes();
+      } catch (err) {
+        console.error("Erro na aprovação:", err);
+      }
+    }
+
+    function abrirChatInscricao(telefone, nome) {
+      if (typeof mudarAba === 'function') {
+        mudarAba('chat-feed-online');
+      }
+      const inputNomeChat = document.getElementById('chat-alvo-nome');
+      if (inputNomeChat) inputNomeChat.innerText = `Chat com: ${nome} (${telefone || 'Sem contacto'})`;
+    }
         gerarQRCodeInscricao();
       } catch(e) {}
     });
@@ -820,8 +917,8 @@
     }
 
     async function salvarConfigCloud() {
-      const url = document.getElementById('cfg-supabase-url').value.trim();
-      const key = document.getElementById('cfg-supabase-key').value.trim();
+      DOMContentLoaded url = document.getElementById('cfg-supabase-url').value.trim();
+      window.addEventListener key = document.getElementById('cfg-supabase-key').value.trim();
       if (!url || !key) { alert('Insira a URL e a Anon Key do Supabase.'); return; }
       
       try {
@@ -915,6 +1012,34 @@
       navigate('dashboard');
       refreshAll();
       gerarQRCodeInscricao();
+    }
+
+    // --- MÓDULO DE GESTÃO DE PERMISSÕES E FUNÇÕES DE STAFF ---
+    function verificarPermissaoStaff(acaoOuModulo) {
+      if (!loggedUser) return false;
+      if (loggedUser.user === 'admin' || loggedUser.role.includes('Master') || loggedUser.role.includes('Admin')) {
+        return true;
+      }
+      if (loggedUser.perms && Array.isArray(loggedUser.perms)) {
+        if (loggedUser.perms.includes('all') || loggedUser.perms.includes(acaoOuModulo)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function aplicarRestricoesVisuaisStaff() {
+      if (!loggedUser) return;
+      if (loggedUser.user === 'admin' || loggedUser.role.includes('Master')) {
+        return;
+      }
+      const secoesFinanceiras = ['view-pagamentos', 'view-faturas', 'view-despesas', 'view-salarios'];
+      secoesFinanceiras.forEach(idSecao => {
+        if (!verificarPermissaoStaff('financeiro')) {
+          const el = document.getElementById(idSecao);
+          if (el) el.style.display = 'none';
+        }
+      });
     }
 
     function navigate(viewId) {
@@ -1893,6 +2018,71 @@
 
     function deleteMember(id) {
       if (confirm('Tem a certeza absoluta que deseja eliminar este membro?')) { members = members.filter(x => x.id !== id); refreshAll(); }
+    }
+
+    // --- MÓDULO DE FATURAS E RECIBOS PROFISSIONAIS ---
+
+    function emitirFaturaProfissional(tipo, referencia, nomeCliente, nifCliente, valor, detalhes) {
+      const w = window.open('', '_blank', 'width=700,height=800');
+      w.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt"><head><meta charset="UTF-8"><title>Fatura / Recibo - Ginásio KOSMO</title>
+        <style>
+          body { font-family: 'Segoe UI', sans-serif; color: #333; padding: 30px; margin: 0; background: #fff; }
+          .header { display: flex; justify-content: space-between; border-bottom: 2px solid #c92a2a; padding-bottom: 15px; margin-bottom: 20px; }
+          .gym-info h2 { color: #c92a2a; margin: 0; }
+          .gym-info p { margin: 2px 0; font-size: 0.85rem; color: #555; }
+          .invoice-details { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+          th, td { border: 1px solid #dee2e6; padding: 10px; text-align: left; font-size: 0.9rem; }
+          th { background: #1e2227; color: #fff; }
+          .total { text-align: right; font-size: 1.2rem; font-weight: bold; color: #c92a2a; }
+          .btn { background: #c92a2a; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+          @media print { .no-print { display: none; } }
+        </style></head>
+        <body>
+          <div class="header">
+            <div class="gym-info">
+              <h2>Ginásio KOSMO</h2>
+              <p>Praia, Terra Branca, 7600 • Cabo Verde</p>
+              <p>NIF do Ginásio: <strong>283023805</strong></p>
+              <p>Contacto: +238 9988886 • info@kosmogym.cv</p>
+            </div>
+            <div style="text-align:right;">
+              <h3 style="margin:0; color:#1e2227;">${tipo.toUpperCase()}</h3>
+              <p style="font-size:0.85rem; color:#666;">Ref: ${referencia || 'N/A'}</p>
+              <p style="font-size:0.85rem; color:#666;">Data: ${new Date().toLocaleDateString('pt-PT')}</p>
+            </div>
+          </div>
+
+          <div class="invoice-details">
+            <strong>Dados do Cliente / Membro:</strong><br>
+            Nome: <strong>${nomeCliente || 'Cliente Balcão'}</strong><br>
+            NIF do Cliente: <strong>${nifCliente || 'Não Indicado'}</strong>
+          </div>
+
+          <table>
+            <thead><tr><th>Descrição do Item / Serviço</th><th>Qtd</th><th>Preço Unit.</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>${detalhes || 'Mensalidade / Produto Kosmo'}</td>
+                <td>1</td>
+                <td>${valor} CVE</td>
+                <td>${valor} CVE</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="total">
+            Total a Pagar: ${valor} CVE
+          </div>
+
+          <div style="margin-top:40px; text-align:center;" class="no-print">
+            <button class="btn" onclick="window.print()">🖨️ Imprimir / Guardar Fatura PDF</button>
+          </div>
+        </body></html>
+      `);
+      w.document.close();
     }
   </script>
 </body>
