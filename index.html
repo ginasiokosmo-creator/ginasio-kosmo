@@ -792,9 +792,8 @@
     let receitaPlanoChartInstance = null;
     let receitaMetodoChartInstance = null;
 
-    window.addEventListener('DOMContentLoaded', () => {
+   window.addEventListener('DOMContentLoaded', () => {
       try {
-        // Credenciais oficiais e fixas do Supabase (Ginásio Kosmo)
         const fixedUrl = 'https://htybbtbayxreoundolac.supabase.co';
         const fixedKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0eWJidGJheXhyZW91bmRvbGFjIypybyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkwMTczNTE5LCJleHAiOjIxMDU3NDk1MTl9.1EZ344Xl6gJjNTOO48oflTxKU2lijI7U2E8KLLimnDk';
 
@@ -808,11 +807,53 @@
             document.getElementById('cfg-supabase-key').value = fixedKey;
         }
 
-        function iniciarSupabase(url, key) {
+        // Inicializar cliente e carregar dados da nuvem de imediato
+        supabaseClient = window.supabase.createClient(fixedUrl, fixedKey);
+        carregarDadosCloud();
+        carregarInscricoesPendentes();
+        if (typeof gerarQRCodeInscricao === 'function') {
+          gerarQRCodeInscricao();
+        }
+      } catch(e) {
+        console.log("Erro no arranque:", e);
+      }
+    });
+
+    function iniciarSupabase(url, key) {
       try {
         supabaseClient = window.supabase.createClient(url, key);
         carregarDadosCloud();
       } catch(e) {}
+    }
+
+    async function carregarDadosCloud() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('kosmo_members').select('*');
+        if (!error && data) {
+          members = data.map(m => ({
+            id: m.id,
+            name: m.name,
+            nif: m.nif === 'EMPTY' ? '' : m.nif,
+            phone: m.phone,
+            barcode: m.barcode,
+            plan: m.plan,
+            date: m.date,
+            sexo: m.sexo || 'Masculino',
+            email: m.email || '',
+            status: m.status || 'Ativo',
+            foto: m.foto || ''
+          }));
+          refreshAll();
+          const badge = document.getElementById('cloud-status');
+          if (badge) {
+            badge.className = 'badge badge-ok';
+            badge.innerText = '🌐 Cloud Sincronizada';
+          }
+        }
+      } catch(e) {
+        console.log("Erro ao carregar membros da nuvem:", e);
+      }
     }
 
     // --- MÓDULO DE INSCRIÇÕES ONLINE E CHAT COM O STAFF ---
@@ -906,8 +947,6 @@
       if (inputNomeChat) inputNomeChat.innerText = `Chat com: ${nome} (${telefone || 'Sem contacto'})`;
     }
         gerarQRCodeInscricao();
-      } catch(e) {}
-    });
 
     function iniciarSupabase(url, key) {
       try {
