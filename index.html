@@ -832,9 +832,7 @@ function iniciarSupabase(url, key) {
     async function carregarDadosCloud() {
       if (!supabaseClient) return;
             try {
-        const { data, error } = await supabaseClient.from('kosmo_members').select('*');
-        if (!error && data) {
-          members = data.map(m => ({
+           const { data, error } = await supabaseClient.from('kosmo_membros').select('*');          members = data.map(m => ({
             id: m.id,
             name: m.name,
             nif: m.nif === 'EMPTY' ? '' : m.nif,
