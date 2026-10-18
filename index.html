@@ -1701,27 +1701,20 @@ function directLogin() {
       document.getElementById('login-overlay').style.display = 'flex';
     }
 
-    function navigate(viewId) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      
-      const target = document.getElementById('view-' + viewId);
-      if (target) target.classList.add('active');
-    }
-
- const titles = {
- dashboard: 'Dashboard Geral', membros: 'Membros Ativos', pendentes: 'Inscrições Pendentes de Aprovação',
- checkins: 'Check-ins', planos: 'Planos', cartaodigital: 'Cartão Digital', online: 'Link & QR Code de Inscrição',
- pagamentos: 'Pagamentos & Faturas', despesas: 'Despesas & Contas', salarios: 'Salários', loja: 'Loja',
- manutencao: 'Reportes & Manutenção', colaboradores: 'Gerir Staff', picaponto: 'Pica Ponto', backup: 'Backup & Migração GYMMER'
- };
- document.getElementById('page-title').innerText = titles[viewId] || 'Gestão KOSMO';
- if (viewId === 'checkins') document.getElementById('chk-input').focus();
- if (viewId === 'pendentes') renderPendings();
- if (viewId === 'online') initShareModule();
- if (viewId === 'cartaodigital') renderDigitalCard();
- if (viewId === 'colaboradores') renderStaffs();
- }
+function navigate(viewId) {
+      const titles = {
+        dashboard: 'Dashboard Geral', membros: 'Membros Ativos', pendentes: 'Inscrições Pendentes de Aprovação',
+        checkins: 'Check-ins', planos: 'Planos', cartaodigital: 'Cartão Digital', online: 'Link & QR Code de Inscrição',
+        pagamentos: 'Pagamentos & Faturas', despesas: 'Despesas & Contas', salarios: 'Salários', loja: 'Loja',
+        manutencao: 'Reportes & Manutenção', colaboradores: 'Gerir Staff', picaponto: 'Pica Ponto', backup: 'Backup & Migração GYMMER'
+      };
+      document.getElementById('page-title').innerText = titles[viewId] || 'Gestão KOSMO';
+      if (viewId === 'checkins') document.getElementById('chk-input').focus();
+      if (viewId === 'pendentes') renderPendings();
+      if (viewId === 'online') initShareModule();
+      if (viewId === 'cartaodigital') renderDigitalCard();
+      if (viewId === 'colaboradores') renderStaffs();
+    } // <--- Certifique-se de que tem apenas uma chaveta de fecho aqui no fim da função navigate!
 
  function closeModal(id) {
  document.getElementById(id).style.display = 'none';
