@@ -236,9 +236,29 @@
  <div><label>e de (Mãe)</label><input type="text" id="c-mother"></div>
  <div><label>Data de Nascimento</label><input type="date" id="c-birth" required onchange="calculateAge()"></div>
  <div><label>Idade</label><input type="number" id="c-age" required readonly></div>
- <div><label>Contacto Móvel (WhatsApp)</label><input type="tel" id="c-phone" required placeholder="Ex: 9232000"></div>
+<div><label>Contacto Móvel (WhatsApp)</label><input type="tel" id="c-phone" required placeholder="Ex: 9232000"></div>
  <div><label>Residência</label><input type="text" id="c-address" required placeholder="Ex: Terra Branca, Praia"></div>
+ 
+ <!-- 👇 COLOQUE AQUI OS CAMPOS DE NIF E COMPROVATIVO CASAL 👇 -->
  <div>
+   <label>NIF (Número de Identificação Fiscal)</label>
+   <input type="text" id="c-nif" placeholder="Indique o NIF">
+ </div>
+ <div>
+   <label>Comprovativo Plano Casal / Estudante</label>
+   <input type="file" id="c-casal-doc" accept="image/*">
+ </div>
+ <!-- 👆 FIM DOS CAMPOS ADICIONADOS 👆 -->
+
+ <div>
+ <label>Ocupação</label>
+ <select id="c-occup" onchange="toggleStudentDocOnline()">
+ <option value="Trabalhador(a)">Trabalhador(a)</option>
+ <option value="Estudante">Estudante (Mensalidade 2000$00)</option>
+ </select>
+ </div>
+ <div><label>Plano Pretendido</label><select id="c-plan" required onchange="updatePublicPriceSummary()"></select></div>
+ </div>
  <label>Ocupação</label>
  <select id="c-occup" onchange="toggleStudentDocOnline()">
  <option value="Trabalhador(a)">Trabalhador(a)</option>
@@ -497,6 +517,27 @@
  <button class="nav-item active" onclick="navigate('membros')">
  <span class="icon">👤</span><span class="nav-text">Membros Ativos</span>
  </button>
+
+ <div class="menu-scroll">
+ <div class="nav-group-title">Plataforma</div>
+ <button class="nav-item" onclick="navigate('dashboard')">
+ <span class="icon">📊</span><span class="nav-text">Dashboard</span>
+ </button>
+
+ <div class="nav-group-title">Membros</div>
+ <button class="nav-item active" onclick="navigate('membros')">
+ <span class="icon">👤</span><span class="nav-text">Membros Ativos</span>
+ </button>
+ 
+ <!-- 👇 COLE OS SEUS DOIS BOTÕES NOVOS EXATAMENTE AQUI 👇 -->
+ <button type="button" class="nav-item" id="nav-relatorio-turno" onclick="navigate('relatorio-turno')"><span class="icon">📋</span><span class="nav-text">Relatório de Turno (Passagem)</span></button>
+ <button type="button" class="nav-item" id="nav-pendentes" onclick="navigate('pendentes')"><span class="icon">📥</span><span class="nav-text">Inscrições Pendentes <span id="badge-pendentes" class="badge badge-err" style="margin-left:auto; display:none;">0</span></span></button>
+ <!-- 👆 FIM DOS BOTÕES NOVOS 👆 -->
+
+ <button class="nav-item" onclick="navigate('pendentes')" style="color:#ffd43b;">
+ <span class="icon">⏳</span><span class="nav-text">Pendentes Aprovação</span>
+ <span id="badge-pendentes-count" class="badge-nav">0</span>
+ </button> 
  <button class="nav-item" onclick="navigate('pendentes')" style="color:#ffd43b;">
  <span class="icon">⏳</span><span class="nav-text">Pendentes Aprovação</span>
  <span id="badge-pendentes-count" class="badge-nav">0</span>
@@ -570,6 +611,7 @@
  </header>
 
  <main>
+<main>
  <!-- 1. DASHBOARD -->
  <section id="view-dashboard" class="view-section">
  <div class="card">
@@ -590,6 +632,134 @@
  </div>
  </div>
  </section>
+
+ <!-- RELATÓRIO DE TURNO / PASSAGEM DE TESTEMUNHO -->
+ <section id="view-relatorio-turno" class="view-section">
+ <div class="card">
+ <h2>Relatório de Turno & Passagem de Testemunho do Staff</h2>
+ <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Registo detalhado de abertura/fecho de turno, higiene, stock de águas/energéticos/suplementos, vendas, mensalidades e validação mútua.</p>
+ 
+ <div class="form-grid">
+ <div><label>Colaborador que Sai (Turno)</label><select id="turno-sai"></select></div>
+ <div><label>Colaborador que Entra (Render)</label><select id="turno-entra"></select></div>
+ <div><label>Hora de Entrada</label><input type="time" id="turno-h-entrada"></div>
+ <div><label>Hora de Saída</label><input type="time" id="turno-h-saida"></div>
+ <div><label>Estado de Higiene do Ginásio</label><select id="turno-higiene"><option value="Limpo e Organizado">Limpo e Organizado</option><option value="Necessita Limpeza">Necessita Limpeza</option><option value="Sujo">Sujo</option></select></div>
+ <div><label>Estado dos Pesos e Equipamentos</label><select id="turno-pesos"><option value="Arrumados no Local">Arrumados no Local</option><option value="Desarrumados">Desarrumados</option></select></div>
+ <div><label>Águas 1.5L (Contagem física)</label><input type="number" id="turno-agua" placeholder="Qtd encontrada"></div>
+ <div><label>Bebidas Energéticas</label><input type="number" id="turno-energeticos" placeholder="Qtd encontrada"></div>
+ <div><label>Suplementos / Produtos Loja</label><input type="text" id="turno-suplementos" placeholder="Ex: Creatina (10 un)"></div>
+ <div><label>Vendas no Turno (Produtos)</label><input type="text" id="turno-vendas-resumo" placeholder="Ex: 3 Águas, 1 Creatina (Total: 5800 CVE)"></div>
+ <div><label>Mensalidades Pagas no Turno</label><input type="number" id="turno-mensalidades-qtd" placeholder="Qtd de mensalidades"></div>
+ <div><label>Novas Inscrições Efetuadas</label><input type="text" id="turno-novas-inscricoes" placeholder="Nomes e valores pagos"></div>
+ </div>
+ 
+ <div style="margin-top:15px;">
+ <label>Observações / Máquinas Danificadas ou a Requerer Manutenção</label>
+ <textarea id="turno-observacoes" rows="3" placeholder="Indique se encontrou alguma máquina estragada ou a precisar de reparação..."></textarea>
+ </div>
+
+ <div style="margin-top:15px; background:#f8f9fa; padding:15px; border-radius:6px; border:1px solid var(--border);">
+ <h3 style="font-size:0.95rem; color:var(--primary); margin-bottom:8px;">Validação e Assinatura Mútua do Staff</h3>
+ <p style="font-size:0.82rem; color:#666; margin-bottom:10px;">O colaborador que entra deve assinar e concordar com os dados acima, ou declarar discordância fundamentada.</p>
+ <div class="form-grid">
+ <div><label>Estado da Concordância</label><select id="turno-concordancia"><option value="Concordo Plenamente">Concordo Plenamente com o Relatório</option><option value="Não Concordo">Não Concordo (Indicar Motivo)</option></select></div>
+ <div><label>Motivo da Discordância (se aplicável)</label><input type="text" id="turno-motivo-discordancia" placeholder="Explique o motivo..."></div>
+ </div>
+ </div>
+
+ <button class="btn btn-green" style="margin-top:15px;" onclick="salvarRelatorioTurno()">💾 Submeter e Guardar Relatório de Turno</button>
+ </div>
+
+ <div class="card">
+ <h2>Histórico de Relatórios de Turno</h2>
+ <table>
+ <thead><tr><th>Data</th><th>Saída ➔ Entrada</th><th>Higiene / Pesos</th><th>Vendas & Mensalidades</th><th>Estado</th><th>Ações</th></tr></thead>
+ <tbody id="turno-table-body"><tr><td colspan="6" style="text-align:center; color:#777;">Sem relatórios registados.</td></tr></tbody>
+ </table>
+ </div>
+ </section> 
+
+ <main>
+ <!-- 1. DASHBOARD -->
+	<section id="view-dashboard" class="view-section">
+	<div class="card">
+	<h2>Balanço Financeiro Global</h2>
+	<div style="display:flex; gap:15px; flex-wrap:wrap;">
+	<div style="flex:1; background:#f8f9fa; padding:12px; border-radius:5px;">
+	<small style="color:#666;">Total Entradas:</small>
+	<h3 id="dash-inflows" style="color:var(--success); font-size:1.3rem;">0 ECV</h3>
+	</div>
+	<div style="flex:1; background:#f8f9fa; padding:12px; border-radius:5px;">
+	<small style="color:#666;">Total Saídas:</small>
+	<h3 id="dash-outflows" style="color:var(--danger); font-size:1.3rem;">0 ECV</h3>
+	</div>
+	<div style="flex:1; background:#f8f9fa; padding:12px; border-radius:5px;">
+	<small style="color:#666;">Saldo Líquido:</small>
+	<h3 id="dash-net" style="color:#1971c2; font-size:1.3rem;">0 ECV</h3>
+	</div>
+	</div>
+	</div>
+
+	<div class="card" style="margin-top: 20px;">
+	<h2>Evolução Financeira Temporal (Entradas vs Saídas)</h2>
+	<div style="height: 220px; display: flex; align-items: flex-end; gap: 10px; padding: 15px 10px 5px; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;" id="financial-bars-container">
+	<!-- As barras do gráfico serão geradas dinamicamente aqui -->
+	</div>
+	<div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.8rem; color:#666;">
+	<span>Últimos Registos / Movimentos</span>
+	<span>Ginásio KOSMO - Praia, Terra Branca</span>
+	</div>
+	</div>
+	</section>
+
+ <!-- 👇 COLE TODO O SEU CÓDIGO DO RELATÓRIO DE TURNO EXATAMENTE AQUI 👇 -->
+ <section id="view-relatorio-turno" class="view-section">
+ <div class="card">
+ <h2>Relatório de Turno & Passagem de Testemunho do Staff</h2>
+ <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Registo detalhado de abertura/fecho de turno, higiene, stock de águas/energéticos/suplementos, vendas, mensalidades e validação mútua.</p>
+ 
+ <div class="form-grid">
+ <div><label>Colaborador que Sai (Turno)</label><select id="turno-sai"></select></div>
+ <div><label>Colaborador que Entra (Render)</label><select id="turno-entra"></select></div>
+ <div><label>Hora de Entrada</label><input type="time" id="turno-h-entrada"></div>
+ <div><label>Hora de Saída</label><input type="time" id="turno-h-saida"></div>
+ <div><label>Estado de Higiene do Ginásio</label><select id="turno-higiene"><option value="Limpo e Organizado">Limpo e Organizado</option><option value="Necessita Limpeza">Necessita Limpeza</option><option value="Sujo">Sujo</option></select></div>
+ <div><label>Estado dos Pesos e Equipamentos</label><select id="turno-pesos"><option value="Arrumados no Local">Arrumados no Local</option><option value="Desarrumados">Desarrumados</option></select></div>
+ <div><label>Águas 1.5L (Contagem física)</label><input type="number" id="turno-agua" placeholder="Qtd encontrada"></div>
+ <div><label>Bebidas Energéticas</label><input type="number" id="turno-energeticos" placeholder="Qtd encontrada"></div>
+ <div><label>Suplementos / Produtos Loja</label><input type="text" id="turno-suplementos" placeholder="Ex: Creatina (10 un)"></div>
+ <div><label>Vendas no Turno (Produtos)</label><input type="text" id="turno-vendas-resumo" placeholder="Ex: 3 Águas, 1 Creatina (Total: 5800 CVE)"></div>
+ <div><label>Mensalidades Pagas no Turno</label><input type="number" id="turno-mensalidades-qtd" placeholder="Qtd de mensalidades"></div>
+ <div><label>Novas Inscrições Efetuadas</label><input type="text" id="turno-novas-inscricoes" placeholder="Nomes e valores pagos"></div>
+ </div>
+ 
+ <div style="margin-top:15px;">
+ <label>Observações / Máquinas Danificadas ou a Requerer Manutenção</label>
+ <textarea id="turno-observacoes" rows="3" placeholder="Indique se encontrou alguma máquina estragada ou a precisar de reparação..."></textarea>
+ </div>
+
+ <div style="margin-top:15px; background:#f8f9fa; padding:15px; border-radius:6px; border:1px solid var(--border);">
+ <h3 style="font-size:0.95rem; color:var(--primary); margin-bottom:8px;">Validação e Assinatura Mútua do Staff</h3>
+ <p style="font-size:0.82rem; color:#666; margin-bottom:10px;">O colaborador que entra deve assinar e concordar com os dados acima, ou declarar discordância fundamentada.</p>
+ <div class="form-grid">
+ <div><label>Estado da Concordância</label><select id="turno-concordancia"><option value="Concordo Plenamente">Concordo Plenamente com o Relatório</option><option value="Não Concordo">Não Concordo (Indicar Motivo)</option></select></div>
+ <div><label>Motivo da Discordância (se aplicável)</label><input type="text" id="turno-motivo-discordancia" placeholder="Explique o motivo..."></div>
+ </div>
+ </div>
+
+ <button class="btn btn-green" style="margin-top:15px;" onclick="salvarRelatorioTurno()">💾 Submeter e Guardar Relatório de Turno</button>
+ </div>
+
+ <div class="card">
+ <h2>Histórico de Relatórios de Turno</h2>
+ <table>
+ <thead><tr><th>Data</th><th>Saída ➔ Entrada</th><th>Higiene / Pesos</th><th>Vendas & Mensalidades</th><th>Estado</th><th>Ações</th></tr></thead>
+ <tbody id="turno-table-body"><tr><td colspan="6" style="text-align:center; color:#777;">Sem relatórios registados.</td></tr></tbody>
+ </table>
+ </div>
+ </section>
+ <!-- 👆 FIM DA SECÇÃO DO RELATÓRIO DE TURNO 👆 -->
 
  <!-- 2. MEMBROS ATIVOS -->
  <section id="view-membros" class="view-section active">
@@ -625,6 +795,11 @@
  <div><label>Nome Completo</label><input type="text" id="m-name" placeholder="Ex: Nilton Silva"></div>
  <div><label>Código de Barras / ID</label><input type="text" id="m-barcode" placeholder="Ex: 1001"></div>
  <div><label>Telemóvel</label><input type="tel" id="m-phone" placeholder="Ex: 9232000"></div>
+ <div>
+  <label>NIF do Membro</label>
+  <input type="text" id="m-nif" placeholder="NIF para faturas profissionais">
+
+ </div>
  <div>
  <label>Ocupação</label>
  <select id="m-occup" onchange="toggleStudentDocInternal()">
@@ -783,32 +958,41 @@
  </div>
  </section>
 
- <!-- 8. PAGAMENTOS -->
- <section id="view-pagamentos" class="view-section">
- <div class="card">
- <h2>Registo de Pagamento</h2>
- <div class="form-grid">
- <div><label>Membro</label><select id="pay-member"></select></div>
- <div><label>Valor (ECV)</label><input type="number" id="pay-amount"></div>
- <div>
- <label>Forma de Pagamento</label>
- <select id="pay-method">
- <option value="Numerário">Numerário / Dinheiro</option>
- <option value="Vinti4 / POS">Vinti4 / Cartão POS</option>
- <option value="Transferência">Transferência Bancária</option>
- </select>
- </div>
- </div>
- <button type="button" class="btn btn-green" onclick="recordPayment()">Emitir Recibo</button>
- </div>
- <div class="card">
- <h2>Histórico de Pagamentos</h2>
- <table>
- <thead><tr><th>Data</th><th>Membro</th><th>Valor</th><th>Método</th></tr></thead>
- <tbody id="payments-table-body"></tbody>
- </table>
- </div>
- </section>
+<!-- 8. PAGAMENTOS -->
+	<section id="view-pagamentos" class="view-section">
+	<div class="card">
+	<h2>Registo de Pagamento</h2>
+	<div class="form-grid">
+	<div><label>Membro</label><select id="pay-member"></select></div>
+	<div><label>Valor (ECV)</label><input type="number" id="pay-amount"></div>
+	<div>
+	<label>Forma de Pagamento</label>
+	<select id="pay-method">
+	<option value="Numerário">Numerário / Dinheiro</option>
+	<option value="Vinti4 / POS">Vinti4 / Cartão POS</option>
+	<option value="Transferência">Transferência Bancária</option>
+	</select>
+	</div>
+	</div>
+	<button type="button" class="btn btn-green" onclick="recordPayment()">Emitir Recibo</button>
+	</div>
+	
+	<div class="card">
+	<h2>Histórico de Pagamentos & Faturas</h2>
+	<table>
+	<thead>
+	<tr>
+	<th>Data</th>
+	<th>Membro</th>
+	<th>Valor</th>
+	<th>Método</th>
+	<th style="text-align:center;">Fatura / Recibo</th>
+	</tr>
+	</thead>
+	<tbody id="payments-table-body"></tbody>
+	</table>
+	</div>
+	</section>
 
  <!-- 9. DESPESAS -->
  <section id="view-despesas" class="view-section">
@@ -2290,40 +2474,52 @@ const badge = document.getElementById('vm-badge');
  if (document.getElementById('dash-net')) document.getElementById('dash-net').innerText = net + ' ECV';
  }
 
- function populateSelects() {
- const mPlan = document.getElementById('m-plan');
- const cPlan = document.getElementById('c-plan');
- if (mPlan) {
- mPlan.innerHTML = '';
- plans.forEach(p => mPlan.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`);
- }
- if (cPlan) {
- cPlan.innerHTML = '';
- plans.forEach(p => cPlan.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`);
- }
+function populateSelects() {
+      const mPlan = document.getElementById('m-plan');
+      const cPlan = document.getElementById('c-plan');
+      if (mPlan) {
+        mPlan.innerHTML = '';
+        plans.forEach(p => mPlan.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`);
+      }
+      if (cPlan) {
+        cPlan.innerHTML = '';
+        plans.forEach(p => cPlan.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`);
+      }
 
- const cardSel = document.getElementById('card-member-select');
- const payMem = document.getElementById('pay-member');
- if (cardSel && payMem) {
- cardSel.innerHTML = '<option value="">-- Selecione o Membro --</option>';
- payMem.innerHTML = '<option value="">-- Selecione o Membro --</option>';
- members.forEach(m => {
- cardSel.innerHTML += `<option value="${m.name}">${m.name} (${m.barcode})</option>`;
- payMem.innerHTML += `<option value="${m.name}">${m.name}</option>`;
- });
- }
+      const cardSel = document.getElementById('card-member-select');
+      const payMem = document.getElementById('pay-member');
+      if (cardSel && payMem) {
+        cardSel.innerHTML = '<option value="">-- Selecione o Membro --</option>';
+        payMem.innerHTML = '<option value="">-- Selecione o Membro --</option>';
+        members.forEach(m => {
+          cardSel.innerHTML += `<option value="${m.name}">${m.name} (${m.barcode})</option>`;
+          payMem.innerHTML += `<option value="${m.name}">${m.name}</option>`;
+        });
+      }
 
- const salStaff = document.getElementById('sal-staff');
- const punchStaff = document.getElementById('punch-staff');
- if (salStaff && punchStaff) {
- salStaff.innerHTML = '';
- punchStaff.innerHTML = '';
- staffs.forEach(s => {
- salStaff.innerHTML += `<option value="${s.name}">${s.name}</option>`;
- punchStaff.innerHTML += `<option value="${s.name}">${s.name}</option>`;
- });
- }
- }
+      const salStaff = document.getElementById('sal-staff');
+      const punchStaff = document.getElementById('punch-staff');
+      const turnoSai = document.getElementById('turno-sai');
+      const turnoEntra = document.getElementById('turno-entra');
+
+      if (salStaff && punchStaff) {
+        salStaff.innerHTML = '';
+        punchStaff.innerHTML = '';
+        staffs.forEach(s => {
+          salStaff.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+          punchStaff.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+        });
+      }
+
+      // Preencher select do Relatório de Turno com os colaboradores
+      if (turnoSai && turnoEntra) {
+        turnoSai.innerHTML = '<option value="">-- Selecione quem sai --</option>';
+        turnoEntra.innerHTML = '<option value="">-- Selecione quem entra --</option>';
+        staffs.forEach(s => {
+          turnoSai.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
+          turnoEntra.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
+        });
+      }
 
  function exportData() {
  const data = { members, pendingRegistrations, plans, products, payments, expenses, salaries, maints, punches, staffs, date: new Date().toISOString() };
@@ -2430,22 +2626,22 @@ const badge = document.getElementById('vm-badge');
  reader.readAsText(file, 'UTF-8');
  }
 
- function renderAll() {
- renderPlans();
- renderMembers();
- renderProducts();
- renderPayments();
- renderExpenses();
- renderSalaries();
- renderMaintenance();
- renderStaffs();
- renderPunches();
- renderPendings();
- renderPendingBadge();
- populateSelects();
- updateDashboard();
- }
-
+function renderAll() {
+      renderPlans();
+      renderMembers();
+      renderProducts();
+      renderPayments();
+      renderExpenses();
+      renderSalaries();
+      renderMaintenance();
+      renderStaffs();
+      renderPunches();
+      renderPendings();
+      renderPendingBadge();
+      renderRelatoriosTurno(); // <--- Adicione esta linha aqui
+      populateSelects();
+      updateDashboard();
+    }
  window.onload = function() {
  const isPublic = checkPublicMode();
  if (!isPublic) {
