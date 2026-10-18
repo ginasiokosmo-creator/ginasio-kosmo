@@ -852,10 +852,10 @@ function iniciarSupabase(url, key) {
             badge.innerText = '🌐 Cloud Sincronizada';
           }
         }
-      } catch(e) {
+      catch(e) {
         console.log("Erro ao carregar membros da nuvem:", e);
+      
       }
-    }
 
     // --- MÓDULO DE INSCRIÇÕES ONLINE E CHAT COM O STAFF ---
 
@@ -1058,7 +1058,7 @@ async function carregarDadosCloud() {
       } catch(e) {}
     }
 
-    function directLogin() {
+function directLogin() {
       try {
         const u = document.getElementById('log-user').value.trim();
         const p = document.getElementById('log-pass').value.trim();
@@ -1088,7 +1088,6 @@ async function carregarDadosCloud() {
       gerarQRCodeInscricao();
     }
 
-    // --- MÓDULO DE GESTÃO DE PERMISSÕES E FUNÇÕES DE STAFF ---
     function verificarPermissaoStaff(acaoOuModulo) {
       if (!loggedUser) return false;
       if (loggedUser.user === 'admin' || loggedUser.role.includes('Master') || loggedUser.role.includes('Admin')) {
@@ -1101,12 +1100,6 @@ async function carregarDadosCloud() {
       }
       return false;
     }
-
-    function aplicarRestricoesVisuaisStaff() {
-      if (!loggedUser) return;
-      if (loggedUser.user === 'admin' || loggedUser.role.includes('Master')) {
-        return;
-      }
       const secoesFinanceiras = ['view-pagamentos', 'view-faturas', 'view-despesas', 'view-salarios'];
       secoesFinanceiras.forEach(idSecao => {
         if (!verificarPermissaoStaff('financeiro')) {
@@ -2159,5 +2152,5 @@ async function carregarDadosCloud() {
       w.document.close();
     }
   </script>
-</body>
-</html>
+  </body>
+ </html>
