@@ -1680,34 +1680,34 @@
  window.open(getRegistrationUrl(), '_blank');
  }
 
- function directLogin() {
- const u = (document.getElementById('log-user').value || 'admin').trim().toLowerCase();
- const p = (document.getElementById('log-pass').value || 'admin123').trim();
- const user = staffs.find(s => s.user.toLowerCase() === u && s.pass === p);
- if (user || (u === 'admin' && p === 'admin123')) {
- currentUser = user || staffs[0];
- document.getElementById('login-overlay').style.display = 'none';
- document.getElementById('logged-name').innerText = currentUser.name;
- document.getElementById('logged-role').innerText = currentUser.role.toUpperCase();
- navigate('membros');
- renderAll();
- } else {
- alert('Credenciais incorretas.');
- }
- }
+function directLogin() {
+      const u = (document.getElementById('log-user').value || 'admin').trim().toLowerCase();
+      const p = (document.getElementById('log-pass').value || 'admin123').trim();
+      const user = staffs.find(s => s.user.toLowerCase() === u && s.pass === p);
+      if (user || (u === 'admin' && p === 'admin123')) {
+        currentUser = user || staffs[0];
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('logged-name').innerText = currentUser.name;
+        document.getElementById('logged-role').innerText = currentUser.role.toUpperCase();
+        navigate('membros');
+        renderAll();
+      } else {
+        alert('Credenciais incorretas.');
+      }
+    }
 
- function handleLogout() {
- currentUser = null;
- document.getElementById('login-overlay').style.display = 'flex';
- }
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById('login-overlay').style.display = 'flex';
+    }
 
- function navigate(viewId) {
- document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
- document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
- const target = document.getElementById('view-' + viewId);
- if (target) target.classList.add('active');
- const navTarget = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick') && el.getAttribute('onclick').includes(viewId));
- if (navTarget) navTarget.classList.add('active');
+    function navigate(viewId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById('view-' + viewId);
+      if (target) target.classList.add('active');
+    }
 
  const titles = {
  dashboard: 'Dashboard Geral', membros: 'Membros Ativos', pendentes: 'Inscrições Pendentes de Aprovação',
