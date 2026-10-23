@@ -1815,6 +1815,26 @@
         return `<div class="avatar-circle" style="width:${size}px; height:${size}px; font-size:${size > 100 ? '2rem' : '1.2rem'};">${initials}</div>`;
       }
 
+      function populateSelects() {
+  const planSelects = document.querySelectorAll('#m-plan, #em-plan, #c-plan');
+  planSelects.forEach(sel => {
+    if (!sel) return;
+    const currentVal = sel.value;
+    sel.innerHTML = '';
+    plans.forEach(p => {
+      sel.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`;
+    });
+    sel.value = currentVal;
+  });
+}
+
+function renderAll() {
+  if (typeof updateDashboard === 'function') updateDashboard();
+  if (typeof renderMembers === 'function') renderMembers();
+  if (typeof renderProducts === 'function') renderProducts();
+  if (typeof renderPendingBadge === 'function') renderPendingBadge();
+}
+
       window.onload = function() {
         const isPublic = checkPublicMode();
         if (!isPublic) {
