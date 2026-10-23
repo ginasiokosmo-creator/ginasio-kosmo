@@ -1900,6 +1900,25 @@ function updateStripStats() {
     return (due - new Date()) >= 0;
   }).length;
 
+  function renderProducts() {
+  const tbody = document.getElementById('product-table-body') || document.getElementById('products-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  (window.products || []).forEach(p => {
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.price}$00</td>
+        <td>${p.stock ?? 0}</td>
+        <td>
+          <button class="btn-action" onclick="editProduct(${p.id})">✏️</button>
+          <button class="btn-action" style="color:#d9480f;" onclick="deleteProduct(${p.id})">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
   const el = document.getElementById('strip-active-count');
   if (el) el.innerText = activeCount;
 }
