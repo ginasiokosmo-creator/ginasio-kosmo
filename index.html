@@ -1828,6 +1828,25 @@
   });
 }
 
+function updateDashboard() {
+  const total = members.length;
+  let active = 0, expired = 0;
+  const now = new Date();
+  
+  members.forEach(m => {
+    const pl = plans.find(p => p.name === m.plan);
+    const days = pl ? pl.days : 30;
+    const due = new Date(m.date);
+    due.setDate(due.getDate() + days);
+    if ((due - now) >= 0) active++;
+    else expired++;
+  });
+
+  if (document.getElementById('sum-total')) document.getElementById('sum-total').innerText = total;
+  if (document.getElementById('sum-active')) document.getElementById('sum-active').innerText = active;
+  if (document.getElementById('sum-expired')) document.getElementById('sum-expired').innerText = expired;
+}
+
 function renderAll() {
   if (typeof updateDashboard === 'function') updateDashboard();
   if (typeof renderMembers === 'function') renderMembers();
