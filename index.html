@@ -1891,6 +1891,19 @@ function renderMembers(list = members) {
   updateStripStats();
 }
 
+function updateStripStats() {
+  const activeCount = members.filter(m => {
+    const pl = plans.find(p => p.name === m.plan);
+    const days = pl ? pl.days : 30;
+    const due = new Date(m.date);
+    due.setDate(due.getDate() + days);
+    return (due - new Date()) >= 0;
+  }).length;
+
+  const el = document.getElementById('strip-active-count');
+  if (el) el.innerText = activeCount;
+}
+
       window.onload = function() {
         const isPublic = checkPublicMode();
         if (!isPublic) {
