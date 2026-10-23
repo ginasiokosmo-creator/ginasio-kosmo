@@ -1676,12 +1676,98 @@
  alert('Link de inscrição copiado!');
  }
 
-<!-- 1. Todos os Modais HTML (Login, Editar Membro, etc.) -->
-    <div id="login-overlay">...</div>
-    <div class="modal-backdrop" id="modal-edit-member">...</div>
+<!-- 1. TODOS OS MODAIS E COMPONENTES HTML FICAM AQUI (FORA DO SCRIPT) -->
+    <div id="login-overlay">
+      <div class="login-box">
+        <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
+        <h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
+        <div style="margin-bottom: 10px; text-align: left;">
+          <label>Nome de Utilizador</label>
+          <input type="text" id="log-user" value="admin">
+        </div>
+        <div style="margin-bottom: 18px; text-align: left;">
+          <label>Palavra-passe</label>
+          <input type="password" id="log-pass" value="admin123">
+        </div>
+        <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
+        <p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
+      </div>
+    </div>
 
-    <!-- 2. A tag script abre AQUI e AGrupa TODAS as funções -->
+    <div class="modal-backdrop" id="modal-edit-member">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Editar Dados do Membro</h3>
+          <button class="btn-action" onclick="closeModal('modal-edit-member')">✕</button>
+        </div>
+        <form onsubmit="saveMemberEdit(event)">
+          <input type="hidden" id="em-id">
+          <div class="form-grid">
+            <div style="grid-column: 1 / -1;">
+              <label>Nome Completo</label>
+              <input type="text" id="em-name" required>
+            </div>
+            <div>
+              <label>Código de Barras / ID</label>
+              <input type="text" id="em-barcode" required>
+            </div>
+            <div>
+              <label>Telemóvel (WhatsApp)</label>
+              <input type="tel" id="em-phone">
+            </div>
+            <div>
+              <label>Ocupação</label>
+              <select id="em-occup" onchange="toggleEditStudentDoc()">
+                <option value="Trabalhador(a)">Trabalhador(a)</option>
+                <option value="Estudante">Estudante</option>
+              </select>
+            </div>
+            <div>
+              <label>Plano</label>
+              <select id="em-plan"></select>
+            </div>
+            <div>
+              <label>Data de Ingresso</label>
+              <input type="date" id="em-join">
+            </div>
+            <div>
+              <label style="color:var(--primary); font-weight:bold;">Data Último Pagamento / Início</label>
+              <input type="date" id="em-date" required>
+            </div>
+          </div>
+
+          <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:12px; margin-top:10px;">
+            <h4 style="font-size:0.85rem; margin-bottom:8px; color:var(--dark);">Substituir / Atualizar Documentos e Fotografias:</h4>
+            <div class="form-grid">
+              <div>
+                <label>Substituir Foto de Perfil</label>
+                <input type="file" id="em-photo" accept="image/*">
+              </div>
+              <div>
+                <label>Substituir Foto do BI / CNI</label>
+                <input type="file" id="em-doc-id" accept="image/*">
+              </div>
+              <div id="em-box-student-doc" style="grid-column: 1 / -1; display: none;">
+                <label style="color:var(--primary);">Substituir Comprovativo de Estudante</label>
+                <input type="file" id="em-student-doc" accept="image/*">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn" style="background:#868e96;" onclick="closeModal('modal-edit-member')">Cancelar</button>
+            <button type="submit" class="btn btn-green">Guardar Alterações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. TODO O JAVASCRIPT EXECUTÁVEL FICA DENTRO DESTA TAG SCRIPT -->
     <script>
+      function testPublicLink() {
+        window.open(getRegistrationUrl(), '_blank');
+      }
+
       function directLogin() {
         const u = (document.getElementById('log-user').value || 'admin').trim().toLowerCase();
         const p = (document.getElementById('log-pass').value || 'admin123').trim();
@@ -1734,7 +1820,42 @@
         return `<div class="avatar-circle" style="width:${size}px; height:${size}px; font-size:${size > 100 ? '2rem' : '1.2rem'};">${initials}</div>`;
       }
 
-      // ... (todas as outras funções como renderMembers, openEditMember, saveMemberEdit, openTotemWindow, addMaintenance, etc., continuam aqui dentro) ...
+      function renderMembers(list = members) {
+        const tbody = document.getElementById('member-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const now = new Date();
+
+        list.forEach(m => {
+          const pl = plans.find(p => p.name === m.plan);
+          const days = pl ? pl.days : 30;
+          const due = new Date(m.date);
+          due.setDate(due.getDate() + days);
+          const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+
+          let badge = `<span class="badge ${diff >= 0 ? 'badge-ok' : 'badge-err'}">${diff >= 0 ? diff + ' dias' : 'Expirado'}</span>`;
+          const zap = `https://wa.me/${(m.phone||'').replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Olá ' + m.name + ', saudações do Ginásio KOSMO!')}`;
+
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${m.barcode}</strong></td>
+              <td><strong>${m.name}</strong></td>
+              <td>${m.phone || '---'}</td>
+              <td>${m.plan}</td>
+              <td>${due.toLocaleDateString('pt-PT')}</td>
+              <td>${badge}</td>
+              <td><a href="${zap}" target="_blank" style="background:#25d366; color:#fff; text-decoration:none; padding:3px 7px; border-radius:4px; font-weight:bold; font-size:0.75rem;">WhatsApp</a></td>
+              <td style="text-align: center; white-space: nowrap;">
+                <button class="btn-action" title="Ver Detalhes" onclick="openViewMember(${m.id})">👁️</button>
+                <button class="btn-action" title="Editar Dados e Documentos" onclick="openEditMember(${m.id})" style="color:#1971c2;">✏️</button>
+                <button class="btn-action" title="Renovar Subscrição" onclick="renewMember(${m.id})">🔄</button>
+                <button class="btn-action" title="Eliminar Membro" style="color:#d9480f;" onclick="deleteMember(${m.id})">🗑️</button>
+              </td>
+            </tr>
+          `;
+        });
+        updateStripStats();
+      }
 
       window.onload = function() {
         const isPublic = checkPublicMode();
@@ -1752,944 +1873,6 @@
       window.onhashchange = function() {
         checkPublicMode();
       };
-    </script> <!-- 3. O script fecha AQUI -->
+    </script>
   </body>
-</html> <!-- 4. O HTML fecha no fim -->
- function closeModal(id) {
- document.getElementById(id).style.display = 'none';
- }
-
- function renderAvatar(photoUrl, name, size = 110) {
- if (photoUrl && photoUrl.trim() !== '') {
- return `<img src="${photoUrl}" style="width:${size}px; height:${size}px; border-radius:50%; object-fit:cover; border:3px solid #ced4da;">`;
- }
- const initials = (name || 'K').split(' ').map(n => n[0]).filter((_, i) => i < 2).join('');
- return `<div class="avatar-circle" style="width:${size}px; height:${size}px; font-size:${size > 100 ? '2rem' : '1.2rem'};">${initials}</div>`;
- }
-
- function renderMembers(list = members) {
- const tbody = document.getElementById('member-table-body');
- tbody.innerHTML = '';
- const now = new Date();
-
- list.forEach(m => {
- const pl = plans.find(p => p.name === m.plan);
- const days = pl ? pl.days : 30;
- const due = new Date(m.date);
- due.setDate(due.getDate() + days);
- const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-
- let badge = `<span class="badge ${diff >= 0 ? 'badge-ok' : 'badge-err'}">${diff >= 0 ? diff + ' dias' : 'Expirado'}</span>`;
- const zap = `https://wa.me/${(m.phone||'').replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Olá ' + m.name + ', saudações do Ginásio KOSMO!')}`;
-
- tbody.innerHTML += `
- <tr>
- <td><strong>${m.barcode}</strong></td>
- <td><strong>${m.name}</strong></td>
- <td>${m.phone || '---'}</td>
- <td>${m.plan}</td>
- <td>${due.toLocaleDateString('pt-PT')}</td>
- <td>${badge}</td>
- <td><a href="${zap}" target="_blank" style="background:#25d366; color:#fff; text-decoration:none; padding:3px 7px; border-radius:4px; font-weight:bold; font-size:0.75rem;">WhatsApp</a></td>
- <td style="text-align: center; white-space: nowrap;">
- <button class="btn-action" title="Ver Detalhes" onclick="openViewMember(${m.id})">👁️</button>
- <button class="btn-action" title="Editar Dados e Documentos" onclick="openEditMember(${m.id})" style="color:#1971c2;">✏️</button>
- <button class="btn-action" title="Renovar Subscrição" onclick="renewMember(${m.id})">🔄</button>
- <button class="btn-action" title="Eliminar Membro" style="color:#d9480f;" onclick="deleteMember(${m.id})">🗑️</button>
- </td>
- </tr>
- `;
- });
- updateStripStats();
- }
-
- function filterMembers() {
- const query = (document.getElementById('member-search').value || '').toLowerCase().trim();
- const filtered = members.filter(m => m.name.toLowerCase().includes(query) || m.barcode.toLowerCase().includes(query));
- renderMembers(filtered);
- }
-
- function openViewMember(id) {
- const m = members.find(x => x.id === id);
- if (!m) return;
- const pl = plans.find(p => p.name === m.plan);
- const days = pl ? pl.days : 30;
- const due = new Date(m.date);
- due.setDate(due.getDate() + days);
- const isActive = (due - new Date()) >= 0;
-
- document.getElementById('vm-name-title').innerText = m.name;
- document.getElementById('vm-fullname').innerText = m.name;
- document.getElementById('vm-code').innerText = m.barcode;
- document.getElementById('vm-phone').innerText = m.phone || 'Sem contacto';
- document.getElementById('vm-occup').innerText = m.occup || 'Trabalhador(a)';
- document.getElementById('vm-plan').innerText = m.plan;
- document.getElementById('vm-join').innerText = new Date(m.joinDate || m.date).toLocaleDateString('pt-PT');
- document.getElementById('vm-start').innerText = new Date(m.date).toLocaleDateString('pt-PT');
- document.getElementById('vm-due').innerText = due.toLocaleDateString('pt-PT');
- document.getElementById('vm-photo-container').innerHTML = renderAvatar(m.photo, m.name, 110);
-  
-const badge = document.getElementById('vm-badge');
- badge.className = 'badge ' + (isActive ? 'badge-ok' : 'badge-err');
- badge.innerText = isActive ? 'Subscrição Ativa' : 'Subscrição Expirada';
-
- const docsCont = document.getElementById('vm-docs-container');
- docsCont.innerHTML = '';
- if (m.photo) {
- docsCont.innerHTML += `<div><small style="display:block;">Foto de Perfil:</small><img src="${m.photo}" style="width:90px; height:65px; object-fit:cover; border-radius:4px; border:1px solid #ccc; cursor:pointer;" onclick="window.open('${m.photo}')"></div>`;
- }
- if (m.docId) {
- docsCont.innerHTML += `<div><small style="display:block;">Doc. Identificação:</small><img src="${m.docId}" style="width:90px; height:65px; object-fit:cover; border-radius:4px; border:1px solid #ccc; cursor:pointer;" onclick="window.open('${m.docId}')"></div>`;
- }
- if (m.studentDoc) {
- docsCont.innerHTML += `<div><small style="display:block;">Comp. Estudante:</small><img src="${m.studentDoc}" style="width:90px; height:65px; object-fit:cover; border-radius:4px; border:1px solid #ccc; cursor:pointer;" onclick="window.open('${m.studentDoc}')"></div>`;
- }
- if (!m.docId && !m.studentDoc && !m.photo) {
- docsCont.innerHTML = '<em style="color:#888; font-size:0.85rem;">Nenhum documento anexado.</em>';
- }
-
- document.getElementById('vm-btn-edit').onclick = function() {
- closeModal('modal-view-member');
- openEditMember(m.id);
- };
-
- document.getElementById('modal-view-member').style.display = 'flex';
- }
-
- function openEditMember(id) {
- const m = members.find(x => x.id === id);
- if (!m) return;
-
- document.getElementById('em-id').value = m.id;
- document.getElementById('em-name').value = m.name;
- document.getElementById('em-barcode').value = m.barcode;
- document.getElementById('em-phone').value = m.phone || '';
- document.getElementById('em-occup').value = m.occup || 'Trabalhador(a)';
- document.getElementById('em-join').value = m.joinDate || m.date;
- document.getElementById('em-date').value = m.date;
-
- const pSel = document.getElementById('em-plan');
- pSel.innerHTML = '';
- plans.forEach(p => {
- pSel.innerHTML += `<option value="${p.name}" ${p.name === m.plan ? 'selected' : ''}>${p.name} (${p.price}$00)</option>`;
- });
-
- document.getElementById('em-photo').value = '';
- document.getElementById('em-doc-id').value = '';
- document.getElementById('em-student-doc').value = '';
-
- toggleEditStudentDoc();
- document.getElementById('modal-edit-member').style.display = 'flex';
- }
-
- async function saveMemberEdit(e) {
- e.preventDefault();
- const id = parseInt(document.getElementById('em-id').value);
- const m = members.find(x => x.id === id);
- if (!m) return;
-
- const newPhotoFile = document.getElementById('em-photo').files[0];
- const newDocIdFile = document.getElementById('em-doc-id').files[0];
- const newStudentDocFile = document.getElementById('em-student-doc').files[0];
-
- let photoData = m.photo;
- let docIdData = m.docId;
- let studentDocData = m.studentDoc;
-
- if (newPhotoFile) photoData = await readFileAsBase64(newPhotoFile);
- if (newDocIdFile) docIdData = await readFileAsBase64(newDocIdFile);
- if (newStudentDocFile) studentDocData = await readFileAsBase64(newStudentDocFile);
-
- m.name = document.getElementById('em-name').value.trim();
- m.barcode = document.getElementById('em-barcode').value.trim();
- m.phone = document.getElementById('em-phone').value.trim();
- m.occup = document.getElementById('em-occup').value;
- m.plan = document.getElementById('em-plan').value;
- m.joinDate = document.getElementById('em-join').value;
- m.date = document.getElementById('em-date').value;
- m.photo = photoData;
- m.docId = docIdData;
- m.studentDoc = studentDocData;
-
- saveAll();
- renderMembers();
- populateSelects();
- closeModal('modal-edit-member');
- alert(`Dados e documentos de "${m.name}" atualizados com sucesso!`);
- }
-
- function deleteMember(id) {
- const m = members.find(x => x.id === id);
- if (confirm(`Eliminar o membro "${m ? m.name : ''}"?`)) {
- members = members.filter(x => x.id !== id);
- saveAll();
- renderMembers();
- populateSelects();
- }
- }
-
- async function addMember() {
- const name = document.getElementById('m-name').value;
- const barcode = document.getElementById('m-barcode').value;
- const phone = document.getElementById('m-phone').value;
- const occup = document.getElementById('m-occup').value;
- const plan = document.getElementById('m-plan').value;
- const joinDate = document.getElementById('m-join').value || new Date().toISOString().split('T')[0];
- const photoFile = document.getElementById('m-photo').files[0];
- const docIdFile = document.getElementById('m-doc-id').files[0];
- const studentDocFile = document.getElementById('m-student-doc').files[0];
-
- if (!name || !barcode) { alert('Preencha Nome e Código.'); return; }
- if (occup === 'Estudante' && !studentDocFile) {
- alert('Para o plano de estudante, deve anexar o comprovativo.');
- return;
- }
-
- const photoData = await readFileAsBase64(photoFile);
- const docIdData = await readFileAsBase64(docIdFile);
- const studentDocData = await readFileAsBase64(studentDocFile);
-
- members.unshift({
- id: Date.now(),
- name,
- barcode,
- phone,
- occup,
- plan,
- joinDate: joinDate,
- date: joinDate,
- photo: photoData,
- docId: docIdData,
- studentDoc: studentDocData
- });
-
- const pl = plans.find(x => x.name === plan);
- const planPrice = pl ? pl.price : (occup === 'Estudante' ? 2000 : 2500);
- payments.unshift({
- id: Date.now(),
- date: new Date().toLocaleDateString('pt-PT'),
- member: `${name} (Admissão 500$00 + Mensalidade ${planPrice}$00)`,
- amount: planPrice + 500,
- method: 'Numerário / Balcão'
- });
-
- saveAll();
- document.getElementById('m-name').value = '';
- document.getElementById('m-barcode').value = '';
- document.getElementById('m-phone').value = '';
- document.getElementById('m-photo').value = '';
- document.getElementById('m-doc-id').value = '';
- document.getElementById('m-student-doc').value = '';
-
- renderMembers();
- populateSelects();
- alert(`Membro "${name}" registado com sucesso!`);
- }
-
- function renewMember(id) {
- const today = new Date().toISOString().split('T')[0];
- members = members.map(m => m.id === id ? { ...m, date: today } : m);
- saveAll();
- renderMembers();
- alert('Subscrição renovada!');
- }
-
- function updateStripStats() {
- const now = new Date();
- let active = 0, expiring = 0, expired = 0;
-
- members.forEach(m => {
- const pl = plans.find(p => p.name === m.plan);
- const days = pl ? pl.days : 30;
- const due = new Date(m.date);
- due.setDate(due.getDate() + days);
- const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-
- if (diff < 0) expired++;
- else {
- active++;
- if (diff <= 7) expiring++;
- }
- });
-
- if (document.getElementById('sum-total')) document.getElementById('sum-total').innerText = members.length;
- if (document.getElementById('sum-active')) document.getElementById('sum-active').innerText = active;
- if (document.getElementById('sum-expiring')) document.getElementById('sum-expiring').innerText = expiring;
- if (document.getElementById('sum-expired')) document.getElementById('sum-expired').innerText = expired;
- }
-
- function onScan(e) {
- if (e.key === 'Enter') {
- const code = e.target.value.trim().toLowerCase();
- if (!code) return;
- const member = members.find(m => m.barcode.toLowerCase() === code);
- const standby = document.getElementById('totem-standby');
- const active = document.getElementById('totem-active');
- standby.style.display = 'none';
- active.style.display = 'block';
-
- let resData = null;
- if (member) {
- const pl = plans.find(p => p.name === member.plan);
- const days = pl ? pl.days : 30;
- const due = new Date(member.date);
- due.setDate(due.getDate() + days);
- const authorized = (due - new Date()) >= 0;
-
- document.getElementById('chk-photo-container').innerHTML = renderAvatar(member.photo, member.name, 160);
- document.getElementById('chk-name').innerText = member.name;
- document.getElementById('chk-plan').innerText = 'Plano: ' + member.plan;
- document.getElementById('chk-valid').innerText = 'Válido até: ' + due.toLocaleDateString('pt-PT');
- const badge = document.getElementById('chk-badge');
-
- if (authorized) {
- badge.style.background = 'var(--success)';
- badge.innerText = 'ACESSO PERMITIDO';
- playBeep(true);
- setTimeout(() => speak('Acesso permitido, mensalidade ativa.'), 150);
- } else {
- badge.style.background = 'var(--danger)';
- badge.innerText = 'ACESSO NEGADO';
- playBeep(false);
- setTimeout(() => speak('Acesso negado, mensalidade ultrapassada.'), 150);
- }
-
- resData = { photo: member.photo || '', name: member.name, plan: member.plan, valid: due.toLocaleDateString('pt-PT'), auth: authorized };
- } else {
- document.getElementById('chk-photo-container').innerHTML = renderAvatar('', '?', 160);
- document.getElementById('chk-name').innerText = 'Não Encontrado';
- document.getElementById('chk-plan').innerText = code;
- document.getElementById('chk-valid').innerText = '';
- const badge = document.getElementById('chk-badge');
- badge.style.background = 'var(--danger)';
- badge.innerText = 'CÓDIGO NÃO CADASTRADO';
- playBeep(false);
- setTimeout(() => speak('Código não cadastrado.'), 150);
- resData = { photo: '', name: 'Não Encontrado', plan: code, valid: '', auth: false };
- }
-
- if (totemWindowRef && !totemWindowRef.closed) {
- totemWindowRef.postMessage(resData, '*');
- }
-
- setTimeout(() => {
- standby.style.display = 'block';
- active.style.display = 'none';
- }, 5000);
-
- e.target.value = '';
- }
- }
-
- function playBeep(ok) {
- try {
- const ctx = new (window.AudioContext || window.webkitAudioContext)();
- const osc = ctx.createOscillator();
- const gain = ctx.createGain();
- osc.connect(gain);
- gain.connect(ctx.destination);
- if (ok) {
- osc.type = 'sine'; osc.frequency.setValueAtTime(587, ctx.currentTime);
- gain.gain.setValueAtTime(0.3, ctx.currentTime);
- osc.start(); osc.stop(ctx.currentTime + 0.3);
- } else {
- osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, ctx.currentTime);
- gain.gain.setValueAtTime(0.4, ctx.currentTime);
- osc.start(); osc.stop(ctx.currentTime + 0.4);
- }
- } catch (e) {}
- }
-
- function speak(text) {
- if ('speechSynthesis' in window) {
- window.speechSynthesis.cancel();
- const u = new SpeechSynthesisUtterance(text);
- u.lang = 'pt-PT';
- window.speechSynthesis.speak(u);
- }
- }
-
- function openTotemWindow() {
- const currentLogo = window.kosmoLogoSrc || 'logo.jpg.jpg';
- totemWindowRef = window.open('', 'TotemKosmo', 'width=950,height=700');
- const html = `
- <!DOCTYPE html>
- <html lang="pt">
- <head>
- <meta charset="UTF-8">
- <title>Totem - Ginásio KOSMO</title>
- <style>
- body { margin:0; background:#f4f6f9; font-family:'Segoe UI', sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; text-align:center; overflow:hidden; }
- .main-logo { max-width:550px; width:85vw; height:auto; object-fit:contain; margin-bottom:20px; }
- .msg { background:#111; color:#fff; padding:12px 35px; border-radius:30px; font-size:1.2rem; font-weight:bold; }
- .badge { font-size:1.6rem; font-weight:bold; padding:12px 35px; border-radius:10px; color:#fff; display:inline-block; margin-top:15px; }
- .circle-photo { width:180px; height:180px; border-radius:50%; object-fit:cover; border:6px solid #fff; box-shadow:0 8px 25px rgba(0,0,0,0.2); margin-bottom:15px; background:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:3rem; font-weight:bold; color:#555; }
- </style>
- </head>
- <body>
- <div id="disp">
- <img src="${currentLogo}" class="main-logo" alt="Ginásio KOSMO">
- <div class="msg">Aproxime o cartão de membro do leitor</div>
- </div>
- <script>
- const standbyHTML = document.getElementById('disp').innerHTML;
- window.addEventListener('message', function(ev) {
- const d = ev.data;
- if(!d) return;
- let photoMarkup = d.photo ? '<img src="' + d.photo + '" class="circle-photo">' : '<div class="circle-photo">' + (d.name[0] || 'K') + '</div>';
- document.getElementById('disp').innerHTML = photoMarkup + '<h1 style="font-size:2.8rem; margin:5px 0;">' + d.name + '</h1><p style="font-size:1.3rem; color:#555;">' + d.plan + '</p><div class="badge" style="background:' + (d.auth ? '#2b8a3e' : '#c92a2a') + '">' + (d.auth ? 'ACESSO PERMITIDO' : 'ACESSO NEGADO') + '</div>';
- setTimeout(() => { document.getElementById('disp').innerHTML = standbyHTML; }, 5000);
- });
- <\/script>
- </body>
- </html>
- `;
- totemWindowRef.document.open();
- totemWindowRef.document.write(html);
- totemWindowRef.document.close();
- }
-
- function recordPayment() {
- const mName = document.getElementById('pay-member').value;
- const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
- const method = document.getElementById('pay-method').value;
-
- if (!mName || amount <= 0) { alert('Indique o membro e o valor.'); return; }
- payments.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), member: mName, amount, method });
-
- const m = members.find(x => x.name === mName);
- if (m) renewMember(m.id);
-
- saveAll();
- renderPayments();
- alert('Pagamento registado!');
- }
-
- function renderPayments() {
- const tbody = document.getElementById('payments-table-body');
- tbody.innerHTML = '';
- payments.forEach(p => {
- tbody.innerHTML += `<tr><td>${p.date}</td><td><strong>${p.member}</strong></td><td>${p.amount} ECV</td><td>${p.method}</td></tr>`;
- });
- }
-
- function addExpense() {
- const desc = document.getElementById('exp-desc').value;
- const cat = document.getElementById('exp-cat').value;
- const amount = parseFloat(document.getElementById('exp-amount').value) || 0;
- if (!desc || amount <= 0) return;
- expenses.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), desc, cat, amount });
- saveAll();
- renderExpenses();
- }
-
- function renderExpenses() {
- const tbody = document.getElementById('expense-table-body');
- tbody.innerHTML = '';
- expenses.forEach(x => {
- tbody.innerHTML += `<tr><td>${x.date}</td><td>${x.desc}</td><td>${x.cat}</td><td style="color:var(--danger); font-weight:bold;">-${x.amount} ECV</td><td><button class="btn-sm" style="background:#e03131;" onclick="deleteExpense(${x.id})">✕</button></td></tr>`;
- });
- }
-
- function deleteExpense(id) {
- expenses = expenses.filter(x => x.id !== id);
- saveAll();
- renderExpenses();
- }
-
- function addSalary() {
- const staff = document.getElementById('sal-staff').value;
- const month = document.getElementById('sal-month').value;
- const amount = parseFloat(document.getElementById('sal-amount').value) || 0;
- if (!staff || amount <= 0) return;
- salaries.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), staff, month, amount });
- saveAll();
- renderSalaries();
- }
-
- function renderSalaries() {
- const tbody = document.getElementById('salaries-table-body');
- tbody.innerHTML = '';
- salaries.forEach(s => {
- tbody.innerHTML += `<tr><td>${s.date}</td><td><strong>${s.staff}</strong></td><td>${s.month}</td><td style="color:var(--danger); font-weight:bold;">-${s.amount} ECV</td></tr>`;
- });
- }
-
- function addProduct() {
- const name = document.getElementById('p-name').value;
- const price = parseFloat(document.getElementById('p-price').value) || 0;
- const stock = parseInt(document.getElementById('p-stock').value) || 0;
- if (!name) return;
- products.push({ id: Date.now(), name, price, stock });
- saveAll();
- renderProducts();
- }
-
- function renderProducts() {
- const c = document.getElementById('prod-container');
- c.innerHTML = '';
- products.forEach(p => {
- c.innerHTML += `
- <div style="background:#fff; border-radius:6px; border:1px solid #dee2e6; overflow:hidden; padding:12px; margin-bottom:12px;">
- <div style="font-weight:bold; font-size:1.05rem; margin-bottom:6px;">${p.name}</div>
- <p style="color:var(--primary); font-weight:800; font-size:1.15rem;">${p.price} ECV</p>
- <p style="font-size:0.85rem; color:#666; margin:4px 0 10px;">Stock: <strong>${p.stock} un.</strong></p>
- <div style="display:flex; gap:6px;">
- <button onclick="sellProduct(${p.id})" class="btn btn-green btn-sm" style="flex:1;">Vender 1</button>
- <button onclick="deleteProduct(${p.id})" class="btn-sm" style="background:#e03131;">✕</button>
- </div>
- </div>
- `;
- });
- }
-
- function sellProduct(id) {
- products = products.map(p => {
- if (p.id === id) {
- if (p.stock <= 0) { alert('Sem stock!'); return p; }
- payments.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), member: 'Venda: ' + p.name, amount: p.price, method: 'Numerário' });
- return { ...p, stock: p.stock - 1 };
- }
- return p;
- });
- saveAll();
- renderProducts();
- renderPayments();
- }
-
- function deleteProduct(id) {
- products = products.filter(p => p.id !== id);
- saveAll();
- renderProducts();
- }
-
- function addMaintenance() {
- const equip = document.getElementById('maint-equip').value;
- const desc = document.getElementById('maint-desc').value;
- const prio = document.getElementById('maint-prio').value;
- if (!equip) return;
- maints.push({ id: Date.now(), date: new Date().toLocaleDateString('pt-PT'), equip, desc, prio, done: false });
- saveAll();
- renderMaintenance();
- }
-
- function renderMaintenance() {
- const tbody = document.getElementById('maint-table-body');
- tbody.innerHTML = '';
- maints.forEach(m => {
- tbody.innerHTML += `<tr><td>${m.date}</td><td><strong>${m.equip}</strong></td><td>${m.desc}</td><td>${m.prio}</td><td>${m.done ? 'Resolvido' : 'Pendente'}</td><td><button class="btn-sm btn-green" onclick="toggleMaint(${m.id})">${m.done ? 'Reabrir' : 'Concluir'}</button></td></tr>`;
- });
- }
-
- function toggleMaint(id) {
- maints = maints.map(m => m.id === id ? { ...m, done: !m.done } : m);
- saveAll();
- renderMaintenance();
- }
-
- function registerPunch() {
- const staff = document.getElementById('punch-staff').value;
- const type = document.getElementById('punch-type').value;
- const time = new Date().toLocaleDateString('pt-PT') + ' às ' + new Date().toLocaleTimeString('pt-PT');
- punches.unshift({ id: Date.now(), time, staff, type });
- saveAll();
- renderPunches();
- alert('Ponto registado!');
- }
-
- function renderPunches() {
- const tbody = document.getElementById('punch-table-body');
- tbody.innerHTML = '';
- punches.forEach(p => {
- tbody.innerHTML += `<tr><td>${p.time}</td><td><strong>${p.staff}</strong></td><td>${p.type}</td></tr>`;
- });
- }
-
- function addPlan() {
- const name = document.getElementById('pl-name').value;
- const price = parseFloat(document.getElementById('pl-price').value) || 0;
- const days = parseInt(document.getElementById('pl-days').value) || 30;
- if (!name) return;
- plans.push({ id: Date.now(), name, price, days });
- saveAll();
- renderPlans();
- populateSelects();
- }
-
- function renderPlans() {
- const tbody = document.getElementById('plans-table-body');
- tbody.innerHTML = '';
- plans.forEach(p => {
- tbody.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.price} ECV</td><td>${p.days} dias</td><td><button class="btn-sm" style="background:#e03131;" onclick="deletePlan(${p.id})">✕</button></td></tr>`;
- });
- }
-
- function deletePlan(id) {
- plans = plans.filter(p => p.id !== id);
- saveAll();
- renderPlans();
- populateSelects();
- }
-
- function addStaff() {
- const name = document.getElementById('st-name').value.trim();
- const user = document.getElementById('st-user').value.trim();
- const pass = document.getElementById('st-pass').value.trim();
- const role = document.getElementById('st-role').value;
- if (!name || !user || !pass) {
- alert('Preencha todos os campos do colaborador.');
- return;
- }
- staffs.push({ id: Date.now(), name, user, pass, role });
- saveAll();
- renderStaffs();
- populateSelects();
- document.getElementById('st-name').value = '';
- document.getElementById('st-user').value = '';
- document.getElementById('st-pass').value = '';
- alert('Novo colaborador adicionado com sucesso!');
- }
-
- function renderStaffs() {
- const tbody = document.getElementById('staff-table-body');
- if (!tbody) return;
- tbody.innerHTML = '';
- staffs.forEach(s => {
- const isMainAdmin = (s.id === 1 || s.user.toLowerCase() === 'admin');
- tbody.innerHTML += `
- <tr>
- <td><strong>${s.name}</strong> ${isMainAdmin ? '<span class="badge badge-ok">Principal</span>' : ''}</td>
- <td><code>${s.user}</code></td>
- <td><code>${s.pass}</code></td>
- <td><span class="badge ${s.role === 'admin' ? 'badge-ok' : 'badge-warn'}">${s.role.toUpperCase()}</span></td>
- <td style="text-align: center; white-space: nowrap;">
- <button class="btn btn-blue btn-sm" onclick="openEditStaffModal(${s.id})">Editar</button>
- ${!isMainAdmin ? `<button class="btn-sm" style="background:#e03131; margin-left:4px;" onclick="deleteStaff(${s.id})">✕</button>` : ''}
- </td>
- </tr>
- `;
- });
- }
-
- function openEditStaffModal(id) {
- const s = staffs.find(x => x.id === id);
- if (!s) return;
- document.getElementById('edit-st-id').value = s.id;
- document.getElementById('edit-st-name').value = s.name;
- document.getElementById('edit-st-user').value = s.user;
- document.getElementById('edit-st-pass').value = s.pass;
- document.getElementById('edit-st-role').value = s.role;
- document.getElementById('modal-edit-staff').style.display = 'flex';
- }
-
- function saveStaffEdit(e) {
- e.preventDefault();
- const id = parseInt(document.getElementById('edit-st-id').value);
- const newName = document.getElementById('edit-st-name').value.trim();
- const newUser = document.getElementById('edit-st-user').value.trim();
- const newPass = document.getElementById('edit-st-pass').value.trim();
- const newRole = document.getElementById('edit-st-role').value;
-
- staffs = staffs.map(s => {
- if (s.id === id) {
- return { ...s, name: newName, user: newUser, pass: newPass, role: newRole };
- }
- return s;
- });
-
- if (currentUser && currentUser.id === id) {
- currentUser.name = newName;
- currentUser.user = newUser;
- currentUser.pass = newPass;
- currentUser.role = newRole;
- document.getElementById('logged-name').innerText = newName;
- document.getElementById('logged-role').innerText = newRole.toUpperCase();
- }
-
- saveAll();
- renderStaffs();
- populateSelects();
- closeModal('modal-edit-staff');
- alert('Credenciais e dados do utilizador atualizados com sucesso!');
- }
-
- function deleteStaff(id) {
- const s = staffs.find(x => x.id === id);
- if (confirm(`Tem a certeza que deseja eliminar o colaborador "${s ? s.name : ''}"?`)) {
- staffs = staffs.filter(x => x.id !== id);
- saveAll();
- renderStaffs();
- populateSelects();
- }
- }
-
- function renderDigitalCard() {
- const mName = document.getElementById('card-member-select').value;
- const m = members.find(x => x.name === mName);
- const c = document.getElementById('digital-card-container');
- if (!m) {
- c.innerHTML = '<p style="font-size:0.85rem; color:#666;">Selecione um membro na lista acima para visualizar o cartão.</p>';
- return;
- }
-
- const currentLogo = window.kosmoLogoSrc || 'logo.jpg.jpg';
- const photoHtml = (m.photo && m.photo.trim() !== '') 
-? `<img src="${m.photo}" class="id-card-photo" alt="${m.name}">` 
-: `<div class="id-card-avatar-sub">${(m.name || 'K')[0]}</div>`;
-
- c.innerHTML = `
- <div class="id-card-wrap">
- <div class="id-card-header">
- <img src="${currentLogo}" class="id-card-logo" alt="Logo Ginásio KOSMO">
- <div class="id-card-title">
- <h4>GINÁSIO KOSMO</h4>
- <span>CARTÃO DE MEMBRO</span>
- </div>
- </div>
-  
-<div class="id-card-body">
- ${photoHtml}
- <div class="id-card-info">
- <p><strong>Nome:</strong> ${m.name}</p>
- <p><strong>ID / Código:</strong> ${m.barcode}</p>
- <p><strong>Plano:</strong> ${m.plan}</p>
- <p style="color:#25d366; font-weight:bold; margin-top:2px;">● Membro Oficial</p>
- </div>
- </div>
-
- <div class="id-card-barcode-box">
- <svg id="card-barcode-svg"></svg>
- </div>
- </div>
- `;
-
- try {
- JsBarcode("#card-barcode-svg", m.barcode, {
- format: "CODE128",
- lineColor: "#000000",
- width: 2,
- height: 48,
- displayValue: true,
- fontSize: 13,
- font: "Segoe UI, monospace",
- margin: 0
- });
- } catch (err) {
- console.error("Erro ao desenhar código de barras:", err);
- }
- }
-
- function printCardOnly() {
- window.print();
- }
-
- function updateDashboard() {
- const now = new Date();
- let active = 0, expired = 0, estRevenue = 0;
-
- members.forEach(m => {
- const pl = plans.find(p => p.name === m.plan);
- const days = pl ? pl.days : 30;
- const due = new Date(m.date);
- due.setDate(due.getDate() + days);
- if (due >= now) { active++; if (pl) estRevenue += pl.price; }
- else expired++;
- });
-
- const totalInflows = payments.reduce((acc, p) => acc + p.amount, 0);
- const totalExpenses = expenses.reduce((acc, x) => acc + x.amount, 0);
- const totalSalaries = salaries.reduce((acc, s) => acc + s.amount, 0);
- const net = totalInflows - (totalExpenses + totalSalaries);
-
- if (document.getElementById('dash-inflows')) document.getElementById('dash-inflows').innerText = totalInflows + ' ECV';
- if (document.getElementById('dash-outflows')) document.getElementById('dash-outflows').innerText = (totalExpenses + totalSalaries) + ' ECV';
- if (document.getElementById('dash-net')) document.getElementById('dash-net').innerText = net + ' ECV';
- }
-
-function populateSelects() {
-      const mPlan = document.getElementById('m-plan');
-      const cPlan = document.getElementById('c-plan');
-      if (mPlan) {
-        mPlan.innerHTML = '';
-        plans.forEach(p => mPlan.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`);
-      }
-      if (cPlan) {
-        cPlan.innerHTML = '';
-        plans.forEach(p => cPlan.innerHTML += `<option value="${p.name}">${p.name} (${p.price}$00)</option>`);
-      }
-
-      const cardSel = document.getElementById('card-member-select');
-      const payMem = document.getElementById('pay-member');
-      if (cardSel && payMem) {
-        cardSel.innerHTML = '<option value="">-- Selecione o Membro --</option>';
-        payMem.innerHTML = '<option value="">-- Selecione o Membro --</option>';
-        members.forEach(m => {
-          cardSel.innerHTML += `<option value="${m.name}">${m.name} (${m.barcode})</option>`;
-          payMem.innerHTML += `<option value="${m.name}">${m.name}</option>`;
-        });
-      }
-
-      const salStaff = document.getElementById('sal-staff');
-      const punchStaff = document.getElementById('punch-staff');
-      const turnoSai = document.getElementById('turno-sai');
-      const turnoEntra = document.getElementById('turno-entra');
-
-      if (salStaff && punchStaff) {
-        salStaff.innerHTML = '';
-        punchStaff.innerHTML = '';
-        staffs.forEach(s => {
-          salStaff.innerHTML += `<option value="${s.name}">${s.name}</option>`;
-          punchStaff.innerHTML += `<option value="${s.name}">${s.name}</option>`;
-        });
-      }
-
-      // Preencher select do Relatório de Turno com os colaboradores
-      if (turnoSai && turnoEntra) {
-        turnoSai.innerHTML = '<option value="">-- Selecione quem sai --</option>';
-        turnoEntra.innerHTML = '<option value="">-- Selecione quem entra --</option>';
-        staffs.forEach(s => {
-          turnoSai.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
-          turnoEntra.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
-        });
-      }
-
- function exportData() {
- const data = { members, pendingRegistrations, plans, products, payments, expenses, salaries, maints, punches, staffs, date: new Date().toISOString() };
- const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
- const a = document.createElement('a');
- a.href = URL.createObjectURL(blob);
- a.download = `backup_kosmo_${new Date().toISOString().split('T')[0]}.json`;
- a.click();
- }
-
- function importData(e) {
- const file = e.target.files[0];
- if (!file) return;
- const reader = new FileReader();
- reader.onload = function(evt) {
- try {
- const d = JSON.parse(evt.target.result);
- if (d.members) {
- members = d.members || [];
- pendingRegistrations = d.pendingRegistrations || [];
- plans = d.plans || plans;
- products = d.products || [];
- payments = d.payments || [];
- expenses = d.expenses || [];
- salaries = d.salaries || [];
- maints = d.maints || [];
- punches = d.punches || [];
- staffs = d.staffs || staffs;
- saveAll();
- renderAll();
- alert('Base de dados restaurada!');
- }
- } catch (err) { alert('Ficheiro inválido.'); }
- };
- reader.readAsText(file);
- }
-
- function importFromGymmerCSV(e) {
- const file = e.target.files[0];
- if (!file) return;
-
- const reader = new FileReader();
- reader.onload = function(evt) {
- const text = evt.target.result;
- const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
- if (lines.length < 2) {
- alert('Ficheiro vazio.');
- return;
- }
-
- const separator = lines[0].includes(';') ? ';' : ',';
- const headers = lines[0].split(separator).map(h => h.trim().toLowerCase().replace(/["']/g, ''));
-
- let idxName = headers.findIndex(h => h.includes('nome') || h.includes('name') || h.includes('membro'));
- let idxBarcode = headers.findIndex(h => h.includes('codigo') || h.includes('código') || h.includes('id') || h.includes('barcode') || h.includes('cartao'));
- let idxPhone = headers.findIndex(h => h.includes('tel') || h.includes('phone') || h.includes('movel') || h.includes('whatsapp') || h.includes('contacto'));
- let idxPlan = headers.findIndex(h => h.includes('plano') || h.includes('plan') || h.includes('modalidade'));
- let idxDate = headers.findIndex(h => h.includes('data') || h.includes('date') || h.includes('inicio') || h.includes('adesao') || h.includes('validade'));
-
- if (idxName === -1) idxName = 0;
-
- let count = 0;
- const defaultPlan = plans[0] ? plans[0].name : 'Geral';
- const today = new Date().toISOString().split('T')[0];
-
- for (let i = 1; i < lines.length; i++) {
- const cols = lines[i].split(separator).map(c => c.trim().replace(/^["']|["']$/g, ''));
- if (!cols[idxName]) continue;
-
- const memberName = cols[idxName];
- const memberBarcode = (idxBarcode !== -1 && cols[idxBarcode]) ? cols[idxBarcode] : ('KOSMO' + (Date.now() + i).toString().slice(-4));
- const memberPhone = (idxPhone !== -1 && cols[idxPhone]) ? cols[idxPhone] : '';
- const memberPlan = (idxPlan !== -1 && cols[idxPlan]) ? cols[idxPlan] : defaultPlan;
- let memberDate = (idxDate !== -1 && cols[idxDate]) ? cols[idxDate] : today;
-
- if (memberDate.includes('/')) {
- const parts = memberDate.split('/');
- if (parts.length === 3 && parts[2].length === 4) {
- memberDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
- }
- }
-
- if (!members.some(m => m.barcode.toLowerCase() === memberBarcode.toLowerCase())) {
- members.push({
- id: Date.now() + i,
- name: memberName,
- barcode: memberBarcode,
- phone: memberPhone,
- occup: 'Trabalhador(a)',
- plan: memberPlan,
- joinDate: memberDate,
- date: memberDate,
- photo: ''
- });
- count++;
- }
- }
-
- saveAll();
- renderMembers();
- populateSelects();
- alert(`Sucesso! Foram importados e integrados ${count} membros do GYMMER no Ginásio KOSMO.`);
- };
- reader.readAsText(file, 'UTF-8');
- }
-
-function renderAll() {
-      renderPlans();
-      renderMembers();
-      renderProducts();
-      renderPayments();
-      renderExpenses();
-      renderSalaries();
-      renderMaintenance();
-      renderStaffs();
-      renderPunches();
-      renderPendings();
-      renderPendingBadge();
-      renderRelatoriosTurno(); // <--- Adicione esta linha aqui
-      populateSelects();
-      updateDashboard();
-    }
- window.onload = function() {
- const isPublic = checkPublicMode();
- if (!isPublic) {
- setupImages();
- populateSelects();
- updateDashboard();
- renderMembers();
- renderProducts();
- renderPendingBadge();
- loadCloudData();
- }
- };
-
- window.onhashchange = function() {
- checkPublicMode();
- };
- </script>
-</body>
 </html>
