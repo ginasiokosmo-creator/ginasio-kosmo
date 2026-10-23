@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ginásio KOSMO - Totem de Acesso Gigante</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --gold: #ffd43b;
+      --primary-red: #d92626;
+      --danger-bg: #1c1316;
+      --danger-border: #d9480f;
+      --danger-text: #ff6b6b;
+      --success-bg: #0d2818;
+      --success-border: #2b8a3e;
+      --success-text: #51cf66;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #000000;
+      color: #ffffff;
+      font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      user-select: none;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2vh 2vw 1.5vh;
+    }
+
+    /* 1. TOPO: DATA E RELÓGIO GIGANTE VISÍVEL A 5 METROS */
+    .top-header {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      min-height: 18vh;
+    }
+    .date-row {
+      font-size: clamp(2rem, 3.8vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 1.1;
+      text-shadow: 0 4px 18px rgba(0,0,0,0.95);
+    }
+    .clock-row {
+      font-size: clamp(6.5rem, 12vw, 13rem);
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      letter-spacing: 4px;
+      margin-top: 4px;
+      text-shadow: 0 0 45px rgba(255, 212, 59, 0.85), 0 0 95px rgba(255, 212, 59, 0.45);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 2. CENTRO: LOGÓTIPO OVAL CINZENTO PARALELO À LINHA VERMELHA (ZERO BRANCO) */
+    .center-logo-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 48vh;
+      max-height: 56vh;
+      margin: 0.5vh 0;
+    }
+    .oval-frame {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      width: min(92vw, 860px);
+      height: min(46vh, 360px);
+      border-radius: 50% / 50%;
+      border: 6px solid #d92626;
+      box-shadow: 0 0 50px 18px rgba(217, 38, 38, 0.85), 0 0 95px 30px rgba(180, 25, 25, 0.45);
+      overflow: hidden;
+    }
+    .oval-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      transform: scale(1.36, 1.08);
+      transform-origin: center center;
+      display: block;
+    }
+
+    /* 3. INFERIOR: CARTÃO DE FEEDBACK */
+    .bottom-area {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .hidden-scanner {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .feedback-box {
+      width: 100%;
+      background: #14171a;
+      border: 1px solid #282e36;
+      border-radius: 14px;
+      padding: 12px 20px;
+      text-align: center;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.95);
+      min-height: 105px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .feedback-box.idle {
+      border: 1px dashed #3a424d;
+    }
+    .feedback-box.danger {
+      background: var(--danger-bg);
+      border: 2px solid var(--danger-border);
+      box-shadow: 0 0 35px rgba(217, 72, 15, 0.5);
+    }
+    .feedback-box.success {
+      background: var(--success-bg);
+      border: 2px solid var(--success-border);
+      box-shadow: 0 0 35px rgba(43, 138, 62, 0.5);
+    }
+
+    /* EXIBIÇÃO DA FOTO E DADOS DO MEMBRO */
+    .member-profile-wrap {
+      display: none;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+    .member-img {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--gold);
+      background: #20242b;
+    }
+    .member-avatar {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: #20242b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+    }
+    .member-meta {
+      text-align: left;
+    }
+    .member-name {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+    .member-plan {
+      font-size: 1.05rem;
+      color: #ced4da;
+      margin-top: 2px;
+    }
+
+    .status-title {
+      font-size: 1.65rem;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .status-sub {
+      font-size: 1.05rem;
+      color: #adb5bd;
+      font-weight: 500;
+    }
+    .status-pill {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin-top: 6px;
+    }
+    .pill-danger {
+      background: rgba(224, 49, 49, 0.25);
+      border: 1px solid rgba(224, 49, 49, 0.6);
+      color: #ff8787;
+    }
+    .pill-success {
+      background: rgba(43, 138, 62, 0.28);
+      border: 1px solid rgba(43, 138, 62, 0.65);
+      color: #69db7c;
+    }
+
+    .sync-line {
+      font-size: 0.82rem;
+      color: #1971c2;
+      margin-top: 6px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .totem-footer {
+      font-size: 0.72rem;
+      color: #555e68;
+      text-align: center;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body onclick="manterFoco()">
+
+  <!-- 1. TOPO: DATA E RELÓGIO NATIVOS -->
+  <div class="top-header">
+    <div class="date-row" id="totem-date">CARREGANDO DATA...</div>
+    <div class="clock-row" id="totem-clock">--:--:--</div>
+  </div>
+
+  <!-- 2. CENTRO: LOGÓTIPO OVAL CINZENTO PARALELO À LINHA VERMELHA (ZERO BRANCO) -->
+  <div class="center-logo-area">
+    <div class="oval-frame">
+      <img src="logo.jpg.jpg" alt="Ginásio KOSMO" onerror="this.src='logo.jpg';">
+    </div>
+  </div>
+
+  <!-- 3. INFERIOR: CARTÃO DE FEEDBACK -->
+  <div class="bottom-area">
+    <input type="text" id="scanner-input" class="hidden-scanner" autofocus autocomplete="off">
+
+    <div class="feedback-box idle" id="feedback-card">
+      <div class="member-profile-wrap" id="member-profile">
+        <div id="photo-box"></div>
+        <div class="member-meta">
+          <div class="member-name" id="m-nome">---</div>
+          <div class="member-plan" id="m-plano">---</div>
+        </div>
+      </div>
+
+      <div class="status-title" id="status-title" style="color: var(--gold);">
+        ⚡ LEITOR ATIVO
+      </div>
+      <div class="status-sub" id="status-sub">
+        Aproxime o cartão do leitor ou digite o código de acesso
+      </div>
+      <div class="status-pill" id="status-pill" style="display: none;"></div>
+
+      <div class="sync-line">
+        <span>⚡ Leitor ótico Approx LS21 ativo</span>
+        <span>•</span>
+        <span id="cloud-info">Supabase Cloud Sync</span>
+      </div>
+    </div>
+
+    <div class="totem-footer">
+      Ginásio KOSMO | Terra Branca, Frente Escola Amor De Deus | NIF: 283023805
+    </div>
+  </div>
+
+  <!-- SCRIPT DE RELÓGIO TOTALMENTE ISOLADO -->
+  <script>
+    (function initClock() {
+      const dias = ['DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA', 'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'];
+      const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+
+      function atualizar() {
+        try {
+          const agora = new Date();
+          const dStr = dias[agora.getDay()] + ', ' + String(agora.getDate()).padStart(2, '0') + ' DE ' + meses[agora.getMonth()] + ' DE ' + agora.getFullYear();
+          const cStr = String(agora.getHours()).padStart(2, '0') + ':' + String(agora.getMinutes()).padStart(2, '0') + ':' + String(agora.getSeconds()).padStart(2, '0');
+
+          const elD = document.getElementById('totem-date');
+          const elC = document.getElementById('totem-clock');
+          if (elD) elD.textContent = dStr;
+          if (elC) elC.textContent = cStr;
+        } catch(e) {
+          console.error("Erro no relógio:", e);
+        }
+      }
+      atualizar();
+      setInterval(atualizar, 1000);
+    })();
+  </script>
+
+  <!-- BIBLIOTECA SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SB_URL = "https://ppomwvrrthudrhknjohf.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwb213dnJydGJ1ZHJoa25qb2hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzOTYwOTgsImV4cCI6MjEwNTk3MjA5OH0.Zfu1Nj5pcSOnV1k6v9PJxuxwdhAcO4SYtbKstBOZ5is";
+
+    let supabase = null;
+    let membersCache = [];
+    let attendanceCache = [];
+
+    try {
+      if (window.supabase && window.supabase.createClient) {
+        supabase = window.supabase.createClient(SB_URL, SB_KEY, { db: { schema: 'kosmo' } });
+      }
+    } catch(err) {
+      console.warn("Supabase init:", err);
+    }
+
+    async function carregarDadosCloud() {
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase.from('app_data').select('payload').eq('id', 'main_state').single();
+        if (data && data.payload) {
+          membersCache = data.payload.members || [];
+          attendanceCache = data.payload.attendanceLogs || [];
+          const cloudTxt = document.getElementById('cloud-info');
+          if (cloudTxt) cloudTxt.textContent = "Supabase Cloud Sync (" + membersCache.length + " membros)";
+        }
+      } catch(err) {
+        console.warn("Sync cloud:", err);
+      }
+    }
+    carregarDadosCloud();
+    setInterval(carregarDadosCloud, 15000);
+
+    const scanner = document.getElementById('scanner-input');
+    function manterFoco() {
+      if (scanner) scanner.focus();
+    }
+    document.addEventListener('click', manterFoco);
+    window.addEventListener('load', manterFoco);
+
+    if (scanner) {
+      scanner.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const code = scanner.value.trim();
+          scanner.value = '';
+          if (!code) return;
+          processarCheckin(code);
+        }
+      });
+    }
+
+    let timerFeedback = null;
+
+    function normalizar(v) {
+      return String(v || '').trim().replace(/^0+/, '');
+    }
+
+    function processarCheckin(rawCode) {
+      if (timerFeedback) clearTimeout(timerFeedback);
+
+      const card = document.getElementById('feedback-card');
+      const row = document.getElementById('member-profile');
+      const photoBox = document.getElementById('photo-box');
+      const nomeEl = document.getElementById('m-nome');
+      const planoEl = document.getElementById('m-plano');
+      const titleEl = document.getElementById('status-title');
+      const descEl = document.getElementById('status-sub');
+      const pillEl = document.getElementById('status-pill');
+
+      const searchNorm = normalizar(rawCode);
+
+      const m = membersCache.find(x => {
+        return normalizar(x.barcode) === searchNorm ||
+               normalizar(x.nif) === searchNorm ||
+               normalizar(x.id) === searchNorm ||
+               String(x.barcode).trim() === rawCode;
+      });
+
+      if (!m) {
+        row.style.display = 'none';
+        card.className = 'feedback-box danger';
+        titleEl.style.color = 'var(--danger-text)';
+        titleEl.textContent = '✖ CÓDIGO INVÁLIDO';
+        descEl.textContent = 'Membro não encontrado';
+        pillEl.style.display = 'block';
+        pillEl.className = 'status-pill pill-danger';
+        pillEl.textContent = 'Código [' + rawCode + '] não cadastrado.';
+
+        timerFeedback = setTimeout(restaurarPadrao, 3500);
+        return;
+      }
+
+      row.style.display = 'flex';
+      if (m.foto && m.foto.length > 50) {
+        photoBox.innerHTML = '<img src="' + m.foto + '" class="member-img" alt="' + m.name + '">';
+      } else {
+        photoBox.innerHTML = '<div class="member-avatar">👤</div>';
+      }
+
+      nomeEl.textContent = m.name;
+      planoEl.textContent = 'Plano: ' + (m.plan || 'Geral');
+
+      const isAtivo = (m.estado === 'Ativo' || m.estado === 'Regular');
+
+      if (isAtivo) {
+        card.className = 'feedback-box success';
+        titleEl.style.color = 'var(--success-text)';
+        titleEl.textContent = '✔ ACESSO PERMITIDO';
+        descEl.textContent = 'Entrada registada com sucesso.';
+        pillEl.style.display = 'block';
+        pillEl.className = 'status-pill pill-success';
+        pillEl.textContent = 'BOM TREINO, ' + m.name.split(' ')[0].toUpperCase() + '!';
+      } else {
+        card.className = 'feedback-box danger';
+        titleEl.style.color = 'var(--danger-text)';
+        titleEl.textContent = '✖ ACESSO BLOQUEADO';
+        descEl.textContent = 'Mensalidade suspensa ou expirada';
+        pillEl.style.display = 'block';
+        pillEl.className = 'status-pill pill-danger';
+        pillEl.textContent = 'ESTADO: ' + (m.estado || 'EXPIRADO').toUpperCase();
+      }
+
+      const agora = new Date();
+      attendanceCache.unshift({
+        data: agora.toLocaleDateString('pt-PT'),
+        time: agora.toLocaleTimeString('pt-PT'),
+        name: m.name,
+        code: m.barcode || rawCode,
+        status: isAtivo ? 'Permitido' : 'Bloqueado'
+      });
+
+      if (supabase) {
+        supabase.from('app_data').upsert({
+          id: 'main_state',
+          payload: { members: membersCache, attendanceLogs: attendanceCache },
+          updated_at: new Date().toISOString()
+        }).then(() => {});
+      }
+
+      timerFeedback = setTimeout(restaurarPadrao, 4500);
+    }
+
+    function restaurarPadrao() {
+      const card = document.getElementById('feedback-card');
+      const row = document.getElementById('member-profile');
+      const titleEl = document.getElementById('status-title');
+      const descEl = document.getElementById('status-sub');
+      const pillEl = document.getElementById('status-pill');
+
+      if (row) row.style.display = 'none';
+      if (card) card.className = 'feedback-box idle';
+      if (titleEl) {
+        titleEl.style.color = 'var(--gold)';
+        titleEl.textContent = '⚡ LEITOR ATIVO';
+      }
+      if (descEl) descEl.textContent = 'Aproxime o cartão do leitor ou digite o código de acesso';
+      if (pillEl) pillEl.style.display = 'none';
+
+      manterFoco();
+    }
+  </script>
+</body>
+</html>

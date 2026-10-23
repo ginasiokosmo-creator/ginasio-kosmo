@@ -211,152 +211,146 @@
 </head>
 <body>
 
- <!-- MODAL DE AUTO-INSCRIÇÃO ONLINE -->
- <div id="public-registration-view">
- <div class="contract-card">
- <div class="contract-header">
- <img src="logo.jpg.jpg" alt="Ginásio KOSMO" onerror="this.onerror=null; this.src='logo.jpg';">
- <h2 style="border:none; padding:0; margin:0 0 4px; font-size:1.5rem; color:#111;">CONTRATO DE INSCRIÇÃO</h2>
- <p style="color:#666; font-size:0.85rem; font-style:italic;">"Moldar o seu corpo, ao seu gosto de uma forma CORRECTA e SAUDÁVEL..."</p>
- </div>
- <div class="fee-notice-box">
- <strong>Informação de Inscrição:</strong> Todos os novos membros pagam uma <strong>Taxa de Inscrição de 500$00</strong> (taxa de admissão).
- <br>O plano de <strong>Estudante</strong> tem o valor especial de <strong>2000$00</strong> (mediante comprovativo).
- </div>
+  <!-- MODAL DE AUTO-INSCRIÇÃO ONLINE -->
+  <div id="public-registration-view">
+    <div class="contract-card">
+      <div class="contract-header">
+        <img src="logo.jpg.jpg" alt="Ginásio KOSMO" onerror="this.onerror=null; this.src='logo.jpg';">
+        <h2 style="border:none; padding:0; margin:0 0 4px; font-size:1.5rem; color:#111;">CONTRATO DE INSCRIÇÃO</h2>
+        <p style="color:#666; font-size:0.85rem; font-style:italic;">"Moldar o seu corpo, ao seu gosto de uma forma CORRECTA e SAUDÁVEL..."</p>
+      </div>
+      <div class="fee-notice-box">
+        <strong>Informação de Inscrição:</strong> Todos os novos membros pagam uma <strong>Taxa de Inscrição de 500$00</strong> (taxa de admissão).
+        <br>O plano de <strong>Estudante</strong> tem o valor especial de <strong>2000$00</strong> (mediante comprovativo).
+      </div>
 
- <form onsubmit="handlePublicContractSubmit(event)">
- <div class="contract-section-title">1. DADOS PESSOAIS & FILIAÇÃO</div>
- <div class="form-grid">
- <div style="grid-column: 1 / -1;">
- <label>Nome Completo</label>
- <input type="text" id="c-name" required placeholder="Nome completo do(a) inscrito(a)">
- </div>
- <div><label>Filho(a) de (Pai)</label><input type="text" id="c-father"></div>
- <div><label>e de (Mãe)</label><input type="text" id="c-mother"></div>
- <div><label>Data de Nascimento</label><input type="date" id="c-birth" required onchange="calculateAge()"></div>
- <div><label>Idade</label><input type="number" id="c-age" required readonly></div>
-<div><label>Contacto Móvel (WhatsApp)</label><input type="tel" id="c-phone" required placeholder="Ex: 9232000"></div>
- <div><label>Residência</label><input type="text" id="c-address" required placeholder="Ex: Terra Branca, Praia"></div>
- }
+      <form onsubmit="handlePublicContractSubmit(event)">
+        <div class="contract-section-title">1. DADOS PESSOAIS & FILIAÇÃO</div>
+        <div class="form-grid">
+          <div style="grid-column: 1 / -1;">
+            <label>Nome Completo</label>
+            <input type="text" id="c-name" required placeholder="Nome completo do(a) inscrito(a)">
+          </div>
+          <div><label>Filho(a) de (Pai)</label><input type="text" id="c-father"></div>
+          <div><label>e de (Mãe)</label><input type="text" id="c-mother"></div>
+          <div><label>Data de Nascimento</label><input type="date" id="c-birth" required onchange="calculateAge()"></div>
+          <div><label>Idade</label><input type="number" id="c-age" required readonly></div>
+          <div><label>Contacto Móvel (WhatsApp)</label><input type="tel" id="c-phone" required placeholder="Ex: 9232000"></div>
+          <div><label>Residência</label><input type="text" id="c-address" required placeholder="Ex: Terra Branca, Praia"></div>
 
- <!-- 👇 COLOQUE AQUI OS CAMPOS DE NIF E COMPROVATIVO CASAL 👇 -->
- <div>
-   <label>NIF (Número de Identificação Fiscal)</label>
-   <input type="text" id="c-nif" placeholder="Indique o NIF">
- </div>
- <div>
-   <label>Comprovativo Plano Casal / Estudante</label>
-   <input type="file" id="c-casal-doc" accept="image/*">
- </div>
- <!-- 👆 FIM DOS CAMPOS ADICIONADOS 👆 -->
+          <!-- 👇 CAMPOS DE NIF E COMPROVATIVO ADICIONADOS AQUI 👇 -->
+          <div>
+            <label>NIF (Número de Identificação Fiscal)</label>
+            <input type="text" id="c-nif" placeholder="Indique o NIF">
+          </div>
+          <div>
+            <label>Comprovativo Plano Casal / Estudante</label>
+            <input type="file" id="c-casal-doc" accept="image/*">
+          </div>
+          <!-- 👆 FIM DOS CAMPOS ADICIONADOS 👆 -->
 
- <div>
- <label>Ocupação</label>
- <select id="c-occup" onchange="toggleStudentDocOnline()">
- <option value="Trabalhador(a)">Trabalhador(a)</option>
- <option value="Estudante">Estudante (Mensalidade 2000$00)</option>
- </select>
- </div>
- <div><label>Plano Pretendido</label><select id="c-plan" required onchange="updatePublicPriceSummary()"></select></div>
- </div>
- <label>Ocupação</label>
- <select id="c-occup" onchange="toggleStudentDocOnline()">
- <option value="Trabalhador(a)">Trabalhador(a)</option>
- <option value="Estudante">Estudante (Mensalidade 2000$00)</option>
- </select>
- </div>
- <div><label>Plano Pretendido</label><select id="c-plan" required onchange="updatePublicPriceSummary()"></select></div>
- </div>
+          <div>
+            <label>Ocupação</label>
+            <select id="c-occup" onchange="toggleStudentDocOnline()">
+              <option value="Trabalhador(a)">Trabalhador(a)</option>
+              <option value="Estudante">Estudante (Mensalidade 2000$00)</option>
+            </select>
+          </div>
+          <div>
+            <label>Plano Pretendido</label>
+            <select id="c-plan" required onchange="updatePublicPriceSummary()"></select>
+          </div>
+        </div>
 
- <div class="contract-section-title">2. DOCUMENTOS E FOTOGRAFIAS</div>
- <div class="form-grid">
- <div>
- <label>Foto de Perfil</label>
- <input type="file" id="c-photo" accept="image/*" required>
- </div>
- <div>
- <label>Foto do Documento de Identificação (BI / CNI / Passaporte)</label>
- <input type="file" id="c-doc-id" accept="image/*" required>
- </div>
- <div id="c-box-student-doc" style="display: none; grid-column: 1 / -1;">
- <label style="color: var(--primary);">Foto de Comprovativo de Estudante (Cartão ou Declaração)</label>
- <input type="file" id="c-student-doc" accept="image/*">
- </div>
- </div>
+        <div class="contract-section-title">2. DOCUMENTOS E FOTOGRAFIAS</div>
+        <div class="form-grid">
+          <div>
+            <label>Foto de Perfil</label>
+            <input type="file" id="c-photo" accept="image/*" required>
+          </div>
+          <div>
+            <label>Foto do Documento de Identificação (BI / CNI / Passaporte)</label>
+            <input type="file" id="c-doc-id" accept="image/*" required>
+          </div>
+          <div id="c-box-student-doc" style="display: none; grid-column: 1 / -1;">
+            <label style="color: var(--primary);">Foto de Comprovativo de Estudante (Cartão ou Declaração)</label>
+            <input type="file" id="c-student-doc" accept="image/*">
+          </div>
+        </div>
 
- <div class="contract-section-title">3. SAÚDE & HISTÓRICO</div>
- <div class="form-grid">
- <div><label>Peso Atual (kg)</label><input type="number" step="0.1" id="c-weight" required></div>
- <div>
- <label>Possui patologia ou lesão?</label>
- <select id="c-has-disease" onchange="toggleDiseaseDetail()">
- <option value="Não">Não</option>
- <option value="Sim">Sim</option>
- </select>
- </div>
- <div style="grid-column: 1 / -1;" id="box-disease-detail">
- <label>Se sim, descreva o estado:</label>
- <textarea id="c-disease-desc" rows="2"></textarea>
- </div>
- <div style="grid-column: 1 / -1;"><label>Objetivo</label><input type="text" id="c-goal" required></div>
- <div style="grid-column: 1 / -1;"><label>Experiência anterior em ginásios</label><input type="text" id="c-experience" required></div>
- </div>
+        <div class="contract-section-title">3. SAÚDE & HISTÓRICO</div>
+        <div class="form-grid">
+          <div><label>Peso Atual (kg)</label><input type="number" step="0.1" id="c-weight" required></div>
+          <div>
+            <label>Possui patologia ou lesão?</label>
+            <select id="c-has-disease" onchange="toggleDiseaseDetail()">
+              <option value="Não">Não</option>
+              <option value="Sim">Sim</option>
+            </select>
+          </div>
+          <div style="grid-column: 1 / -1;" id="box-disease-detail">
+            <label>Se sim, descreva o estado:</label>
+            <textarea id="c-disease-desc" rows="2"></textarea>
+          </div>
+          <div style="grid-column: 1 / -1;"><label>Objetivo</label><input type="text" id="c-goal" required></div>
+          <div style="grid-column: 1 / -1;"><label>Experiência anterior em ginásios</label><input type="text" id="c-experience" required></div>
+        </div>
 
- <div class="contract-section-title">4. TERMO DE COMPROMISSO</div>
- <div class="contract-notice">
- Compromete-se a zelar por cada utensílio/material afeto a este ginásio, arrumar tudo nos seus devidos lugares e aceita indemnizar danos causados por uso incorreto?
- </div>
+        <div class="contract-section-title">4. TERMO DE COMPROMISSO</div>
+        <div class="contract-notice">
+          Compromete-se a zelar por cada utensílio/material afeto a este ginásio, arrumar tudo nos seus devidos lugares e aceita indemnizar danos causados por uso incorreto?
+        </div>
 
- <div style="margin-bottom: 15px;">
- <label style="color:var(--primary); font-weight:bold;">Escreva abaixo a frase: <u>concordo plenamente</u></label>
- <input type="text" id="c-agreement-text" required placeholder="concordo plenamente">
- </div>
+        <div style="margin-bottom: 15px;">
+          <label style="color:var(--primary); font-weight:bold;">Escreva abaixo a frase: <u>concordo plenamente</u></label>
+          <input type="text" id="c-agreement-text" required placeholder="concordo plenamente">
+        </div>
 
- <div class="contract-section-title">5. ASSINATURA DIGITAL</div>
- <div style="text-align: center; border: 2px dashed #ced4da; padding: 10px; border-radius: 6px;">
- <canvas id="sig-canvas" width="450" height="130"></canvas>
- <div style="margin-top: 5px;">
- <button type="button" class="btn-sm" style="background:#868e96;" onclick="clearSignature()">Limpar Assinatura</button>
- </div>
- </div>
+        <div class="contract-section-title">5. ASSINATURA DIGITAL</div>
+        <div style="text-align: center; border: 2px dashed #ced4da; padding: 10px; border-radius: 6px;">
+          <canvas id="sig-canvas" width="450" height="130"></canvas>
+          <div style="margin-top: 5px;">
+            <button type="button" class="btn-sm" style="background:#868e96;" onclick="clearSignature()">Limpar Assinatura</button>
+          </div>
+        </div>
 
- <div id="c-payment-summary" style="margin-top: 20px; background: #fff9db; border: 1px solid #ffe066; padding: 15px; border-radius: 8px; font-size: 0.95rem;">
- <p><strong>Taxa de Inscrição:</strong> 500$00</p>
- <p><strong>Mensalidade:</strong> <span id="c-sum-plan-price">2500$00</span></p>
- <h3 style="margin-top: 6px; color: var(--primary);">Total a Liquidar na Admissão: <span id="c-sum-total-price">3000$00</span></h3>
- </div>
+        <div id="c-payment-summary" style="margin-top: 20px; background: #fff9db; border: 1px solid #ffe066; padding: 15px; border-radius: 8px; font-size: 0.95rem;">
+          <p><strong>Taxa de Inscrição:</strong> 500$00</p>
+          <p><strong>Mensalidade:</strong> <span id="c-sum-plan-price">2500$00</span></p>
+          <h3 style="margin-top: 6px; color: var(--primary);">Total a Liquidar na Admissão: <span id="c-sum-total-price">3000$00</span></h3>
+        </div>
 
- <div style="margin-top: 20px;">
- <button type="submit" class="btn btn-green" style="width: 100%; padding: 12px; font-size:1.05rem;">Enviar Inscrição para Aprovação</button>
- </div>
- </form>
+        <div style="margin-top: 20px;">
+          <button type="submit" class="btn btn-green" style="width: 100%; padding: 12px; font-size:1.05rem;">Enviar Inscrição para Aprovação</button>
+        </div>
+      </form>
 
- <div id="contract-success-box" style="display:none; margin-top:20px; padding:18px; background:#ebfbee; border:2px solid #2b8a3e; border-radius:6px; text-align:center;">
- <h3 style="color:#2b8a3e;">Inscrição Submetida com Sucesso!</h3>
- <p style="margin:8px 0; color:#333;">O seu pedido e documentos foram guardados com sucesso e estão <strong>aguardando aprovação da gerência</strong> do Ginásio KOSMO.</p>
- <p style="font-size:0.85rem; color:#666;">Apresente-se na receção para homologação do contrato e liquidação do valor de admissão.</p>
- </div>
- </div>
- </div>
+      <div id="contract-success-box" style="display:none; margin-top:20px; padding:18px; background:#ebfbee; border:2px solid #2b8a3e; border-radius:6px; text-align:center;">
+        <h3 style="color:#2b8a3e;">Inscrição Submetida com Sucesso!</h3>
+        <p style="margin:8px 0; color:#333;">O seu pedido e documentos foram guardados com sucesso e estão <strong>aguardando aprovação da gerência</strong> do Ginásio KOSMO.</p>
+        <p style="font-size:0.85rem; color:#666;">Apresente-se na receção para homologação do contrato e liquidação do valor de admissão.</p>
+      </div>
+    </div>
+  </div>
 
- <!-- MODAL DE LOGIN (ADMIN/RECEÇÃO) -->
- <div id="login-overlay">
- <div class="login-box">
- <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
- <h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
- <div style="margin-bottom: 10px; text-align: left;">
- <label>Nome de Utilizador</label>
- <input type="text" id="log-user" value="admin">
- </div>
- <div style="margin-bottom: 18px; text-align: left;">
- <label>Palavra-passe</label>
- <input type="password" id="log-pass" value="admin123">
- </div>
- <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
- <p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
- </div>
- </div>
-
+  <!-- MODAL DE LOGIN (ADMIN/RECEÇÃO) -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
+      <h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
+      <div style="margin-bottom: 10px; text-align: left;">
+        <label>Nome de Utilizador</label>
+        <input type="text" id="log-user" value="admin">
+      </div>
+      <div style="margin-bottom: 18px; text-align: left;">
+        <label>Palavra-passe</label>
+        <input type="password" id="log-pass" value="admin123">
+      </div>
+      <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
+      <p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
+    </div>
+  </div>
+  
  <!-- MODAL: EDITAR MEMBRO -->
  <div class="modal-backdrop" id="modal-edit-member">
  <div class="modal-box">
@@ -1676,93 +1670,93 @@
  alert('Link de inscrição copiado!');
  }
 
-<!-- 1. TODOS OS MODAIS E ELEMENTOS HTML -->
-<div id="login-overlay">
-  <div class="login-box">
-<img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
-<h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
-<div style="margin-bottom: 10px; text-align: left;">
-<label>Nome de Utilizador</label>
-<input type="text" id="log-user" value="admin">
-</div>
-<div style="margin-bottom: 18px; text-align: left;">
-<label>Palavra-passe</label>
-<input type="password" id="log-pass" value="admin123">
-</div>
-<button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
-<p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
-</div>
-</div>
-
-<div class="modal-backdrop" id="modal-edit-member">
-<div class="modal-box">
-<div class="modal-header">
-<h3>Editar Dados do Membro</h3>
-<button class="btn-action" onclick="closeModal('modal-edit-member')">✕</button>
-</div>
-<form onsubmit="saveMemberEdit(event)">
-<input type="hidden" id="em-id">
-<div class="form-grid">
-<div style="grid-column: 1 / -1;">
-<label>Nome Completo</label>
-<input type="text" id="em-name" required>
-</div>
-<div>
-<label>Código de Barras / ID</label>
-<input type="text" id="em-barcode" required>
-</div>
-<div>
-<label>Telemóvel (WhatsApp)</label>
-<input type="tel" id="em-phone">
-</div>
-<div>
-<label>Ocupação</label>
-<select id="em-occup" onchange="toggleEditStudentDoc()">
-<option value="Trabalhador(a)">Trabalhador(a)</option>
-<option value="Estudante">Estudante</option>
-</select>
-</div>
-<div>
-<label>Plano</label>
-<select id="em-plan"></select>
-</div>
-<div>
-          <label>Data de Ingresso</label>
-          <input type="date" id="em-join">
+<!-- 1. PRIMEIRO: Feche todos os elementos HTML e Modais -->
+    <div id="login-overlay">
+      <div class="login-box">
+        <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
+        <h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
+        <div style="margin-bottom: 10px; text-align: left;">
+          <label>Nome de Utilizador</label>
+          <input type="text" id="log-user" value="admin">
         </div>
-        <div>
-          <label style="color:var(--primary); font-weight:bold;">Data Último Pagamento / Início</label>
-          <input type="date" id="em-date" required>
+        <div style="margin-bottom: 18px; text-align: left;">
+          <label>Palavra-passe</label>
+          <input type="password" id="log-pass" value="admin123">
         </div>
+        <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
+        <p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
       </div>
+    </div>
 
-      <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:12px; margin-top:10px;">
-        <h4 style="font-size:0.85rem; margin-bottom:8px; color:var(--dark);">Substituir / Atualizar Documentos e Fotografias:</h4>
-        <div class="form-grid">
-          <div>
-            <label>Substituir Foto de Perfil</label>
-            <input type="file" id="em-photo" accept="image/*">
-          </div>
-          <div>
-            <label>Substituir Foto do BI / CNI</label>
-            <input type="file" id="em-doc-id" accept="image/*">
-          </div>
-          <div id="em-box-student-doc" style="grid-column: 1 / -1; display: none;">
-            <label style="color:var(--primary);">Substituir Comprovativo de Estudante</label>
-            <input type="file" id="em-student-doc" accept="image/*">
-          </div>
+    <div class="modal-backdrop" id="modal-edit-member">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Editar Dados do Membro</h3>
+          <button class="btn-action" onclick="closeModal('modal-edit-member')">✕</button>
         </div>
-      </div>
+        <form onsubmit="saveMemberEdit(event)">
+          <input type="hidden" id="em-id">
+          <div class="form-grid">
+            <div style="grid-column: 1 / -1;">
+              <label>Nome Completo</label>
+              <input type="text" id="em-name" required>
+            </div>
+            <div>
+              <label>Código de Barras / ID</label>
+              <input type="text" id="em-barcode" required>
+            </div>
+            <div>
+              <label>Telemóvel (WhatsApp)</label>
+              <input type="tel" id="em-phone">
+            </div>
+            <div>
+              <label>Ocupação</label>
+              <select id="em-occup" onchange="toggleEditStudentDoc()">
+                <option value="Trabalhador(a)">Trabalhador(a)</option>
+                <option value="Estudante">Estudante</option>
+              </select>
+            </div>
+            <div>
+              <label>Plano</label>
+              <select id="em-plan"></select>
+            </div>
+            <div>
+              <label>Data de Ingresso</label>
+              <input type="date" id="em-join">
+            </div>
+            <div>
+              <label style="color:var(--primary); font-weight:bold;">Data Último Pagamento / Início</label>
+              <input type="date" id="em-date" required>
+            </div>
+          </div>
 
-      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
-        <button type="button" class="btn" style="background:#868e96;" onclick="closeModal('modal-edit-member')">Cancelar</button>
-        <button type="submit" class="btn btn-green">Guardar Alterações</button>
-      </div>
-    </form>
-  </div>
-</div>
+          <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:12px; margin-top:10px;">
+            <h4 style="font-size:0.85rem; margin-bottom:8px; color:var(--dark);">Substituir / Atualizar Documentos e Fotografias:</h4>
+            <div class="form-grid">
+              <div>
+                <label>Substituir Foto de Perfil</label>
+                <input type="file" id="em-photo" accept="image/*">
+              </div>
+              <div>
+                <label>Substituir Foto do BI / CNI</label>
+                <input type="file" id="em-doc-id" accept="image/*">
+              </div>
+              <div id="em-box-student-doc" style="grid-column: 1 / -1; display: none;">
+                <label style="color:var(--primary);">Substituir Comprovativo de Estudante</label>
+                <input type="file" id="em-student-doc" accept="image/*">
+              </div>
+            </div>
+          </div>
 
-<!-- 2. A TAG SCRIPT SÓ ABRE APÓS TODO O HTML ESTAR FECHADO -->
+          <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn" style="background:#868e96;" onclick="closeModal('modal-edit-member')">Cancelar</button>
+            <button type="submit" class="btn btn-green">Guardar Alterações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. SEGUNDO: Só agora abre a tag script para o código JavaScript -->
     <script>
       function testPublicLink() {
         window.open(getRegistrationUrl(), '_blank');
