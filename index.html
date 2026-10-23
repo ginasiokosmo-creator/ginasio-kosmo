@@ -1676,93 +1676,93 @@
  alert('Link de inscrição copiado!');
  }
 
-<!-- 1. TODOS OS MODAIS E ELEMENTOS HTML FECHAM AQUI -->
-    <div id="login-overlay">
-      <div class="login-box">
-        <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
-        <h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
-        <div style="margin-bottom: 10px; text-align: left;">
-          <label>Nome de Utilizador</label>
-          <input type="text" id="log-user" value="admin">
+<!-- 1. TODOS OS MODAIS E ELEMENTOS HTML -->
+<div id="login-overlay">
+  <div class="login-box">
+<img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="login-logo-img" id="login-main-logo" onerror="this.onerror=null; this.src='logo.jpg';">
+<h3 style="margin-bottom: 15px; color: var(--dark);">Iniciar Sessão</h3>
+<div style="margin-bottom: 10px; text-align: left;">
+<label>Nome de Utilizador</label>
+<input type="text" id="log-user" value="admin">
+</div>
+<div style="margin-bottom: 18px; text-align: left;">
+<label>Palavra-passe</label>
+<input type="password" id="log-pass" value="admin123">
+</div>
+<button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
+<p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
+</div>
+</div>
+
+<div class="modal-backdrop" id="modal-edit-member">
+<div class="modal-box">
+<div class="modal-header">
+<h3>Editar Dados do Membro</h3>
+<button class="btn-action" onclick="closeModal('modal-edit-member')">✕</button>
+</div>
+<form onsubmit="saveMemberEdit(event)">
+<input type="hidden" id="em-id">
+<div class="form-grid">
+<div style="grid-column: 1 / -1;">
+<label>Nome Completo</label>
+<input type="text" id="em-name" required>
+</div>
+<div>
+<label>Código de Barras / ID</label>
+<input type="text" id="em-barcode" required>
+</div>
+<div>
+<label>Telemóvel (WhatsApp)</label>
+<input type="tel" id="em-phone">
+</div>
+<div>
+<label>Ocupação</label>
+<select id="em-occup" onchange="toggleEditStudentDoc()">
+<option value="Trabalhador(a)">Trabalhador(a)</option>
+<option value="Estudante">Estudante</option>
+</select>
+</div>
+<div>
+<label>Plano</label>
+<select id="em-plan"></select>
+</div>
+<div>
+          <label>Data de Ingresso</label>
+          <input type="date" id="em-join">
         </div>
-        <div style="margin-bottom: 18px; text-align: left;">
-          <label>Palavra-passe</label>
-          <input type="password" id="log-pass" value="admin123">
+        <div>
+          <label style="color:var(--primary); font-weight:bold;">Data Último Pagamento / Início</label>
+          <input type="date" id="em-date" required>
         </div>
-        <button type="button" class="btn" style="width: 100%; padding: 12px;" onclick="directLogin()">Entrar no Sistema</button>
-        <p style="font-size: 0.75rem; color: #888; margin-top: 10px;">Acesso padrão: admin / admin123</p>
       </div>
-    </div>
 
-    <div class="modal-backdrop" id="modal-edit-member">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h3>Editar Dados do Membro</h3>
-          <button class="btn-action" onclick="closeModal('modal-edit-member')">✕</button>
+      <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:12px; margin-top:10px;">
+        <h4 style="font-size:0.85rem; margin-bottom:8px; color:var(--dark);">Substituir / Atualizar Documentos e Fotografias:</h4>
+        <div class="form-grid">
+          <div>
+            <label>Substituir Foto de Perfil</label>
+            <input type="file" id="em-photo" accept="image/*">
+          </div>
+          <div>
+            <label>Substituir Foto do BI / CNI</label>
+            <input type="file" id="em-doc-id" accept="image/*">
+          </div>
+          <div id="em-box-student-doc" style="grid-column: 1 / -1; display: none;">
+            <label style="color:var(--primary);">Substituir Comprovativo de Estudante</label>
+            <input type="file" id="em-student-doc" accept="image/*">
+          </div>
         </div>
-        <form onsubmit="saveMemberEdit(event)">
-          <input type="hidden" id="em-id">
-          <div class="form-grid">
-            <div style="grid-column: 1 / -1;">
-              <label>Nome Completo</label>
-              <input type="text" id="em-name" required>
-            </div>
-            <div>
-              <label>Código de Barras / ID</label>
-              <input type="text" id="em-barcode" required>
-            </div>
-            <div>
-              <label>Telemóvel (WhatsApp)</label>
-              <input type="tel" id="em-phone">
-            </div>
-            <div>
-              <label>Ocupação</label>
-              <select id="em-occup" onchange="toggleEditStudentDoc()">
-                <option value="Trabalhador(a)">Trabalhador(a)</option>
-                <option value="Estudante">Estudante</option>
-              </select>
-            </div>
-            <div>
-              <label>Plano</label>
-              <select id="em-plan"></select>
-            </div>
-            <div>
-              <label>Data de Ingresso</label>
-              <input type="date" id="em-join">
-            </div>
-            <div>
-              <label style="color:var(--primary); font-weight:bold;">Data Último Pagamento / Início</label>
-              <input type="date" id="em-date" required>
-            </div>
-          </div>
-
-          <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:12px; margin-top:10px;">
-            <h4 style="font-size:0.85rem; margin-bottom:8px; color:var(--dark);">Substituir / Atualizar Documentos e Fotografias:</h4>
-            <div class="form-grid">
-              <div>
-                <label>Substituir Foto de Perfil</label>
-                <input type="file" id="em-photo" accept="image/*">
-              </div>
-              <div>
-                <label>Substituir Foto do BI / CNI</label>
-                <input type="file" id="em-doc-id" accept="image/*">
-              </div>
-              <div id="em-box-student-doc" style="grid-column: 1 / -1; display: none;">
-                <label style="color:var(--primary);">Substituir Comprovativo de Estudante</label>
-                <input type="file" id="em-student-doc" accept="image/*">
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
-            <button type="button" class="btn" style="background:#868e96;" onclick="closeModal('modal-edit-member')">Cancelar</button>
-            <button type="submit" class="btn btn-green">Guardar Alterações</button>
-          </div>
-        </form>
       </div>
-    </div>
 
-    <!-- 2. A TAG SCRIPT SÓ ABRE APÓS TODO O HTML ESTAR FECHADO -->
+      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" class="btn" style="background:#868e96;" onclick="closeModal('modal-edit-member')">Cancelar</button>
+        <button type="submit" class="btn btn-green">Guardar Alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 2. A TAG SCRIPT SÓ ABRE APÓS TODO O HTML ESTAR FECHADO -->
     <script>
       function testPublicLink() {
         window.open(getRegistrationUrl(), '_blank');
