@@ -1854,6 +1854,43 @@ function renderAll() {
   if (typeof renderPendingBadge === 'function') renderPendingBadge();
 }
 
+function renderMembers(list = members) {
+  const tbody = document.getElementById('member-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  const now = new Date();
+
+  list.forEach(m => {
+    const pl = plans.find(p => p.name === m.plan);
+    const days = pl ? pl.days : 30;
+    const due = new Date(m.date);
+    due.setDate(due.getDate() + days);
+    const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+
+    let badge = `<span class="badge ${diff >= 0 ? 'badge-ok' : 'badge-err'}">${diff >= 0 ? diff + ' dias' : 'Expirado'}</span>`;
+    const zap = `https://wa.me/${(m.phone||'').replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Olá ' + m.name + ', saudações do Ginásio KOSMO!')}`;
+
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${m.barcode}</strong></td>
+        <td><strong>${m.name}</strong></td>
+        <td>${m.phone || '---'}</td>
+        <td>${m.plan}</td>
+        <td>${due.toLocaleDateString('pt-PT')}</td>
+        <td>${badge}</td>
+        <td><a href="${zap}" target="_blank" style="background:#25d366; color:#fff; text-decoration:none; padding:3px 7px; border-radius:4px; font-weight:bold; font-size:0.75rem;">WhatsApp</a></td>
+        <td style="text-align: center; white-space: nowrap;">
+          <button class="btn-action" title="Ver Detalhes" onclick="openViewMember(${m.id})">👁️</button>
+          <button class="btn-action" title="Editar Dados e Documentos" onclick="openEditMember(${m.id})" style="color:#1971c2;">✏️</button>
+          <button class="btn-action" title="Renovar Subscrição" onclick="renewMember(${m.id})">🔄</button>
+          <button class="btn-action" title="Eliminar Membro" style="color:#d9480f;" onclick="deleteMember(${m.id})">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+  updateStripStats();
+}
+
       window.onload = function() {
         const isPublic = checkPublicMode();
         if (!isPublic) {
