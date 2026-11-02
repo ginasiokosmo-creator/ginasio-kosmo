@@ -1197,32 +1197,32 @@
  }
 
  async function loadCloudData() {
- if (!supabaseClient) return;
- updateCloudBadge(true);
- try {
- const { data, error } = await supabaseClient.from('kosmo_membros').select('*');
- if (!error && data && data.length > 0) {
- members = data.map(m => ({
- id: m.id,
- name: m.name,
- barcode: m.barcode,
- phone: m.phone,
- occup: m.occup || 'Trabalhador(a)',
- plan: m.plan,
- joinDate: m.date || m.joinDate,
- date: m.date,
- photo: m.foto || m.photo || '',
- docId: m.docId || '',
- studentDoc: m.studentDoc || ''
- }));
- saveAll();
- renderAll();
- }
- } catch (err) {
- console.error("Erro nuvem:", err);
- }
- updateCloudBadge(false);
- }
+  if (!supabaseClient) return;
+  updateCloudBadge(true);
+  try {
+    const { data, error } = await supabaseClient.from('kosmo_membros').select('*');
+    if (!error && data && data.length > 0) {
+      members = data.map(m => ({
+        id: m.id,
+        name: m.name,
+        barcode: m.barcode,
+        phone: m.phone,
+        occup: m.occup || 'Trabalhador(a)',
+        plan: m.plan,
+        joinDate: m.date || m.joinDate,
+        date: m.date,
+        photo: m.foto || m.photo || '',
+        docId: m.docId || '',
+        studentDoc: m.studentDoc || ''
+      }));
+      saveAll();
+      renderAll();
+    }
+  } catch (err) {
+    console.warn("Aviso: Acedendo em modo local devido a restrição na nuvem:", err);
+  }
+  updateCloudBadge(false);
+}
 
  async function saveAll() {
  localStorage.setItem('kosmo_safe_m', JSON.stringify(members));
