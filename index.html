@@ -1170,15 +1170,18 @@
  if (aside) aside.classList.toggle('collapsed');
  }
 
- // Credenciais corretas ligadas à tabela kosmo_membros no Supabase
- const SUPABASE_URL = "https://htybbtbayxreoundolac.supabase.co";
- const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0eWJidGJheXhyZW91bmRvbGFjIypybyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkwMTczNTE5LCJleHAiOjIxMDU3NDk1MTl9.1EZ344Xl6gJjNTOO48oflTxKU2lijI7U2E8KLLimnDk";
+// Credenciais corretas e validadas para o Supabase centralizado
+const SUPABASE_URL = "https://ppomwvrtbudrhknjohf.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwb213dnJydGJ1ZHJoa25qb2hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzOTYwOTgsImV4cCI6MjEwNTk3MjA5OH0.Zfu1Nj5pcSOnV1k6v9PJxuxwdhAcO4SYtbKstBOZ5is";
 
- let supabaseClient = null;
- try {
- supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
- } catch(e) {}
-
+let supabaseClient = null;
+try {
+  if (window.supabase && SUPABASE_KEY) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch(e) {
+  console.warn("Modo local ativo devido a restrição na inicialização do cliente Supabase.");
+}
  function updateCloudBadge(isSyncing = false) {
  const badge = document.getElementById('cloud-status-badge');
  if (!badge) return;
