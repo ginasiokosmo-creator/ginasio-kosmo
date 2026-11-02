@@ -497,7 +497,7 @@
  <aside id="sidebar-panel">
  <div class="gym-header">
  <img src="logo.jpg.jpg" alt="Ginásio KOSMO" class="gym-logo-sidebar" id="sidebar-logo" onerror="this.onerror=null; this.src='logo.jpg';">
- <h3>KOSMO</h3>
+ <h3>GINÁSIO KOSMO</h3>
  <p>Praia, Terra Branca, 7600</p>
  </div>
 
@@ -1913,16 +1913,8 @@ function renderMembers(list = members) {
   updateStripStats();
 }
 
-function updateStripStats() {
-  const activeCount = members.filter(m => {
-    const pl = plans.find(p => p.name === m.plan);
-    const days = pl ? pl.days : 30;
-    const due = new Date(m.date);
-    due.setDate(due.getDate() + days);
-    return (due - new Date()) >= 0;
-  }).length;
-
-  function renderProducts() {
+// 👇 COLOQUE A FUNÇÃO RENDERPRODUCTS EXATAMENTE AQUI (ISOLADA) 👇
+function renderProducts() {
   const tbody = document.getElementById('product-table-body') || document.getElementById('products-table-body');
   if (!tbody) return;
   tbody.innerHTML = '';
@@ -1940,6 +1932,16 @@ function updateStripStats() {
     `;
   });
 }
+// 👆 FIM DA FUNÇÃO RENDERPRODUCTS 👆
+
+function updateStripStats() {
+  const activeCount = members.filter(m => {
+    const pl = plans.find(p => p.name === m.plan);
+    const days = pl ? pl.days : 30;
+    const due = new Date(m.date);
+    due.setDate(due.getDate() + days);
+    return (due - new Date()) >= 0;
+  }).length;
 
   const el = document.getElementById('strip-active-count');
   if (el) el.innerText = activeCount;
