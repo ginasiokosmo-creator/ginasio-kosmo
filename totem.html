@@ -474,6 +474,31 @@
 
       manterFoco();
     }
+
+const scanner = document.getElementById('scanner-input');
+    function manterFoco() {
+      if (scanner) {
+        scanner.focus();
+      }
+    }
+    
+    // Força o foco permanentemente a cada 2 segundos e em qualquer clique/evento
+    document.addEventListener('click', manterFoco);
+    window.addEventListener('load', manterFoco);
+    window.addEventListener('focus', manterFoco);
+    setInterval(manterFoco, 2000);
+
+    if (scanner) {
+      scanner.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const code = scanner.value.trim();
+          scanner.value = '';
+          if (!code) return;
+          processarCheckin(code);
+        }
+      });
+    }
+
   </script>
 </body>
 </html>
