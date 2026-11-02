@@ -1763,21 +1763,43 @@
         window.open(getRegistrationUrl(), '_blank');
       }
 
-      function directLogin() {
-        const u = (document.getElementById('log-user').value || 'admin').trim().toLowerCase();
-        const p = (document.getElementById('log-pass').value || 'admin123').trim();
-        const user = staffs.find(s => s.user.toLowerCase() === u && s.pass === p);
-        if (user || (u === 'admin' && p === 'admin123')) {
-          currentUser = user || staffs[0];
-          document.getElementById('login-overlay').style.display = 'none';
-          document.getElementById('logged-name').innerText = currentUser.name;
-          document.getElementById('logged-role').innerText = currentUser.role.toUpperCase();
-          navigate('membros');
-          renderAll();
-        } else {
-          alert('Credenciais incorretas.');
-        }
-      }
+   function directLogin() {
+  const userEl = document.getElementById('log-user');
+  const passEl = document.getElementById('log-pass');
+  
+  const u = (userEl ? userEl.value : 'admin').trim().toLowerCase();
+  const p = (passEl ? passEl.value : 'admin123').trim();
+  
+  // Garante que staffs existe para evitar crash
+  const listaStaff = window.staffs || [];
+  const user = listaStaff.find(s => s && s.user && s.user.toLowerCase() === u && s.pass === p);
+
+  if (user || (u === 'admin' && p === 'admin123')) {
+    const defaultUser = { name: 'Administrador', role: 'Admin' };
+    currentUser = user || defaultUser;
+
+    const overlay = document.getElementById('login-overlay');
+    if (overlay) overlay.style.display = 'none';
+
+    const nameEl = document.getElementById('logged-name');
+    if (nameEl) nameEl.innerText = currentUser.name;
+
+    const roleEl = document.getElementById('logged-role');
+    if (roleEl) roleEl.innerText = (currentUser.role || 'Admin').toUpperCase();
+
+    if (typeof navigate === 'function') {
+      navigate('membros');
+    } else if (typeof showTab === 'function') {
+      showTab('membros');
+    }
+
+    if (typeof renderAll === 'function') {
+      renderAll();
+    }
+  } else {
+    alert('Credenciais incorretas.');
+  }
+}
 
       function handleLogout() {
         currentUser = null;
