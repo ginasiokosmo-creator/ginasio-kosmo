@@ -1196,32 +1196,44 @@
  }
  }
 
- async function loadCloudData() {
+async function loadCloudData() {
   if (!supabaseClient) return;
-  updateCloudBadge(true);
-  try {
-    const { data, error } = await supabaseClient.from('kosmo_membros').select('*');
-    if (!error && data && data.length > 0) {
-      members = data.map(m => ({
-        id: m.id,
-        name: m.name,
-        barcode: m.barcode,
-        phone: m.phone,
-        occup: m.occup || 'Trabalhador(a)',
-        plan: m.plan,
-        joinDate: m.date || m.joinDate,
-        date: m.date,
-        photo: m.foto || m.photo || '',
-        docId: m.docId || '',
-        studentDoc: m.studentDoc || ''
-      }));
-      saveAll();
-      renderAll();
+  
+  // Executa em ambiente isolado para nunca bloquear o login
+  setTimeout(async () => {
+    try {
+      updateCloudBadge(true);
+      const { data, error } = await supabaseClient.from('kosmo_membros').select('*');
+      
+      if (error) {
+        console.warn("Supabase restrito (Modo Local Ativo):", error.message);
+        updateCloudBadge(false);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        members = data.map(m => ({
+          id: m.id,
+          name: m.name,
+          barcode: m.barcode,
+          phone: m.phone,
+          occup: m.occup || 'Trabalhador(a)',
+          plan: m.plan,
+          joinDate: m.date || m.joinDate,
+          date: m.date,
+          photo: m.foto || m.photo || '',
+          docId: m.docId || '',
+          studentDoc: m.studentDoc || ''
+        }));
+        saveAll();
+        renderAll();
+      }
+      updateCloudBadge(false);
+    } catch (err) {
+      console.warn("Exceção ignorada na nuvem, mantendo operação local:", err);
+      updateCloudBadge(false);
     }
-  } catch (err) {
-    console.warn("Aviso: Acedendo em modo local devido a restrição na nuvem:", err);
-  }
-  updateCloudBadge(false);
+  }, 1000); // Aguarda 1 segundo após o painel abrir para sincronizar em segundo plano
 }
 
  async function saveAll() {
