@@ -1946,19 +1946,25 @@ function updateStripStats() {
   if (el) el.innerText = activeCount;
 }
 
-      window.onload = function() {
-        const isPublic = checkPublicMode();
-        if (!isPublic) {
-          setupImages();
-          populateSelects();
-          updateDashboard();
-          renderMembers();
-          renderProducts();
-          renderPendingBadge();
-          loadCloudData();
-        }
-      };
-
+window.onload = function() {
+  try {
+    const isPublic = checkPublicMode();
+    if (!isPublic) {
+      setupImages();
+      populateSelects();
+      updateDashboard();
+      renderMembers();
+      renderProducts();
+      renderPendingBadge();
+      loadCloudData();
+    }
+  } catch (err) {
+    console.error("Erro crítico no arranque, a recuperar modo de segurança:", err);
+    // Garante que o painel mostra o login mesmo se houver falha nos dados
+    const logOverlay = document.getElementById('login-overlay');
+    if (logOverlay) logOverlay.style.display = 'flex';
+  }
+};
       window.onhashchange = function() {
         checkPublicMode();
       };
