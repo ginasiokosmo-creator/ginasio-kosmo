@@ -1962,17 +1962,21 @@ window.onload = function() {
   try {
     const isPublic = checkPublicMode();
     if (!isPublic) {
-      setupImages();
-      populateSelects();
-      updateDashboard();
-      renderMembers();
-      renderProducts();
-      renderPendingBadge();
-      loadCloudData();
+      // Garante que o painel de login fica visível primeiro
+      const logOverlay = document.getElementById('login-overlay');
+      if (logOverlay) logOverlay.style.display = 'flex';
+
+      // Executa as funções secundárias de forma protegida
+      if (typeof setupImages === 'function') setupImages();
+      if (typeof populateSelects === 'function') populateSelects();
+      if (typeof updateDashboard === 'function') updateDashboard();
+      if (typeof renderMembers === 'function') renderMembers();
+      if (typeof renderProducts === 'function') renderProducts();
+      if (typeof renderPendingBadge === 'function') renderPendingBadge();
+      if (typeof loadCloudData === 'function') loadCloudData();
     }
   } catch (err) {
-    console.error("Erro crítico no arranque, a recuperar modo de segurança:", err);
-    // Garante que o painel mostra o login mesmo se houver falha nos dados
+    console.error("Erro crítico no carregamento, ativando modo de segurança:", err);
     const logOverlay = document.getElementById('login-overlay');
     if (logOverlay) logOverlay.style.display = 'flex';
   }
