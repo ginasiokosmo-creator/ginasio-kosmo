@@ -330,20 +330,24 @@
       console.warn("Supabase init:", err);
     }
 
-    async function carregarDadosCloud() {
-      if (!supabase) return;
-      try {
-        const { data, error } = await supabase.from('app_data').select('payload').eq('id', 'main_state').single();
-        if (data && data.payload) {
-          membersCache = data.payload.members || [];
-          attendanceCache = data.payload.attendanceLogs || [];
-          const cloudTxt = document.getElementById('cloud-info');
-          if (cloudTxt) cloudTxt.textContent = "Supabase Cloud Sync (" + membersCache.length + " membros)";
-        }
-      } catch(err) {
-        console.warn("Sync cloud:", err);
+async function carregarDadosCloud() {
+    if (!supabase) return;
+    try {
+      const { data, error } = await supabase.from('app_data').select('payload').eq('id', 'main_state').single();
+      if (data && data.payload) {
+        membersCache = data.payload.members || [];
+        attendanceCache = data.payload.attendanceLogs || [];
+        const cloudTxt = document.getElementById('cloud-info');
+        if (cloudTxt) cloudTxt.textContent = "Supabase Cloud Sync (" + membersCache.length + " membros)";
       }
+    } catch(err) {
+      console.warn("Sync cloud em segundo plano:", err);
     }
+  }
+  
+  // Executa em segundo plano sem bloquear a página
+  carregarDadosCloud();
+  setInterval(carregarDadosCloud, 15000);
     carregarDadosCloud();
     setInterval(carregarDadosCloud, 15000);
 
